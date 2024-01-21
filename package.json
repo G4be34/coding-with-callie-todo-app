@@ -1,0 +1,16 @@
+{
+  "name": "coding-with-callie-todo-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "devDependencies": {
+    "turbo": "^1.11.3"
+  },
+  "scripts": {
+    "dev": "turbo run dev"
+  }
+}
