@@ -11,6 +11,7 @@
     "turbo": "^1.11.3"
   },
   "scripts": {
-    "dev": "turbo run dev"
+    "dev": "turbo run dev",
+    "install-all": "cd apps/frontend && yarn && cd ../backend && yarn"
   }
 }
