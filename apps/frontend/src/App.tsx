@@ -10,7 +10,7 @@ import { TodosPage } from './todos-page/TodosPage';
 function App() {
 
   return (
-    <Flex flexDirection={"column"} minH={"100vh"}>
+    <Flex flexDirection={"column"} minH={"100vh"} justifyContent={"space-between"}>
       <Header />
       <Routes>
         <Route path="/" element={<TodosPage />}/>
@@ -18,6 +18,9 @@ function App() {
         <Route path="/data" element={<GraphsPage />} />
         <Route path="/calendar" element={<CalendarPage />} />
       </Routes>
+      <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={4} borderTop={"1px solid black"}>
+        © 2024 Your Website Name. All rights reserved.
+      </Flex>
     </Flex>
   )
 }
