@@ -31,7 +31,7 @@ Welcome to the Coding with Callie Todo App, a feature-rich todo management appli
 Clone the project
 
 ```bash
-  git clone https://github.com/TishShaw/task-management/
+  git clone https://github.com/G4be34/coding-with-callie-todo-app/
 ```
 
 To install initial dependencies, go to the root directory and run 
