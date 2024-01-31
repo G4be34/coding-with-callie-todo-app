@@ -1,5 +1,4 @@
 import { Avatar, Button, Flex, Image, Link, Spacer } from "@chakra-ui/react";
-import { useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
@@ -9,9 +8,13 @@ const links = [
   { label: 'Calendar', path: '/calendar' },
 ]
 
-export const Header = () => {
+export const Header = ({ setShowModal, showOptions, setShowOptions }) => {
   const { logoutUser } = useAuth();
-  const [showOptions, setShowOptions] = useState(false);
+
+  const openModal = () => {
+    setShowModal(true);
+    setShowOptions(false);
+  }
 
   return (
     <Flex as={"header"} borderBottom={"1px solid black"} p={4} px={14} alignItems={"center"}>
@@ -25,7 +28,7 @@ export const Header = () => {
       <Avatar name="test" src="https://bit.ly/dan-abramov" cursor={"pointer"} onClick={() => setShowOptions(!showOptions)} ml={10} pos={"relative"} />
       {showOptions ?
         <Flex flexDir={"column"} pos={"absolute"} right={5} top={20} border={"1px solid black"} borderRadius={10} bgColor={"white"} p={4} gap={2}>
-          <Button>Settings</Button>
+          <Button onClick={openModal} >Settings</Button>
           <Button onClick={logoutUser} >Logout</Button>
         </Flex>
         : null

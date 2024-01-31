@@ -33,7 +33,6 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
 
   const logoutUser = () => {
     setToken('');
-    console.log("Logged out")
   }
 
   const value = {
