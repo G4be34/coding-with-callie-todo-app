@@ -24,7 +24,7 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
       const response = await axios.post('/api/auth/login', { email, password });
       setToken(response.data.access_token);
       console.log("Response data: ", response.data.access_token);
-      const origin = location.state?.from?.pathname || '/login';
+      const origin = location.state?.from?.pathname || '/';
       navigate(origin);
     } catch (error) {
       console.log("Error logging in: ",error);

@@ -1,12 +1,39 @@
-import { Button, Flex, FormControl, FormLabel, Heading, Input, Link, Text } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Text } from "@chakra-ui/react";
+import axios from "axios";
 import { useState } from "react";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 
 export const SignUpPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [pwMatch, setPwMatch] = useState(true);
+
+  const createUser = async () => {
+    try {
+      if (password !== confirmPassword) {
+        setPwMatch(false);
+        return;
+      }
+
+      const newUser = {
+        email,
+        password,
+        name: username,
+        photo: "",
+        theme: "",
+        font: "",
+      };
+
+      const response = await axios.post('/api/users', newUser);
+      console.log("Response data: ", response.data);
+      navigate('/login');
+    } catch (error) {
+      console.log("Error creating user: ", error);
+    }
+  }
 
   return (
     <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} bgColor={"gray.300"} pos={"relative"}>
@@ -27,12 +54,13 @@ export const SignUpPage = () => {
           <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
         </FormControl>
 
-        <FormControl isRequired>
+        <FormControl isRequired isInvalid={!pwMatch}>
           <FormLabel>Confirm password</FormLabel>
           <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm password" />
+          {!pwMatch ? <FormErrorMessage>Passwords do not match</FormErrorMessage> : null}
         </FormControl>
 
-        <Button>Sign up</Button>
+        <Button onClick={createUser}>Sign up</Button>
       </Flex>
       <Text>Already have an account? <Link as={ReactRouterLink} to="/" color={"#209CF0"}>Login instead</Link></Text>
     </Flex>

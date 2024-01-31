@@ -15,15 +15,12 @@ export class CreateUserDto {
   @MinLength(6)
   password: string;
 
-  @IsNotEmpty()
   @IsString()
   photo: string;
 
-  @IsNotEmpty()
   @IsString()
   theme: string;
 
-  @IsNotEmpty()
   @IsString()
   font: string;
 }
