@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthProvider";
 const ChakraRouterLink = chakra(ReactRouterLink);
 
 export const LoginPage = () => {
-  const { loginUser } = useAuth();
+  const { loginUser, badLogin } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const emailError = email === '';
@@ -31,6 +31,8 @@ export const LoginPage = () => {
           <Input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           {passwordError ? <FormErrorMessage>Password is required</FormErrorMessage> : null}
         </FormControl>
+
+        {badLogin ? <Text color={"red.500"}>Incorrect email or password</Text> : null}
 
         <Button onClick={() => loginUser(email, password)} isDisabled={emailError || passwordError}>Login</Button>
 

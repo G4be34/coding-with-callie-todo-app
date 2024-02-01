@@ -1,19 +1,35 @@
 import { Button, ButtonGroup, Editable, EditableInput, EditablePreview, Flex, Heading, IconButton, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useEditableControls } from "@chakra-ui/react";
+import axios from "axios";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 import { ImCheckboxChecked } from "react-icons/im";
+import { useAuth } from "../context/AuthProvider";
 
 export const ProfileModal = ({ setShowModal, showModal }) => {
+  const { user, token, setUser } = useAuth();
   const [currentTab, setCurrentTab] = useState("Profile");
-  const [currentName, setCurrentName] = useState("test");
-  const [currentEmail, setCurrentEmail] = useState("test");
-  const [currentPw, setCurrentPw] = useState("test");
-  const [currentTheme, setCurrentTheme] = useState("test");
-  const [currentFont, setCurrentFont] = useState("test");
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
+  const [password, setPassword] = useState(user.password);
+  const [theme, setTheme] = useState(user.theme);
+  const [font, setFont] = useState(user.font);
 
-  const saveEdit = () => {
-    console.log("Saved: ", currentName, currentEmail, currentPw, currentTheme, currentFont);
+  const saveEdit = async (newItem: string) => {
+    try {
+      console.log("user id: ", user._id);
+      const newUserInfo = await axios.patch(`http://localhost:3010/api/users/${user._id}`, {
+        [newItem]: eval(newItem)
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("newUserInfo: ", newUserInfo.data);
+      setUser({ ...user, ...newUserInfo.data});
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const EditableControls = () => {
@@ -47,21 +63,21 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
             {currentTab === "Profile" ?
               <>
                 <Heading size={"md"} mb={-2}>Username:</Heading>
-                <Editable defaultValue={currentName} isPreviewFocusable={false} display={"flex"} onChange={(e) => setCurrentName(e)} onSubmit={() => saveEdit()} >
+                <Editable defaultValue={name} isPreviewFocusable={false} display={"flex"} onChange={(e) => setName(e)} onSubmit={() => saveEdit("name")} >
                   <EditablePreview w={"300px"} />
                   <Input as={EditableInput} w={"300px"} mr={12} />
                   <EditableControls />
                 </Editable>
 
                 <Heading size={"md"} mb={-2}>Email:</Heading>
-                <Editable defaultValue={currentEmail} isPreviewFocusable={false} display={"flex"} onChange={(e) => setCurrentEmail(e)} >
+                <Editable onSubmit={() => saveEdit("email")} defaultValue={email} isPreviewFocusable={false} display={"flex"} onChange={(e) => setEmail(e)} >
                   <EditablePreview w={"300px"} />
                   <Input as={EditableInput} w={"300px"} mr={12} />
                   <EditableControls />
                 </Editable>
 
                 <Heading size={"md"} mb={-2}>Password:</Heading>
-                <Editable defaultValue={currentPw} isPreviewFocusable={false} display={"flex"} onChange={(e) => setCurrentPw(e)} >
+                <Editable onSubmit={() => saveEdit("password")} defaultValue={password} isPreviewFocusable={false} display={"flex"} onChange={(e) => setPassword(e)} >
                   <EditablePreview w={"300px"} />
                   <Input as={EditableInput} w={"300px"} mr={12} />
                   <EditableControls />
@@ -72,7 +88,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
             {currentTab === "Theme" ?
               <>
                 <Heading size={"md"} mb={-2}>Current Theme:</Heading>
-                <Editable defaultValue={currentTheme} isPreviewFocusable={false} display={"flex"} onChange={(e) => setCurrentTheme(e)} >
+                <Editable onSubmit={() => saveEdit("theme")} defaultValue={theme} isPreviewFocusable={false} display={"flex"} onChange={(e) => setTheme(e)} >
                   <EditablePreview w={"300px"} />
                   <Input as={EditableInput} w={"300px"} mr={12} />
                   <EditableControls />
@@ -83,7 +99,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
             {currentTab === "Font" ?
               <>
                 <Heading size={"md"} mb={-2}>Current Font:</Heading>
-                <Editable defaultValue={currentFont} isPreviewFocusable={false} display={"flex"} onChange={(e) => setCurrentFont(e)} >
+                <Editable onSubmit={() => saveEdit("font")} defaultValue={font} isPreviewFocusable={false} display={"flex"} onChange={(e) => setFont(e)} >
                   <EditablePreview w={"300px"} />
                   <Input as={EditableInput} w={"300px"} mr={12} />
                   <EditableControls />
