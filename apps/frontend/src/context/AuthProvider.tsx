@@ -73,8 +73,8 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
   }
 
   const logoutUser = () => {
-    setToken('');
     localStorage.removeItem('token');
+    setToken('');
   }
 
   const value = {

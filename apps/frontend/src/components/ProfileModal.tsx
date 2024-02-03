@@ -4,16 +4,19 @@ import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 import { ImCheckboxChecked } from "react-icons/im";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
 export const ProfileModal = ({ setShowModal, showModal }) => {
-  const { user, token, setUser } = useAuth();
+  const { user, token, setUser, logoutUser } = useAuth();
+  const navigate = useNavigate();
   const [currentTab, setCurrentTab] = useState("Profile");
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState(user.password);
   const [theme, setTheme] = useState(user.theme);
   const [font, setFont] = useState(user.font);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const saveEdit = async (newItem: string) => {
     try {
@@ -27,6 +30,22 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
       });
       console.log("newUserInfo: ", newUserInfo.data);
       setUser({ ...user, ...newUserInfo.data});
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const deleteProfile = async () => {
+    try {
+      await axios.delete(`http://localhost:3010/api/users/${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setShowConfirm(false);
+      setShowModal(false);
+      logoutUser();
+      navigate('/login');
     } catch (error) {
       console.log(error);
     }
@@ -50,6 +69,18 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
 
   return (
     <Modal isOpen={showModal} onClose={() => setShowModal(false)} isCentered size={"2xl"}>
+      {showConfirm ?
+        <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} isCentered size={"sm"}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Are you sure you want to delete your profile?</ModalHeader>
+            <ModalBody display={"flex"} justifyContent={"space-evenly"}>
+              <Button onClick={deleteProfile}>Yes</Button>
+              <Button onClick={() => setShowConfirm(false)}>No</Button>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+        : null}
       <ModalOverlay />
       <ModalContent display={"flex"} flexDir={"row"} >
         <Flex flexDir={"column"} gap={4} justifyContent={"center"} borderRight={"1px solid black"}>
@@ -58,7 +89,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
           <Button variant={"ghost"} onClick={() => setCurrentTab("Font")}>Fonts Styles</Button>
         </Flex>
         <Flex flexDir={"column"} flex={1}>
-          <ModalHeader textDecoration={"underline"}>{currentTab}</ModalHeader>
+          <ModalHeader textDecoration={"underline"} marginBottom={6}>{currentTab}</ModalHeader>
           <ModalBody gap={6} display={"flex"} flexDir={"column"} alignItems={"center"}>
             {currentTab === "Profile" ?
               <>
@@ -108,8 +139,9 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
               : null
             }
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={() => setShowModal(false)}>Close</Button>
+          <ModalFooter marginTop={12} display={"flex"} justifyContent={"space-between"}>
+            {currentTab === "Profile" ? <Button colorScheme="red" onClick={() => setShowConfirm(true)}>Delete Account</Button> : null}
+            <Button onClick={() => setShowModal(false)} marginLeft={"auto"}>Close</Button>
           </ModalFooter>
         </Flex>
       </ModalContent>
