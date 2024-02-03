@@ -9,7 +9,7 @@ import { useAuth } from "../context/AuthProvider";
 export const ProfileModal = ({ setShowModal, showModal }) => {
   const { user, token, setUser } = useAuth();
   const [currentTab, setCurrentTab] = useState("Profile");
-  const [name, setName] = useState(user.name);
+  const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState(user.password);
   const [theme, setTheme] = useState(user.theme);
@@ -63,7 +63,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
             {currentTab === "Profile" ?
               <>
                 <Heading size={"md"} mb={-2}>Username:</Heading>
-                <Editable defaultValue={name} isPreviewFocusable={false} display={"flex"} onChange={(e) => setName(e)} onSubmit={() => saveEdit("name")} >
+                <Editable defaultValue={username} isPreviewFocusable={false} display={"flex"} onChange={(e) => setUsername(e)} onSubmit={() => saveEdit("name")} >
                   <EditablePreview w={"300px"} />
                   <Input as={EditableInput} w={"300px"} mr={12} />
                   <EditableControls />

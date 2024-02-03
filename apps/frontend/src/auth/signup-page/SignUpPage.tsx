@@ -21,7 +21,7 @@ export const SignUpPage = () => {
       const newUser = {
         email,
         password,
-        name: username,
+        username,
         photo: "",
         theme: "",
         font: "",
