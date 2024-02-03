@@ -1,10 +1,11 @@
 import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Text } from "@chakra-ui/react";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 
 export const SignUpPage = () => {
   const navigate = useNavigate();
+  const [existingUser, setExistingUser] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,10 +28,18 @@ export const SignUpPage = () => {
         font: "",
       };
 
-      const response = await axios.post('/api/users', newUser);
-      console.log("Response data: ", response.data);
+      const result = await axios.post('/api/users', newUser);
+
+      if (result.status === 409) {
+        setExistingUser(true);
+        return;
+      }
+
       navigate('/login');
     } catch (error) {
+      if (isAxiosError(error) && error.response && error.response.status === 409) {
+        setExistingUser(true);
+      }
       console.log("Error creating user: ", error);
     }
   }
@@ -44,14 +53,16 @@ export const SignUpPage = () => {
           <Input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
         </FormControl>
 
-        <FormControl isRequired>
+        <FormControl isRequired isInvalid={existingUser}>
           <FormLabel>Email</FormLabel>
           <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+          {existingUser ? <FormErrorMessage>Email already exists</FormErrorMessage> : null}
         </FormControl>
 
-        <FormControl isRequired>
+        <FormControl isRequired isInvalid={password.length < 6}>
           <FormLabel>Password</FormLabel>
           <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+          {password.length < 6 ? <FormErrorMessage>Password must be at least 6 characters</FormErrorMessage> : null}
         </FormControl>
 
         <FormControl isRequired isInvalid={!pwMatch}>
@@ -62,7 +73,7 @@ export const SignUpPage = () => {
 
         <Button onClick={createUser}>Sign up</Button>
       </Flex>
-      <Text>Already have an account? <Link as={ReactRouterLink} to="/" color={"#209CF0"}>Login instead</Link></Text>
+      <Text>Already have an account? <Link as={ReactRouterLink} to="/" color={"#209CF0"} marginLeft={2}>Login instead</Link></Text>
     </Flex>
   )
 }

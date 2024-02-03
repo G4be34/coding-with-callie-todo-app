@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -29,6 +29,7 @@ type AuthContextType = {
 
 export default function AuthProvider ({ children }: AuthProviderProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [token, setToken] = useState('');
   const [badLogin, setBadLogin] = useState(false);
   const [user, setUser] = useState({});
@@ -65,7 +66,8 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
 
       setToken(token);
 
-      navigate('/');
+      const origin = location.state?.from?.pathname || '/';
+      navigate(origin);
     } catch (error) {
       console.log("Error logging in: ",error);
       setBadLogin(true);

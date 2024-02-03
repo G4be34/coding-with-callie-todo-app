@@ -74,7 +74,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Are you sure you want to delete your profile?</ModalHeader>
-            <ModalBody display={"flex"} justifyContent={"space-evenly"}>
+            <ModalBody display={"flex"} justifyContent={"space-evenly"} marginBottom={4}>
               <Button onClick={deleteProfile}>Yes</Button>
               <Button onClick={() => setShowConfirm(false)}>No</Button>
             </ModalBody>
@@ -140,7 +140,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
             }
           </ModalBody>
           <ModalFooter marginTop={12} display={"flex"} justifyContent={"space-between"}>
-            {currentTab === "Profile" ? <Button colorScheme="red" onClick={() => setShowConfirm(true)}>Delete Account</Button> : null}
+            {currentTab === "Profile" ? <Button size={"sm"} colorScheme="red" onClick={() => setShowConfirm(true)}>Delete Account</Button> : null}
             <Button onClick={() => setShowModal(false)} marginLeft={"auto"}>Close</Button>
           </ModalFooter>
         </Flex>

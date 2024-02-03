@@ -34,7 +34,7 @@ function App() {
       </Routes>
       {token ?
         <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={4} borderTop={"1px solid black"}>
-          © 2024 Your Website Name. All rights reserved.
+          © 2024 CWC Todo App. All rights reserved.
         </Flex> : null
       }
     </Flex>
