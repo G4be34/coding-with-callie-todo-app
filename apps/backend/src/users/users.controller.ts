@@ -20,16 +20,7 @@ export class UsersController {
   @Post()
   @Public()
   create(@Body() createUserDto: CreateUserDto) {
-    const result = this.usersService.create(createUserDto);
-
-    if ('status' in result && result.status === 409) {
-      return {
-        status: 409,
-        message: 'User already exists',
-      };
-    }
-
-    return result;
+    return this.usersService.create(createUserDto);
   }
 
   @Get(':id')

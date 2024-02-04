@@ -92,7 +92,10 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
     const token = localStorage.getItem('token');
     if (token) {
       const { access_token } = JSON.parse(token);
-      setToken(access_token);
+      if (Date.now() < access_token.expiration_date) {
+        setToken(access_token);
+        navigate('/');
+      }
     }
   }, [])
 
