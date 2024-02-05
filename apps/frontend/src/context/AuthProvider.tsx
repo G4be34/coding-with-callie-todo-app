@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -9,7 +9,7 @@ type AuthProviderProps = {
 }
 
 type UserType = {
-  name: string
+  username: string
   email: string
   photo: string
   theme: string
@@ -20,18 +20,24 @@ type UserType = {
 
 type AuthContextType = {
   token: string
+  setToken: React.Dispatch<React.SetStateAction<string>>
   loginUser: (email: string, password: string) => void
   logoutUser: () => void
   badLogin: boolean
   user: UserType | object
   setUser: React.Dispatch<React.SetStateAction<UserType | object>>
+  loading: boolean
+  expiration: number
 }
 
 export default function AuthProvider ({ children }: AuthProviderProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [token, setToken] = useState('');
+  const [expiration, setExpiration] = useState(0);
   const [badLogin, setBadLogin] = useState(false);
   const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const loginUser = async (email: string, password: string) => {
     try {
@@ -65,7 +71,12 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
 
       setToken(token);
 
-      navigate('/');
+      setExpiration(expirationDate * 1000);
+
+      setLoading(false);
+
+      const origin = location.state?.from?.pathname || '/';
+      navigate(origin);
     } catch (error) {
       console.log("Error logging in: ",error);
       setBadLogin(true);
@@ -73,24 +84,62 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
   }
 
   const logoutUser = () => {
-    setToken('');
     localStorage.removeItem('token');
+    setExpiration(0);
+    setToken('');
   }
 
   const value = {
     token,
+    setToken,
     loginUser,
     logoutUser,
     badLogin,
     user,
-    setUser
+    setUser,
+    loading,
+    expiration
   }
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      const { access_token } = JSON.parse(token);
-      setToken(access_token);
+      const { access_token, expiration_date } = JSON.parse(token);
+      if (Date.now() < expiration_date) {
+        const fetchData = async () => {
+          try {
+            const timeResponse = await axios.get(`/api/auth/profile`, {
+              headers: {
+                Authorization: `Bearer ${access_token}`
+              }
+            });
+
+            const userResponse = await axios.get(`/api/users/${timeResponse.data.sub}`, {
+              headers: {
+                Authorization: `Bearer ${access_token}`
+              }
+            });
+
+            setUser({_id: timeResponse.data.sub, ...userResponse.data});
+            setToken(access_token);
+            setExpiration(expiration_date);
+            setLoading(false);
+            navigate('/');
+          } catch (error) {
+            console.error("Error fetching user details:", error);
+            logoutUser();
+            setLoading(false);
+          }
+        };
+
+        fetchData();
+      } else {
+        logoutUser();
+        setLoading(false);
+      }
+    } else {
+      setLoading(false);
     }
   }, [])
 

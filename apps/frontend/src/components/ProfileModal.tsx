@@ -1,32 +1,96 @@
-import { Button, ButtonGroup, Editable, EditableInput, EditablePreview, Flex, Heading, IconButton, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useEditableControls } from "@chakra-ui/react";
+import { Button, ButtonGroup, Editable, EditableInput, EditablePreview, Flex, FormControl, FormErrorMessage, FormLabel, Heading, IconButton, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useEditableControls } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 import { ImCheckboxChecked } from "react-icons/im";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
 export const ProfileModal = ({ setShowModal, showModal }) => {
-  const { user, token, setUser } = useAuth();
+  const { user, token, setUser, logoutUser } = useAuth();
+  const navigate = useNavigate();
   const [currentTab, setCurrentTab] = useState("Profile");
-  const [name, setName] = useState(user.name);
+  const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
-  const [password, setPassword] = useState(user.password);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [pwMatch, setPwMatch] = useState(true);
+  const [code, setCode] = useState('');
+  const [emailCode, setEmailCode] = useState('');
+  const [codeMatch, setCodeMatch] = useState(true);
   const [theme, setTheme] = useState(user.theme);
   const [font, setFont] = useState(user.font);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showPwModal, setShowPwModal] = useState(false);
 
   const saveEdit = async (newItem: string) => {
     try {
-      console.log("user id: ", user._id);
-      const newUserInfo = await axios.patch(`http://localhost:3010/api/users/${user._id}`, {
+      const newUserInfo = await axios.patch(`/api/users/${user._id}`, {
         [newItem]: eval(newItem)
       }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log("newUserInfo: ", newUserInfo.data);
       setUser({ ...user, ...newUserInfo.data});
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const deleteProfile = async () => {
+    try {
+      await axios.delete(`/api/users/${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setShowConfirm(false);
+      setShowModal(false);
+      logoutUser();
+      navigate('/login');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const sendVerificationEmail = async () => {
+    try {
+      const code = await axios.post('/api/email', {
+        username,
+        email
+      });
+
+      setEmailCode(code.data.code);
+      setShowPwModal(true);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const submitNewPassword = async () => {
+    try {
+      if (password !== confirmPassword) {
+        setPwMatch(false);
+        return;
+      }
+
+      if (code !== emailCode) {
+        setCodeMatch(false);
+        return;
+      }
+
+      const newUserInfo = await axios.patch(`/api/users/${user._id}`, {
+        password
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setUser({ ...user, ...newUserInfo.data});
+      setShowPwModal(false);
     } catch (error) {
       console.log(error);
     }
@@ -50,6 +114,62 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
 
   return (
     <Modal isOpen={showModal} onClose={() => setShowModal(false)} isCentered size={"2xl"}>
+      {showConfirm ?
+        <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} isCentered size={"sm"}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Are you sure you want to delete your profile?</ModalHeader>
+            <ModalBody display={"flex"} justifyContent={"space-evenly"} marginBottom={4}>
+              <Button onClick={deleteProfile}>Yes</Button>
+              <Button onClick={() => setShowConfirm(false)}>No</Button>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+        : null}
+      {showPwModal ?
+        <Modal isOpen={showPwModal} onClose={() => setShowPwModal(false)} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>A verification code has been sent to your email</ModalHeader>
+            <ModalBody display={"flex"} flexDir={"column"} gap={4}>
+              <FormControl isRequired isInvalid={password.length < 6}>
+                <FormLabel>Enter New Password</FormLabel>
+                <Input
+                  type={"password"}
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  placeholder="New Password"
+                  />
+                {password.length < 6 ? <FormErrorMessage>Password must be at least 6 characters long</FormErrorMessage> : null}
+              </FormControl>
+              <FormControl isRequired isInvalid={!pwMatch}>
+                <FormLabel>Confirm New Password</FormLabel>
+                <Input
+                  type={"password"}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  value={confirmPassword}
+                  placeholder="Confirm Password"
+                  />
+                {!pwMatch ? <FormErrorMessage>Passwords do not match</FormErrorMessage> : null}
+              </FormControl>
+              <FormControl isRequired isInvalid={!codeMatch}>
+                <FormLabel>Enter Verification Code</FormLabel>
+                <Input
+                  type={"text"}
+                  onChange={(e) => setCode(e.target.value)}
+                  value={code}
+                  placeholder="Verification Code"
+                  />
+                {!codeMatch ? <FormErrorMessage>Incorrect verification code</FormErrorMessage> : null}
+              </FormControl>
+            </ModalBody>
+            <ModalFooter display={"flex"} justifyContent={"space-evenly"}>
+              <Button onClick={submitNewPassword}>Submit</Button>
+              <Button onClick={() => setShowPwModal(false)}>Close</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+        : null}
       <ModalOverlay />
       <ModalContent display={"flex"} flexDir={"row"} >
         <Flex flexDir={"column"} gap={4} justifyContent={"center"} borderRight={"1px solid black"}>
@@ -58,12 +178,12 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
           <Button variant={"ghost"} onClick={() => setCurrentTab("Font")}>Fonts Styles</Button>
         </Flex>
         <Flex flexDir={"column"} flex={1}>
-          <ModalHeader textDecoration={"underline"}>{currentTab}</ModalHeader>
+          <ModalHeader textDecoration={"underline"} marginBottom={6}>{currentTab}</ModalHeader>
           <ModalBody gap={6} display={"flex"} flexDir={"column"} alignItems={"center"}>
             {currentTab === "Profile" ?
               <>
                 <Heading size={"md"} mb={-2}>Username:</Heading>
-                <Editable defaultValue={name} isPreviewFocusable={false} display={"flex"} onChange={(e) => setName(e)} onSubmit={() => saveEdit("name")} >
+                <Editable defaultValue={username} isPreviewFocusable={false} display={"flex"} onChange={(e) => setUsername(e)} onSubmit={() => saveEdit("name")} >
                   <EditablePreview w={"300px"} />
                   <Input as={EditableInput} w={"300px"} mr={12} />
                   <EditableControls />
@@ -77,11 +197,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
                 </Editable>
 
                 <Heading size={"md"} mb={-2}>Password:</Heading>
-                <Editable onSubmit={() => saveEdit("password")} defaultValue={password} isPreviewFocusable={false} display={"flex"} onChange={(e) => setPassword(e)} >
-                  <EditablePreview w={"300px"} />
-                  <Input as={EditableInput} w={"300px"} mr={12} />
-                  <EditableControls />
-                </Editable>
+                <Button onClick={sendVerificationEmail}>Change Password</Button>
               </>
               : null
             }
@@ -108,8 +224,9 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
               : null
             }
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={() => setShowModal(false)}>Close</Button>
+          <ModalFooter marginTop={12} display={"flex"} justifyContent={"space-between"}>
+            {currentTab === "Profile" ? <Button size={"sm"} colorScheme="red" onClick={() => setShowConfirm(true)}>Delete Account</Button> : null}
+            <Button onClick={() => setShowModal(false)} marginLeft={"auto"}>Close</Button>
           </ModalFooter>
         </Flex>
       </ModalContent>

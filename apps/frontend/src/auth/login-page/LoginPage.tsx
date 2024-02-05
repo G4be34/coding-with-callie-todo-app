@@ -10,9 +10,13 @@ export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const emailError = email === '';
-  const passwordError = password === '';
+  const passwordError = password === '' || password.length < 6;
 
-
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !emailError && !passwordError) {
+      loginUser(email, password);
+    }
+  }
 
   return (
     <Flex justifyContent={"center"} alignItems={"center"} h={"100vh"} flexDirection={"column"} position={"relative"} bgColor={"gray.300"}>
@@ -22,13 +26,24 @@ export const LoginPage = () => {
 
         <FormControl isRequired isInvalid={emailError}>
           <FormLabel>Email</FormLabel>
-          <Input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input
+            placeholder="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            />
           {emailError ? <FormErrorMessage>Email is required</FormErrorMessage> : null}
         </FormControl>
 
         <FormControl isRequired isInvalid={passwordError}>
           <FormLabel>Password</FormLabel>
-          <Input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <Input
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyUp={handleKeyPress}
+            />
           {passwordError ? <FormErrorMessage>Password is required</FormErrorMessage> : null}
         </FormControl>
 

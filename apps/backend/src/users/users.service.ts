@@ -16,6 +16,19 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
+  async findEmail(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      return false;
+    }
+
+    return {
+      id: user.id,
+      username: user.username,
+    };
+  }
+
   async findOne(id: number) {
     return await this.userRepository.findOne({ where: { id } });
   }

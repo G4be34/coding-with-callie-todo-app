@@ -15,9 +15,14 @@ import { ProfilePage } from './profile-page/ProfilePage';
 import { TodosPage } from './todos-page/TodosPage';
 
 function App() {
-  const { token } = useAuth();
+  const { token, loading } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
 
   return (
     <Flex flexDirection={"column"} minH={"100vh"} justifyContent={"space-between"}>
@@ -34,7 +39,7 @@ function App() {
       </Routes>
       {token ?
         <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={4} borderTop={"1px solid black"}>
-          © 2024 Your Website Name. All rights reserved.
+          © 2024 CWC Todo App. All rights reserved.
         </Flex> : null
       }
     </Flex>

@@ -29,6 +29,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @Public()
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,

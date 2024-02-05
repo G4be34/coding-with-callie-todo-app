@@ -1,4 +1,5 @@
 import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Link, Text, chakra } from "@chakra-ui/react";
+import axios, { isAxiosError } from "axios";
 import { useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
@@ -6,13 +7,51 @@ const ChakraRouterLink = chakra(ReactRouterLink);
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState('');
+  const [userId, setUserId] = useState('');
   const [foundUser, setFoundUser] = useState(false);
   const [successfulEmail, setSuccessfulEmail] = useState(false);
   const [completeReset, setCompleteReset] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [pwMatch, setPwMatch] = useState(true);
   const [code, setCode] = useState('');
+  const [codeEmail, setCodeEmail] = useState('');
+  const [codeMatch, setCodeMatch] = useState(true);
 
+  const sendCode = async () => {
+    try {
+      const response = await axios.post('/api/email', { email });
+      setCodeEmail(response.data.code.toString());
+      setUserId(response.data.id.toString());
+      setSuccessfulEmail(true);
+    } catch (error) {
+      if (isAxiosError(error) && error.response && error.response.data.statusCode === 404) {
+        setFoundUser(true);
+      }
+      console.log("Error sending code: ", error);
+    }
+  }
+
+  const completePwReset = async () => {
+    try {
+      if (newPassword !== confirmNewPassword) {
+        setPwMatch(false);
+        return;
+      }
+
+      if (code !== codeEmail) {
+        setCodeMatch(false);
+        return;
+      }
+
+      await axios.patch(`/api/users/${userId}`, {
+        password: newPassword
+      });
+      setCompleteReset(true);
+    } catch (error) {
+      console.log("Error sending code: ", error);
+    }
+  }
 
   return (
     <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} bgColor={"gray.300"} pos={"relative"}>
@@ -23,33 +62,56 @@ export const ForgotPassword = () => {
           <>
             <FormControl isInvalid={foundUser}>
               <FormLabel>We'll send you an email to reset it</FormLabel>
-              <Input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-              {!foundUser ? <FormHelperText>Please enter the email address you used to register</FormHelperText> : <FormErrorMessage>Email not found</FormErrorMessage>}
+              <Input
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                />
+              {foundUser ? <FormErrorMessage>Email not found</FormErrorMessage> : <FormHelperText>Please enter the email address you used to register</FormHelperText> }
             </FormControl>
 
-            <Button>Send Email</Button>
+            <Button onClick={sendCode}>Send Email</Button>
           </>
           : null
         }
 
         {successfulEmail && !completeReset ?
           <>
-            <FormControl isRequired>
+            <FormControl isRequired isInvalid={newPassword.length < 6}>
               <FormLabel> New password</FormLabel>
-              <Input type="text" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+              <Input
+                type="text"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="New password"
+                />
+              {newPassword.length < 6 ? <FormErrorMessage>Password must be at least 6 characters long</FormErrorMessage> : null}
             </FormControl>
 
-            <FormControl isRequired>
+            <FormControl isRequired isInvalid={!pwMatch}>
               <FormLabel>Confirm new password</FormLabel>
-              <Input type="text" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} />
+              <Input
+                type="text"
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                placeholder="Confirm new password"
+                />
+              {!pwMatch ? <FormErrorMessage>Passwords do not match</FormErrorMessage> : null}
             </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel>Reset password code</FormLabel>
-              <Input type="text" value={code} onChange={(e) => setCode(e.target.value)} />
+            <FormControl isRequired isInvalid={!codeMatch}>
+              <FormLabel>Verification code</FormLabel>
+              <Input
+                type="text"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="Verification code"
+                />
+              {!codeMatch ? <FormErrorMessage>Code does not match</FormErrorMessage> : null}
             </FormControl>
 
-            <Button>Reset Password</Button>
+            <Button onClick={completePwReset}>Reset Password</Button>
           </>
          : null
         }
