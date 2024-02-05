@@ -25,14 +25,18 @@ type AuthContextType = {
   badLogin: boolean
   user: UserType | object
   setUser: React.Dispatch<React.SetStateAction<UserType | object>>
+  loading: boolean
+  expiration: number
 }
 
 export default function AuthProvider ({ children }: AuthProviderProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [token, setToken] = useState('');
+  const [expiration, setExpiration] = useState(0);
   const [badLogin, setBadLogin] = useState(false);
   const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const loginUser = async (email: string, password: string) => {
     try {
@@ -66,6 +70,10 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
 
       setToken(token);
 
+      setExpiration(expirationDate * 1000);
+
+      setLoading(false);
+
       const origin = location.state?.from?.pathname || '/';
       navigate(origin);
     } catch (error) {
@@ -76,6 +84,7 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
 
   const logoutUser = () => {
     localStorage.removeItem('token');
+    setExpiration(0);
     setToken('');
   }
 
@@ -85,17 +94,50 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
     logoutUser,
     badLogin,
     user,
-    setUser
+    setUser,
+    loading,
+    expiration
   }
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      const { access_token } = JSON.parse(token);
-      if (Date.now() < access_token.expiration_date) {
-        setToken(access_token);
-        navigate('/');
+      const { access_token, expiration_date } = JSON.parse(token);
+      if (Date.now() < expiration_date) {
+        const fetchData = async () => {
+          try {
+            const timeResponse = await axios.get(`/api/auth/profile`, {
+              headers: {
+                Authorization: `Bearer ${access_token}`
+              }
+            });
+
+            const userResponse = await axios.get(`/api/users/${timeResponse.data.sub}`, {
+              headers: {
+                Authorization: `Bearer ${access_token}`
+              }
+            });
+
+            setUser({_id: timeResponse.data.sub, ...userResponse.data});
+            setToken(access_token);
+            setExpiration(expiration_date);
+            setLoading(false);
+            navigate('/');
+          } catch (error) {
+            console.error("Error fetching user details:", error);
+            logoutUser();
+            setLoading(false);
+          }
+        };
+
+        fetchData();
+      } else {
+        logoutUser();
+        setLoading(false);
       }
+    } else {
+      setLoading(false);
     }
   }, [])
 

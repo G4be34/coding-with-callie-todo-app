@@ -23,7 +23,10 @@ export class UsersService {
       return false;
     }
 
-    return true;
+    return {
+      id: user.id,
+      username: user.username,
+    };
   }
 
   async findOne(id: number) {

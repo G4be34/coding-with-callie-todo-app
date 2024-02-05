@@ -13,8 +13,8 @@ import { EmailService } from './email.service';
         host: 'smtp.gmail.com',
         port: 465,
         auth: {
-          user: 'jimenezgabriel12@gmail.com',
-          pass: 'vjhd beqp tnkh owiv',
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
         },
       },
       defaults: {

@@ -15,9 +15,14 @@ import { ProfilePage } from './profile-page/ProfilePage';
 import { TodosPage } from './todos-page/TodosPage';
 
 function App() {
-  const { token } = useAuth();
+  const { token, loading } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
 
   return (
     <Flex flexDirection={"column"} minH={"100vh"} justifyContent={"space-between"}>

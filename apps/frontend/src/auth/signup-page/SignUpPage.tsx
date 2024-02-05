@@ -37,11 +37,6 @@ export const SignUpPage = () => {
 
       navigate('/login');
     } catch (error) {
-      if (isAxiosError(error) && error.response && error.response.status === 409) {
-        setInvalidEmail(false);
-        setExistingUser(true);
-      }
-
       if (isAxiosError(error) && error.response && error.response.data.message.includes('email must be an email')) {
         setInvalidEmail(true);
       }
@@ -59,13 +54,21 @@ export const SignUpPage = () => {
 
     if (existingUser.data) {
       setExistingUser(true);
+      setInvalidEmail(false);
       return;
     }
 
     const code = await axios.post('/api/email', { username, email });
 
-    setEmailCode(code.data.toString());
+    setEmailCode(code.data.code.toString());
     setCompleteSignup(true);
+  }
+
+  const handleBackButton = () => {
+    setCompleteSignup(false);
+    setCodeMatch(true)
+    setCode("");
+    setEmailCode("");
   }
 
   return (
@@ -110,7 +113,12 @@ export const SignUpPage = () => {
 
               <FormControl isRequired isInvalid={!pwMatch}>
                 <FormLabel>Confirm password</FormLabel>
-                <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm password" />
+                <Input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm password"
+                  />
                 {!pwMatch ? <FormErrorMessage>Passwords do not match</FormErrorMessage> : null}
               </FormControl>
 
@@ -138,12 +146,7 @@ export const SignUpPage = () => {
 
               <Text textAlign={"center"} mt={-4} mb={-4}>- or -</Text>
 
-              <Button onClick={() => {
-                setCompleteSignup(false);
-                setCodeMatch(true)
-                setCode("");
-                setEmailCode("");
-              }}>Go back</Button>
+              <Button onClick={handleBackButton}>Go back</Button>
               <Flex>
                 <Text>Didn't recieve the email?</Text>
                 <Text onClick={() => sendVerificationEmail(username, email)} color={"#209CF0"} marginLeft={2} _hover={{ cursor: "pointer", textDecoration: "underline" }}>Resend it</Text>
