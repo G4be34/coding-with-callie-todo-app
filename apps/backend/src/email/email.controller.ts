@@ -43,7 +43,7 @@ export class EmailController {
 
     return {
       code: returnCode,
-      id: result.id,
+      id: result?.id,
     };
   }
 

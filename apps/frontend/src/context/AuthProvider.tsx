@@ -20,6 +20,7 @@ type UserType = {
 
 type AuthContextType = {
   token: string
+  setToken: React.Dispatch<React.SetStateAction<string>>
   loginUser: (email: string, password: string) => void
   logoutUser: () => void
   badLogin: boolean
@@ -90,6 +91,7 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
 
   const value = {
     token,
+    setToken,
     loginUser,
     logoutUser,
     badLogin,
