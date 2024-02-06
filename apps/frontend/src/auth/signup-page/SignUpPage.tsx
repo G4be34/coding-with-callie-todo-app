@@ -1,4 +1,4 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Text } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Spinner, Text } from "@chakra-ui/react";
 import axios, { isAxiosError } from "axios";
 import { useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
@@ -16,9 +16,11 @@ export const SignUpPage = () => {
   const [emailCode, setEmailCode] = useState('');
   const [code, setCode] = useState('');
   const [codeMatch, setCodeMatch] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const createUser = async () => {
     try {
+      setLoading(true);
       if (code !== emailCode) {
         setCodeMatch(false);
         return;
@@ -35,8 +37,12 @@ export const SignUpPage = () => {
 
       await axios.post('/api/users', newUser);
 
+      setLoading(false);
       navigate('/login');
     } catch (error) {
+      if (loading) {
+        setLoading(false);
+      }
       if (isAxiosError(error) && error.response && error.response.data.message.includes('email must be an email')) {
         setInvalidEmail(true);
       }
@@ -45,23 +51,33 @@ export const SignUpPage = () => {
   }
 
   const sendVerificationEmail = async (username: string, email: string) => {
-    if (password !== confirmPassword) {
-      setPwMatch(false);
-      return;
+    try {
+      setLoading(true);
+      if (password !== confirmPassword) {
+        setPwMatch(false);
+        return;
+      }
+
+      const existingUser = await axios.get(`/api/email/${email}`);
+
+      if (existingUser.data) {
+        setExistingUser(true);
+        setInvalidEmail(false);
+        return;
+      }
+
+      const code = await axios.post('/api/email', { username, email });
+
+      setEmailCode(code.data.code.toString());
+      setLoading(false);
+      setCompleteSignup(true);
+    } catch (error) {
+      if (loading) {
+        setLoading(false);
+      }
+      console.log(error);
     }
 
-    const existingUser = await axios.get(`/api/email/${email}`);
-
-    if (existingUser.data) {
-      setExistingUser(true);
-      setInvalidEmail(false);
-      return;
-    }
-
-    const code = await axios.post('/api/email', { username, email });
-
-    setEmailCode(code.data.code.toString());
-    setCompleteSignup(true);
   }
 
   const handleBackButton = () => {
@@ -73,6 +89,7 @@ export const SignUpPage = () => {
 
   return (
     <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} bgColor={"gray.300"} pos={"relative"}>
+      {loading ? <Spinner position={"fixed"} top={"50%"} left={"50%"} right={"50%"} bottom={"50%"} color="blue.500" size="xl" /> : null}
       <Heading position={"absolute"} top={"15%"}>Sign up for CWC Todo App</Heading>
       <Flex flexDir={"column"} as="form" border={"1px solid black"} p={6} w={"450px"} borderRadius={10} rowGap={8} bgColor={"white"} mb={4}>
         {!completeSignup

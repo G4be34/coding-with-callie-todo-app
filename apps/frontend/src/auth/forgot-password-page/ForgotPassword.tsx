@@ -1,4 +1,4 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Link, Text, chakra } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Link, Spinner, Text, chakra } from "@chakra-ui/react";
 import axios, { isAxiosError } from "axios";
 import { useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
@@ -17,14 +17,20 @@ export const ForgotPassword = () => {
   const [code, setCode] = useState('');
   const [codeEmail, setCodeEmail] = useState('');
   const [codeMatch, setCodeMatch] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const sendCode = async () => {
     try {
+      setLoading(true);
       const response = await axios.post('/api/email', { email });
       setCodeEmail(response.data.code.toString());
       setUserId(response.data.id.toString());
+      setLoading(false);
       setSuccessfulEmail(true);
     } catch (error) {
+      if (loading) {
+        setLoading(false);
+      }
       if (isAxiosError(error) && error.response && error.response.data.statusCode === 404) {
         setFoundUser(true);
       }
@@ -34,6 +40,7 @@ export const ForgotPassword = () => {
 
   const completePwReset = async () => {
     try {
+      setLoading(true);
       if (newPassword !== confirmNewPassword) {
         setPwMatch(false);
         return;
@@ -47,14 +54,21 @@ export const ForgotPassword = () => {
       await axios.patch(`/api/users/${userId}`, {
         password: newPassword
       });
+      setLoading(false);
       setCompleteReset(true);
     } catch (error) {
+      if (loading) {
+        setLoading(false);
+      }
       console.log("Error sending code: ", error);
     }
   }
 
   return (
-    <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} bgColor={"gray.300"} pos={"relative"}>
+    <Flex position={"relative"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} bgColor={"gray.300"} pos={"relative"}>
+      {loading
+        ? <Spinner size={"xl"} pos={"fixed"} top={"50%"} left={"50%"} right={"50%"} bottom={"50%"} zIndex={200} color={"blue.500"} /> : null
+        }
       <Heading position={"absolute"} top={"15%"}>Forgot your password?</Heading>
 
       <Flex flexDir={"column"} as="form" border={"1px solid black"} p={6} w={"450px"} borderRadius={10} rowGap={8} bgColor={"white"} mb={4}>
@@ -81,7 +95,7 @@ export const ForgotPassword = () => {
             <FormControl isRequired isInvalid={newPassword.length < 6}>
               <FormLabel> New password</FormLabel>
               <Input
-                type="text"
+                type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="New password"
@@ -92,7 +106,7 @@ export const ForgotPassword = () => {
             <FormControl isRequired isInvalid={!pwMatch}>
               <FormLabel>Confirm new password</FormLabel>
               <Input
-                type="text"
+                type="password"
                 value={confirmNewPassword}
                 onChange={(e) => setConfirmNewPassword(e.target.value)}
                 placeholder="Confirm new password"
