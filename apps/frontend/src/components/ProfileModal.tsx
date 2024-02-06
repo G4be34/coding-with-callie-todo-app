@@ -208,7 +208,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
               {currentTab === "Profile" ?
                 <>
                   <Heading size={"md"} mb={-2}>Username:</Heading>
-                  <Editable defaultValue={username} isPreviewFocusable={false} display={"flex"} onChange={(e) => setUsername(e)} onSubmit={() => saveEdit("name")} >
+                  <Editable defaultValue={username} isPreviewFocusable={false} display={"flex"} onChange={(e) => setUsername(e)} onSubmit={() => saveEdit("username")} >
                     <EditablePreview w={"300px"} />
                     <Input as={EditableInput} w={"300px"} mr={12} />
                     <EditableControls />
