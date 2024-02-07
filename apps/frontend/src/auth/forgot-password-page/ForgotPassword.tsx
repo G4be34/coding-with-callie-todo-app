@@ -43,11 +43,13 @@ export const ForgotPassword = () => {
       setLoading(true);
       if (newPassword !== confirmNewPassword) {
         setPwMatch(false);
+        setLoading(false);
         return;
       }
 
       if (code !== codeEmail) {
         setCodeMatch(false);
+        setLoading(false);
         return;
       }
 

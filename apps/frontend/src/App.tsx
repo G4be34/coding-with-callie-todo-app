@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex, Spinner } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -20,7 +20,7 @@ function App() {
   const [showOptions, setShowOptions] = useState(false);
 
   if (loading) {
-    return <div>Loading...</div>
+    return <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} />
   }
 
 

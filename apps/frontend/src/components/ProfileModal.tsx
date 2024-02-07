@@ -137,8 +137,8 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
 
   return (
     <>
-      {loading ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} /> : null}
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} isCentered size={"2xl"}>
+
         {showConfirm ?
           <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} isCentered size={"sm"}>
             <ModalOverlay />
@@ -197,6 +197,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
           : null}
         <ModalOverlay />
         <ModalContent display={"flex"} flexDir={"row"} >
+        {loading ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} /> : null}
           <Flex flexDir={"column"} gap={4} justifyContent={"center"} borderRight={"1px solid black"}>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Profile")}>Profile Settings</Button>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Theme")}>Color Themes</Button>

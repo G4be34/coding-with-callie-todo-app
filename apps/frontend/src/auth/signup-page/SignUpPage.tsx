@@ -55,6 +55,7 @@ export const SignUpPage = () => {
       setLoading(true);
       if (password !== confirmPassword) {
         setPwMatch(false);
+        setLoading(false);
         return;
       }
 
@@ -63,6 +64,7 @@ export const SignUpPage = () => {
       if (existingUser.data) {
         setExistingUser(true);
         setInvalidEmail(false);
+        setLoading(false);
         return;
       }
 
