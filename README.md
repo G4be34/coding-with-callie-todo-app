@@ -34,10 +34,10 @@ Clone the project
   git clone https://github.com/G4be34/coding-with-callie-todo-app/
 ```
 
-To install initial dependencies, go to the root directory and run 
+To install initial dependencies, navigate to the root directory of the project in your terminal and run 
 
 ```bash
-  yarn install
+  yarn
 ```
 
 Afterwards, install all the dependencies by running
@@ -46,16 +46,16 @@ Afterwards, install all the dependencies by running
   yarn install-all
 ```
 
-Start the server
+Please see the 'Environment Variables' section before running this command. Once finished, run the command below. 
 
 ```bash
-  yarn run dev
+  yarn dev
 ```
 
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file in the root directory
+To run this project, you will need to add the following environment variables to your .env file in the 'backend' directory
 
 `DB_HOST=`
 
@@ -66,3 +66,9 @@ To run this project, you will need to add the following environment variables to
 `DB_NAME=`
 
 `DB_PORT=`
+
+`JWT_SECRET=`
+
+`EMAIL_USER=` (Gmail address that will be used to send verification emails)
+
+`EMAIL_PASS=` (App password for the email address, for instructions on creating an app password in Gmail [click here](https://support.google.com/mail/answer/185833?hl=en))
