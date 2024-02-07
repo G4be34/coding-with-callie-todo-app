@@ -11,10 +11,33 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('');
   const emailError = email === '';
   const passwordError = password === '' || password.length < 6;
+  const [loading, setLoading] = useState(false);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = async (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !emailError && !passwordError) {
-      loginUser(email, password);
+      try {
+        setLoading(true);
+        await loginUser(email, password);
+        setLoading(false);
+      } catch (error) {
+        if (loading) {
+          setLoading(false);
+        }
+        console.log(error);
+      }
+    }
+  }
+
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      await loginUser(email, password);
+      setLoading(false);
+    } catch (error) {
+      if (loading) {
+        setLoading(false);
+      }
+      console.log(error);
     }
   }
 
@@ -49,7 +72,13 @@ export const LoginPage = () => {
 
         {badLogin ? <Text color={"red.500"}>Incorrect email or password</Text> : null}
 
-        <Button onClick={() => loginUser(email, password)} isDisabled={emailError || passwordError}>Login</Button>
+        <Button
+          onClick={handleLogin}
+          isDisabled={emailError || passwordError}
+          isLoading={loading}
+          >
+            Login
+        </Button>
 
         <Text w={"100%"} textAlign={"center"} marginY={-4} >-or-</Text>
 
