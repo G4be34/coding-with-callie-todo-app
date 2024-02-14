@@ -28,6 +28,7 @@ type AuthContextType = {
   setUser: React.Dispatch<React.SetStateAction<UserType | object>>
   loading: boolean
   expiration: number
+  setBadLogin: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function AuthProvider ({ children }: AuthProviderProps) {
@@ -98,7 +99,8 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
     user,
     setUser,
     loading,
-    expiration
+    expiration,
+    setBadLogin
   }
 
 

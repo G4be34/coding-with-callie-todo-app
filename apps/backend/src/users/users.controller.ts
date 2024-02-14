@@ -41,4 +41,10 @@ export class UsersController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
   }
+
+  @Post('match-password')
+  @Public()
+  matchPassword(@Body() { id, password }) {
+    return this.usersService.verifyPassword(+id, password);
+  }
 }

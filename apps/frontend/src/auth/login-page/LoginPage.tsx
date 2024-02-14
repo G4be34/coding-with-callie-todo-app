@@ -1,12 +1,12 @@
 import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Text, chakra } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 
 const ChakraRouterLink = chakra(ReactRouterLink);
 
 export const LoginPage = () => {
-  const { loginUser, badLogin } = useAuth();
+  const { loginUser, badLogin, setBadLogin } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const emailError = email === '';
@@ -40,6 +40,12 @@ export const LoginPage = () => {
       console.log(error);
     }
   }
+
+  useEffect(() => {
+    if (password.length === 0) {
+      setBadLogin(false);
+    }
+  }, [password]);
 
   return (
     <Flex justifyContent={"center"} alignItems={"center"} h={"100vh"} flexDirection={"column"} position={"relative"} bgColor={"gray.300"}>
