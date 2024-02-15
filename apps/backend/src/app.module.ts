@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import typeorm from './config/typeorm';
 import { EmailModule } from './email/email.module';
 import { TodosModule } from './todos/todos.module';
+import { UploaderService } from './uploader/uploader.service';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -25,6 +26,10 @@ import { UsersModule } from './users/users.module';
     EmailModule,
   ],
   controllers: [AppController],
-  providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: AuthGuard },
+    UploaderService,
+  ],
 })
 export class AppModule {}

@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Editable, EditableInput, EditablePreview, Flex, FormControl, FormErrorMessage, FormLabel, Heading, IconButton, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useEditableControls, useToast } from "@chakra-ui/react";
+import { Button, ButtonGroup, Editable, EditableInput, EditablePreview, Flex, FormControl, FormErrorMessage, FormLabel, Heading, IconButton, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useEditableControls, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
@@ -25,6 +25,33 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showPwModal, setShowPwModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showSubmitButton, setShowSubmitButton] = useState(false);
+  const [file, setFile] = useState<string | null>(null);
+  const [file2, setFile2] = useState<string | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFile(reader.result as string);
+    }
+    reader.readAsDataURL(e.target.files[0]);
+    setShowSubmitButton(true);
+  }
+
+  const handleSubmit = () => {
+    const base64 = file?.split(',')[1];
+    const params = {
+      user_id: 15,
+      profile_photo_in_base64: base64
+    }
+    console.log("serialized data: ", base64);
+
+    const res = axios.post('api/image/s3_upload', params);
+  }
 
   const saveEdit = async (newItem: string) => {
     try {
@@ -257,15 +284,34 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
             <ModalBody gap={6} display={"flex"} flexDir={"column"} alignItems={"center"}>
               {currentTab === "Profile" ?
                 <>
+                  <Image
+                    borderRadius={"full"}
+                    boxSize={"150px"}
+                    src={file}
+                    alt="profile" />
+                  <Input type="file" onChange={handleChange} />
+                  {showSubmitButton ? <Button onClick={handleSubmit}>Submit</Button> : null}
                   <Heading size={"md"} mb={-2}>Username:</Heading>
-                  <Editable defaultValue={username} isPreviewFocusable={false} display={"flex"} onChange={(e) => setUsername(e)} onSubmit={() => saveEdit("username")} >
+                  <Editable
+                    defaultValue={username}
+                    isPreviewFocusable={false}
+                    display={"flex"}
+                    onChange={(e) => setUsername(e)}
+                    onSubmit={() => saveEdit("username")}
+                    >
                     <EditablePreview w={"300px"} />
                     <Input as={EditableInput} w={"300px"} mr={12} />
                     <EditableControls />
                   </Editable>
 
                   <Heading size={"md"} mb={-2}>Email:</Heading>
-                  <Editable onSubmit={() => saveEdit("email")} defaultValue={email} isPreviewFocusable={false} display={"flex"} onChange={(e) => setEmail(e)} >
+                  <Editable
+                    onSubmit={() => saveEdit("email")}
+                    defaultValue={email}
+                    isPreviewFocusable={false}
+                    display={"flex"}
+                    onChange={(e) => setEmail(e)}
+                    >
                     <EditablePreview w={"300px"} />
                     <Input as={EditableInput} w={"300px"} mr={12} />
                     <EditableControls />
@@ -279,7 +325,13 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
               {currentTab === "Theme" ?
                 <>
                   <Heading size={"md"} mb={-2}>Current Theme:</Heading>
-                  <Editable onSubmit={() => saveEdit("theme")} defaultValue={theme} isPreviewFocusable={false} display={"flex"} onChange={(e) => setTheme(e)} >
+                  <Editable
+                    onSubmit={() => saveEdit("theme")}
+                    defaultValue={theme}
+                    isPreviewFocusable={false}
+                    display={"flex"}
+                    onChange={(e) => setTheme(e)}
+                    >
                     <EditablePreview w={"300px"} />
                     <Input as={EditableInput} w={"300px"} mr={12} />
                     <EditableControls />
@@ -290,7 +342,13 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
               {currentTab === "Font" ?
                 <>
                   <Heading size={"md"} mb={-2}>Current Font:</Heading>
-                  <Editable onSubmit={() => saveEdit("font")} defaultValue={font} isPreviewFocusable={false} display={"flex"} onChange={(e) => setFont(e)} >
+                  <Editable
+                    onSubmit={() => saveEdit("font")}
+                    defaultValue={font}
+                    isPreviewFocusable={false}
+                    display={"flex"}
+                    onChange={(e) => setFont(e)}
+                    >
                     <EditablePreview w={"300px"} />
                     <Input as={EditableInput} w={"300px"} mr={12} />
                     <EditableControls />
