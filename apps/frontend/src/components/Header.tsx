@@ -10,6 +10,7 @@ const links = [
 
 export const Header = ({ setShowModal, showOptions, setShowOptions }) => {
   const { logoutUser } = useAuth();
+  //const toast = useToast();
 
   const openModal = () => {
     setShowModal(true);
@@ -19,6 +20,14 @@ export const Header = ({ setShowModal, showOptions, setShowOptions }) => {
   const handleLogout = () => {
     logoutUser();
     setShowOptions(false);
+    // toast({
+    //   title: 'Logged out',
+    //   description: "Successfully logged out",
+    //   status: 'success',
+    //   duration: 3000,
+    //   isClosable: true,
+    //   position: 'top'
+    // })
   }
 
   return (

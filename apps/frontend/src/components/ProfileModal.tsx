@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Editable, EditableInput, EditablePreview, Flex, FormControl, FormErrorMessage, FormLabel, Heading, IconButton, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useEditableControls } from "@chakra-ui/react";
+import { Button, ButtonGroup, Editable, EditableInput, EditablePreview, Flex, FormControl, FormErrorMessage, FormLabel, Heading, IconButton, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useEditableControls, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
@@ -10,6 +10,7 @@ import { useAuth } from "../context/AuthProvider";
 export const ProfileModal = ({ setShowModal, showModal }) => {
   const { user, token, setUser, logoutUser } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
   const [currentTab, setCurrentTab] = useState("Profile");
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
@@ -37,6 +38,14 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
       });
       setUser({ ...user, ...newUserInfo.data});
       setLoading(false);
+      toast({
+        title: 'Profile Updated',
+        description: "Your profile has been updated.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
@@ -58,6 +67,14 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
       logoutUser();
       setLoading(false);
       navigate('/login');
+      toast({
+        title: 'Profile Deleted',
+        description: "Your profile has been deleted.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
@@ -77,11 +94,27 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
       setEmailCode(code.data.code);
       setLoading(false);
       setShowPwModal(true);
+      toast({
+        title: 'Code Sent',
+        description: "Verification code has been sent",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
       }
       console.log(error);
+      toast({
+        title: 'Error',
+        description: "Something went wrong, Please try again",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom'
+      })
     }
   }
 
@@ -111,11 +144,27 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
       setUser({ ...user, ...newUserInfo.data});
       setLoading(false);
       setShowPwModal(false);
+      toast({
+        title: 'Password Updated',
+        description: "Your password has been updated.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
       }
       console.log(error);
+      toast({
+        title: 'Error',
+        description: "Something went wrong, Please try again",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom'
+      })
     }
   }
 

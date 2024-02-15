@@ -1,10 +1,11 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Spinner, Text } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Spinner, Text, useToast } from "@chakra-ui/react";
 import axios, { isAxiosError } from "axios";
 import { useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 
 export const SignUpPage = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [existingUser, setExistingUser] = useState(false);
   const [email, setEmail] = useState('');
   const [invalidEmail, setInvalidEmail] = useState(false);
@@ -39,6 +40,14 @@ export const SignUpPage = () => {
 
       setLoading(false);
       navigate('/login');
+      toast({
+        title: 'Account Created',
+        description: "Your account has been created.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
@@ -47,6 +56,14 @@ export const SignUpPage = () => {
         setInvalidEmail(true);
       }
       console.log("Error creating user: ", error);
+      toast({
+        title: 'Error',
+        description: "Something went wrong, Please try again",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom'
+      })
     }
   }
 
@@ -73,11 +90,27 @@ export const SignUpPage = () => {
       setEmailCode(code.data.code.toString());
       setLoading(false);
       setCompleteSignup(true);
+      toast({
+        title: 'Email Sent',
+        description: "Verification code has been sent",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
       }
       console.log(error);
+      toast({
+        title: 'Error',
+        description: "Something went wrong, Please try again",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom'
+      })
     }
 
   }

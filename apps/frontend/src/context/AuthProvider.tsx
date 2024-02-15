@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -33,6 +34,7 @@ type AuthContextType = {
 
 export default function AuthProvider ({ children }: AuthProviderProps) {
   const navigate = useNavigate();
+  const toast = useToast();
   const location = useLocation();
   const [token, setToken] = useState('');
   const [expiration, setExpiration] = useState(0);
@@ -78,6 +80,14 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
 
       const origin = location.state?.from?.pathname || '/';
       navigate(origin);
+
+      toast({
+        title: `Welcome ${user.username}!`,
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      });
     } catch (error) {
       console.log("Error logging in: ",error);
       setBadLogin(true);
@@ -88,6 +98,15 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
     localStorage.removeItem('token');
     setExpiration(0);
     setToken('');
+    setUser({});
+    toast({
+      title: 'Logged out',
+      description: "Successfully logged out",
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+      position: 'top'
+    })
   }
 
   const value = {

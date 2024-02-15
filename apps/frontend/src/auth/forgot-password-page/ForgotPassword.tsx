@@ -1,4 +1,4 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Link, Spinner, Text, chakra } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Link, Spinner, Text, chakra, useToast } from "@chakra-ui/react";
 import axios, { isAxiosError } from "axios";
 import { useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
@@ -6,6 +6,7 @@ import { Link as ReactRouterLink } from "react-router-dom";
 const ChakraRouterLink = chakra(ReactRouterLink);
 
 export const ForgotPassword = () => {
+  const toast = useToast();
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [foundUser, setFoundUser] = useState(false);
@@ -28,6 +29,14 @@ export const ForgotPassword = () => {
       setUserId(response.data.id.toString());
       setLoading(false);
       setSuccessfulEmail(true);
+      toast({
+        title: 'Email Sent',
+        description: "Verification code has been sent to your email.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
@@ -36,6 +45,14 @@ export const ForgotPassword = () => {
         setFoundUser(true);
       }
       console.log("Error sending code: ", error);
+      toast({
+        title: 'Error',
+        description: "Something went wrong, Please try again",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom'
+      })
     }
   }
 
@@ -72,11 +89,28 @@ export const ForgotPassword = () => {
       });
       setLoading(false);
       setCompleteReset(true);
+
+      toast({
+        title: 'Password Reset',
+        description: "Your password has been reset.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
       }
       console.log("Error sending code: ", error);
+      toast({
+        title: 'Error',
+        description: "Something went wrong, Please try again",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom'
+      })
     }
   }
 
