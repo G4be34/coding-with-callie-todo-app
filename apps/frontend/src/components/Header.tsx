@@ -9,8 +9,7 @@ const links = [
 ]
 
 export const Header = ({ setShowModal, showOptions, setShowOptions }) => {
-  const { logoutUser } = useAuth();
-  //const toast = useToast();
+  const { logoutUser, user } = useAuth();
 
   const openModal = () => {
     setShowModal(true);
@@ -20,14 +19,6 @@ export const Header = ({ setShowModal, showOptions, setShowOptions }) => {
   const handleLogout = () => {
     logoutUser();
     setShowOptions(false);
-    // toast({
-    //   title: 'Logged out',
-    //   description: "Successfully logged out",
-    //   status: 'success',
-    //   duration: 3000,
-    //   isClosable: true,
-    //   position: 'top'
-    // })
   }
 
   return (
@@ -39,7 +30,13 @@ export const Header = ({ setShowModal, showOptions, setShowOptions }) => {
           <Button ml={idx === 0 ? 0 : 6}>{link.label}</Button>
         </Link>
       ))}
-      <Avatar name="test" src="https://bit.ly/dan-abramov" cursor={"pointer"} onClick={() => setShowOptions(!showOptions)} ml={10} pos={"relative"} zIndex={200} />
+      <Avatar
+        name={user?.username}
+        src={user?.photo}
+        cursor={"pointer"}
+        onClick={() => setShowOptions(!showOptions)}
+        ml={10} pos={"relative"} zIndex={200}
+        />
       {showOptions ?
         <Flex flexDir={"column"} pos={"absolute"} right={5} top={20} border={"1px solid black"} borderRadius={10} bgColor={"white"} p={4} gap={2}>
           <Button onClick={openModal} >Settings</Button>

@@ -70,7 +70,15 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
         }
       });
 
-      setUser({_id: timeResponse.data.sub, ...userResponse.data});
+      const photoResponse = await axios.post('/api/image/s3_download', { user_id: timeResponse.data.sub }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const photo = photoResponse.data;
+      const photoBase64 = `data:image/png;base64,${photo}`;
+
+      setUser({_id: timeResponse.data.sub, ...userResponse.data, photo: photoBase64});
 
       setToken(token);
 
@@ -82,7 +90,7 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
       navigate(origin);
 
       toast({
-        title: `Welcome ${user.username}!`,
+        title: `Welcome ${userResponse.data.username}!`,
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -142,7 +150,15 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
               }
             });
 
-            setUser({_id: timeResponse.data.sub, ...userResponse.data});
+            const photoResponse = await axios.post('/api/image/s3_download', { user_id: timeResponse.data.sub }, {
+              headers: {
+                Authorization: `Bearer ${access_token}`
+              }
+            });
+            const photo = photoResponse.data;
+            const photoBase64 = `data:image/png;base64,${photo}`;
+
+            setUser({_id: timeResponse.data.sub, ...userResponse.data, photo: photoBase64});
             setToken(access_token);
             setExpiration(expiration_date);
             setLoading(false);

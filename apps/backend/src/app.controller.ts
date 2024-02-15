@@ -7,7 +7,6 @@ export class AppController {
   constructor(private uploader: UploaderService) {}
 
   @Post('/s3_download')
-  @Public()
   async s3Download(@Body() data: { user_id: number }) {
     const tmp = await this.uploader.getPreSignedURLToViewObject(
       process.env.S3_BUCKET_NAME,

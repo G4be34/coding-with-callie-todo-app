@@ -27,7 +27,6 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
   const [loading, setLoading] = useState(false);
   const [showSubmitButton, setShowSubmitButton] = useState(false);
   const [file, setFile] = useState<string | null>(null);
-  const [file2, setFile2] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
@@ -37,18 +36,18 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
     const reader = new FileReader();
     reader.onload = () => {
       setFile(reader.result as string);
+      setUser({ ...user, photo: reader.result as string });
+      handleSubmit(reader.result as string);
     }
     reader.readAsDataURL(e.target.files[0]);
     setShowSubmitButton(true);
   }
 
-  const handleSubmit = () => {
-    const base64 = file?.split(',')[1];
+  const handleSubmit = (base64: string) => {
     const params = {
       user_id: 15,
-      profile_photo_in_base64: base64
+      profile_photo_in_base64: base64.split(',')[1]
     }
-    console.log("serialized data: ", base64);
 
     const res = axios.post('api/image/s3_upload', params);
   }
@@ -284,13 +283,25 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
             <ModalBody gap={6} display={"flex"} flexDir={"column"} alignItems={"center"}>
               {currentTab === "Profile" ?
                 <>
-                  <Image
-                    borderRadius={"full"}
-                    boxSize={"150px"}
-                    src={file}
-                    alt="profile" />
-                  <Input type="file" onChange={handleChange} />
-                  {showSubmitButton ? <Button onClick={handleSubmit}>Submit</Button> : null}
+                  <Flex direction="column" alignItems="center" gap={4} mb={6}>
+                    <Image
+                      borderRadius={"full"}
+                      boxSize={"150px"}
+                      src={user.photo}
+                      alt="Profile"
+                    />
+                    <label htmlFor="fileInput">
+                      <Button as="span" cursor="pointer" colorScheme="blue">
+                        Change Profile Photo
+                      </Button>
+                      <Input
+                        type="file"
+                        id="fileInput"
+                        onChange={handleChange}
+                        display="none"
+                      />
+                    </label>
+                  </Flex>
                   <Heading size={"md"} mb={-2}>Username:</Heading>
                   <Editable
                     defaultValue={username}
