@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Editable, EditableInput, EditablePreview, Flex, FormControl, FormErrorMessage, FormLabel, Heading, IconButton, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useEditableControls } from "@chakra-ui/react";
+import { Button, ButtonGroup, Editable, EditableInput, EditablePreview, Flex, FormControl, FormErrorMessage, FormLabel, Heading, IconButton, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useEditableControls, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
@@ -10,6 +10,7 @@ import { useAuth } from "../context/AuthProvider";
 export const ProfileModal = ({ setShowModal, showModal }) => {
   const { user, token, setUser, logoutUser } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
   const [currentTab, setCurrentTab] = useState("Profile");
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
@@ -24,6 +25,32 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showPwModal, setShowPwModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showSubmitButton, setShowSubmitButton] = useState(false);
+  const [file, setFile] = useState<string | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFile(reader.result as string);
+      setUser({ ...user, photo: reader.result as string });
+      handleSubmit(reader.result as string);
+    }
+    reader.readAsDataURL(e.target.files[0]);
+    setShowSubmitButton(true);
+  }
+
+  const handleSubmit = (base64: string) => {
+    const params = {
+      user_id: 15,
+      profile_photo_in_base64: base64.split(',')[1]
+    }
+
+    const res = axios.post('api/image/s3_upload', params);
+  }
 
   const saveEdit = async (newItem: string) => {
     try {
@@ -37,6 +64,14 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
       });
       setUser({ ...user, ...newUserInfo.data});
       setLoading(false);
+      toast({
+        title: 'Profile Updated',
+        description: "Your profile has been updated.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
@@ -58,6 +93,14 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
       logoutUser();
       setLoading(false);
       navigate('/login');
+      toast({
+        title: 'Profile Deleted',
+        description: "Your profile has been deleted.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
@@ -77,11 +120,27 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
       setEmailCode(code.data.code);
       setLoading(false);
       setShowPwModal(true);
+      toast({
+        title: 'Code Sent',
+        description: "Verification code has been sent",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
       }
       console.log(error);
+      toast({
+        title: 'Error',
+        description: "Something went wrong, Please try again",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom'
+      })
     }
   }
 
@@ -111,11 +170,27 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
       setUser({ ...user, ...newUserInfo.data});
       setLoading(false);
       setShowPwModal(false);
+      toast({
+        title: 'Password Updated',
+        description: "Your password has been updated.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
     } catch (error) {
       if (loading) {
         setLoading(false);
       }
       console.log(error);
+      toast({
+        title: 'Error',
+        description: "Something went wrong, Please try again",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom'
+      })
     }
   }
 
@@ -208,15 +283,46 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
             <ModalBody gap={6} display={"flex"} flexDir={"column"} alignItems={"center"}>
               {currentTab === "Profile" ?
                 <>
+                  <Flex direction="column" alignItems="center" gap={4} mb={6}>
+                    <Image
+                      borderRadius={"full"}
+                      boxSize={"150px"}
+                      src={user.photo}
+                      alt="Profile"
+                    />
+                    <label htmlFor="fileInput">
+                      <Button as="span" cursor="pointer" colorScheme="blue">
+                        Change Profile Photo
+                      </Button>
+                      <Input
+                        type="file"
+                        id="fileInput"
+                        onChange={handleChange}
+                        display="none"
+                      />
+                    </label>
+                  </Flex>
                   <Heading size={"md"} mb={-2}>Username:</Heading>
-                  <Editable defaultValue={username} isPreviewFocusable={false} display={"flex"} onChange={(e) => setUsername(e)} onSubmit={() => saveEdit("username")} >
+                  <Editable
+                    defaultValue={username}
+                    isPreviewFocusable={false}
+                    display={"flex"}
+                    onChange={(e) => setUsername(e)}
+                    onSubmit={() => saveEdit("username")}
+                    >
                     <EditablePreview w={"300px"} />
                     <Input as={EditableInput} w={"300px"} mr={12} />
                     <EditableControls />
                   </Editable>
 
                   <Heading size={"md"} mb={-2}>Email:</Heading>
-                  <Editable onSubmit={() => saveEdit("email")} defaultValue={email} isPreviewFocusable={false} display={"flex"} onChange={(e) => setEmail(e)} >
+                  <Editable
+                    onSubmit={() => saveEdit("email")}
+                    defaultValue={email}
+                    isPreviewFocusable={false}
+                    display={"flex"}
+                    onChange={(e) => setEmail(e)}
+                    >
                     <EditablePreview w={"300px"} />
                     <Input as={EditableInput} w={"300px"} mr={12} />
                     <EditableControls />
@@ -230,7 +336,13 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
               {currentTab === "Theme" ?
                 <>
                   <Heading size={"md"} mb={-2}>Current Theme:</Heading>
-                  <Editable onSubmit={() => saveEdit("theme")} defaultValue={theme} isPreviewFocusable={false} display={"flex"} onChange={(e) => setTheme(e)} >
+                  <Editable
+                    onSubmit={() => saveEdit("theme")}
+                    defaultValue={theme}
+                    isPreviewFocusable={false}
+                    display={"flex"}
+                    onChange={(e) => setTheme(e)}
+                    >
                     <EditablePreview w={"300px"} />
                     <Input as={EditableInput} w={"300px"} mr={12} />
                     <EditableControls />
@@ -241,7 +353,13 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
               {currentTab === "Font" ?
                 <>
                   <Heading size={"md"} mb={-2}>Current Font:</Heading>
-                  <Editable onSubmit={() => saveEdit("font")} defaultValue={font} isPreviewFocusable={false} display={"flex"} onChange={(e) => setFont(e)} >
+                  <Editable
+                    onSubmit={() => saveEdit("font")}
+                    defaultValue={font}
+                    isPreviewFocusable={false}
+                    display={"flex"}
+                    onChange={(e) => setFont(e)}
+                    >
                     <EditablePreview w={"300px"} />
                     <Input as={EditableInput} w={"300px"} mr={12} />
                     <EditableControls />

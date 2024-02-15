@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -28,10 +29,12 @@ type AuthContextType = {
   setUser: React.Dispatch<React.SetStateAction<UserType | object>>
   loading: boolean
   expiration: number
+  setBadLogin: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function AuthProvider ({ children }: AuthProviderProps) {
   const navigate = useNavigate();
+  const toast = useToast();
   const location = useLocation();
   const [token, setToken] = useState('');
   const [expiration, setExpiration] = useState(0);
@@ -67,7 +70,15 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
         }
       });
 
-      setUser({_id: timeResponse.data.sub, ...userResponse.data});
+      const photoResponse = await axios.post('/api/image/s3_download', { user_id: timeResponse.data.sub }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const photo = photoResponse.data;
+      const photoBase64 = `data:image/png;base64,${photo}`;
+
+      setUser({_id: timeResponse.data.sub, ...userResponse.data, photo: photoBase64});
 
       setToken(token);
 
@@ -77,6 +88,14 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
 
       const origin = location.state?.from?.pathname || '/';
       navigate(origin);
+
+      toast({
+        title: `Welcome ${userResponse.data.username}!`,
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      });
     } catch (error) {
       console.log("Error logging in: ",error);
       setBadLogin(true);
@@ -87,6 +106,15 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
     localStorage.removeItem('token');
     setExpiration(0);
     setToken('');
+    setUser({});
+    toast({
+      title: 'Logged out',
+      description: "Successfully logged out",
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+      position: 'top'
+    })
   }
 
   const value = {
@@ -98,7 +126,8 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
     user,
     setUser,
     loading,
-    expiration
+    expiration,
+    setBadLogin
   }
 
 
@@ -121,7 +150,15 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
               }
             });
 
-            setUser({_id: timeResponse.data.sub, ...userResponse.data});
+            const photoResponse = await axios.post('/api/image/s3_download', { user_id: timeResponse.data.sub }, {
+              headers: {
+                Authorization: `Bearer ${access_token}`
+              }
+            });
+            const photo = photoResponse.data;
+            const photoBase64 = `data:image/png;base64,${photo}`;
+
+            setUser({_id: timeResponse.data.sub, ...userResponse.data, photo: photoBase64});
             setToken(access_token);
             setExpiration(expiration_date);
             setLoading(false);
