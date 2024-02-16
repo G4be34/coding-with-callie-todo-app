@@ -14,7 +14,6 @@ export class AppController {
     );
 
     const data_downloaded = await fetch(tmp);
-    console.log('data_downloaded: ', data_downloaded);
 
     const serialized_data = await data_downloaded.arrayBuffer();
     const base64 = Buffer.from(serialized_data).toString('base64');
