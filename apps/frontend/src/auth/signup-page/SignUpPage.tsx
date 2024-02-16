@@ -239,7 +239,7 @@ export const SignUpPage = () => {
                 isDisabled={username.length < 3 || password.length < 6}
                 >
                   Sign up
-                </Button>
+              </Button>
             </>
           : <>
               <FormControl isRequired isInvalid={!codeMatch}>

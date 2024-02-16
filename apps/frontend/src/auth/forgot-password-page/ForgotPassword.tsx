@@ -1,12 +1,15 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Link, Spinner, Text, chakra, useToast } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Icon, Input, InputGroup, InputRightElement, Link, Spinner, Text, chakra, useToast } from "@chakra-ui/react";
 import axios, { isAxiosError } from "axios";
 import { useState } from "react";
+import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 const ChakraRouterLink = chakra(ReactRouterLink);
 
 export const ForgotPassword = () => {
   const toast = useToast();
+
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
   const [foundUser, setFoundUser] = useState(false);
@@ -20,9 +23,21 @@ export const ForgotPassword = () => {
   const [codeEmail, setCodeEmail] = useState('');
   const [codeMatch, setCodeMatch] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [invalidEmail, setInvalidEmail] = useState(false);
+  const [showPw, setShowPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
+
+  const validEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordSymbolRegex = /[^A-Za-z0-9]/;
+  const passwordNumRegex = /^(?=.*\d)/;
 
   const sendCode = async () => {
     try {
+      if (!validEmailRegex.test(email)) {
+        setInvalidEmail(true);
+        return;
+      }
+
       setLoading(true);
       const response = await axios.post('/api/email', { email });
       setCodeEmail(response.data.code.toString());
@@ -38,11 +53,10 @@ export const ForgotPassword = () => {
         position: 'top'
       })
     } catch (error) {
-      if (loading) {
-        setLoading(false);
-      }
+      setLoading(false);
       if (isAxiosError(error) && error.response && error.response.data.statusCode === 404) {
         setFoundUser(true);
+        return;
       }
       console.log("Error sending code: ", error);
       toast({
@@ -125,7 +139,7 @@ export const ForgotPassword = () => {
       <Flex flexDir={"column"} as="form" border={"1px solid black"} p={6} w={"450px"} borderRadius={10} rowGap={8} bgColor={"white"} mb={4}>
         {!successfulEmail && !completeReset ?
           <>
-            <FormControl isInvalid={foundUser}>
+            <FormControl isInvalid={invalidEmail}>
               <FormLabel>We'll send you an email to reset it</FormLabel>
               <Input
                 type="text"
@@ -140,6 +154,7 @@ export const ForgotPassword = () => {
                 }}
                 />
               <FormHelperText>Please enter the email address you used to register</FormHelperText>
+              {invalidEmail ? <FormErrorMessage>Please enter a valid email address</FormErrorMessage> : null}
             </FormControl>
 
             <Button onClick={sendCode}>Send Email</Button>
@@ -149,37 +164,80 @@ export const ForgotPassword = () => {
 
         {successfulEmail && !completeReset ?
           <>
-            <FormControl isRequired isInvalid={newPassword.length < 6}>
+            <FormControl isRequired isInvalid={newPassword.length < 6 || !passwordNumRegex.test(newPassword) || !passwordSymbolRegex.test(newPassword)}>
               <FormLabel> New password</FormLabel>
-              <Input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="New password"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && code.length > 5) {
-                    e.preventDefault();
-                    completePwReset();
-                  }
-                }}
-                />
-              {newPassword.length < 6 ? <FormErrorMessage>Password must be at least 6 characters long</FormErrorMessage> : null}
+              <InputGroup>
+                <Input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="New password"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && code.length > 5) {
+                      e.preventDefault();
+                      completePwReset();
+                    }
+                  }}
+                  />
+                <InputRightElement>
+                  <Button onClick={() => setShowPw(!showPw)} variant={"link"}>
+                    <Icon as={showPw ? FaEyeSlash : FaEye} />
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              {newPassword.length < 6
+                ? <FormErrorMessage display={"flex"} alignItems={"center"} gap={2}>
+                    <IoMdCloseCircleOutline />
+                    Password must be at least 6 characters
+                  </FormErrorMessage>
+                : <FormHelperText color={"green"} display={"flex"} alignItems={"center"} gap={2}>
+                    <FaCheck />
+                    Password must be at least 6 characters
+                  </FormHelperText>
+              }
+              {!passwordSymbolRegex.test(newPassword)
+                ? <FormErrorMessage display={"flex"} alignItems={"center"} gap={2}>
+                    <IoMdCloseCircleOutline />
+                    Password must contain at least one special character
+                  </FormErrorMessage>
+                : <FormHelperText color={"green"} display={"flex"} alignItems={"center"} gap={2}>
+                    <FaCheck />
+                    Password must contain at least one special character
+                  </FormHelperText>
+              }
+              {!passwordNumRegex.test(newPassword)
+                ? <FormErrorMessage display={"flex"} alignItems={"center"} gap={2}>
+                    <IoMdCloseCircleOutline />
+                    Password must contain at least one number
+                  </FormErrorMessage>
+                : <FormHelperText color={"green"} display={"flex"} alignItems={"center"} gap={2}>
+                    <FaCheck />
+                    Password must contain at least one number
+                  </FormHelperText>
+              }
             </FormControl>
 
             <FormControl isRequired isInvalid={!pwMatch || existingPw}>
               <FormLabel>Confirm new password</FormLabel>
-              <Input
-                type="password"
-                value={confirmNewPassword}
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
-                placeholder="Confirm new password"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && code.length > 5) {
-                    e.preventDefault();
-                    completePwReset();
-                  }
-                }}
-                />
+              <InputGroup>
+                <Input
+                  type="password"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  placeholder="Confirm new password"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && code.length > 5) {
+                      e.preventDefault();
+                      completePwReset();
+                    }
+                  }}
+                  />
+                <InputRightElement>
+                    <Button onClick={() => setShowConfirmPw(!showConfirmPw)} variant={"link"}>
+                      <Icon as={showConfirmPw ? FaEyeSlash : FaEye} />
+                    </Button>
+                  </InputRightElement>
+              </InputGroup>
               {!pwMatch ? <FormErrorMessage>Passwords do not match</FormErrorMessage> : null}
               {existingPw ? <FormErrorMessage>Cannot use an existing password</FormErrorMessage> : null}
             </FormControl>

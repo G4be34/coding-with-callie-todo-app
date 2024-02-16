@@ -232,7 +232,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
         <ModalOverlay />
         <ModalContent display={"flex"} flexDir={"row"} >
         {loading ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} /> : null}
-          <Flex flexDir={"column"} gap={4} justifyContent={"flex-start"} borderRight={"1px solid black"}>
+          <Flex flexDir={"column"} gap={4} justifyContent={"flex-start"} borderRight={"1px solid black"} textDecor={"underline"} pt={5}>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Profile")}>Profile Settings</Button>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Theme")}>Color Themes</Button>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Font")}>Fonts Styles</Button>
