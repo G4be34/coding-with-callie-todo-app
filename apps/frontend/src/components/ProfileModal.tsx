@@ -1,11 +1,10 @@
-import { Button, ButtonGroup, Editable, EditableInput, EditablePreview, Flex, FormControl, FormErrorMessage, FormLabel, Heading, IconButton, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useEditableControls, useToast } from "@chakra-ui/react";
+import { Button, Editable, EditableInput, EditablePreview, Flex, Heading, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
-import { AiFillCloseSquare } from "react-icons/ai";
-import { FaEdit } from "react-icons/fa";
-import { ImCheckboxChecked } from "react-icons/im";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
+import { EditableControls } from "./EditableControls";
+import { NewPasswordModal } from "./NewPasswordModal";
 
 export const ProfileModal = ({ setShowModal, showModal }) => {
   const { user, token, setUser, logoutUser } = useAuth();
@@ -45,11 +44,15 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
 
   const handleSubmit = (base64: string) => {
     const params = {
-      user_id: 15,
+      user_id: user._id,
       profile_photo_in_base64: base64.split(',')[1]
     }
 
-    const res = axios.post('api/image/s3_upload', params);
+    axios.post('api/image/s3_upload', params, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 
   const saveEdit = async (newItem: string) => {
@@ -194,21 +197,6 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
     }
   }
 
-  const EditableControls = () => {
-
-    const { isEditing, getSubmitButtonProps, getCancelButtonProps, getEditButtonProps } = useEditableControls();
-
-    return isEditing ? (
-      <ButtonGroup>
-        <IconButton icon={<ImCheckboxChecked />} aria-label="Save" {...getSubmitButtonProps()} />
-        <IconButton icon={<AiFillCloseSquare />} aria-label="Cancel" {...getCancelButtonProps()} />
-      </ButtonGroup>
-    ) : (
-      <Flex>
-        <IconButton icon={<FaEdit />} aria-label="Edit" {...getEditButtonProps()} />
-      </Flex>
-    )
-  }
 
   return (
     <>
@@ -227,53 +215,24 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
           </Modal>
           : null}
         {showPwModal ?
-          <Modal isOpen={showPwModal} onClose={() => setShowPwModal(false)} isCentered>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>A verification code has been sent to your email</ModalHeader>
-              <ModalBody display={"flex"} flexDir={"column"} gap={4}>
-                <FormControl isRequired isInvalid={password.length < 6}>
-                  <FormLabel>Enter New Password</FormLabel>
-                  <Input
-                    type={"password"}
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
-                    placeholder="New Password"
-                    />
-                  {password.length < 6 ? <FormErrorMessage>Password must be at least 6 characters long</FormErrorMessage> : null}
-                </FormControl>
-                <FormControl isRequired isInvalid={!pwMatch}>
-                  <FormLabel>Confirm New Password</FormLabel>
-                  <Input
-                    type={"password"}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    value={confirmPassword}
-                    placeholder="Confirm Password"
-                    />
-                  {!pwMatch ? <FormErrorMessage>Passwords do not match</FormErrorMessage> : null}
-                </FormControl>
-                <FormControl isRequired isInvalid={!codeMatch}>
-                  <FormLabel>Enter Verification Code</FormLabel>
-                  <Input
-                    type={"text"}
-                    onChange={(e) => setCode(e.target.value)}
-                    value={code}
-                    placeholder="Verification Code"
-                    />
-                  {!codeMatch ? <FormErrorMessage>Incorrect verification code</FormErrorMessage> : null}
-                </FormControl>
-              </ModalBody>
-              <ModalFooter display={"flex"} justifyContent={"space-evenly"}>
-                <Button onClick={submitNewPassword}>Submit</Button>
-                <Button onClick={() => setShowPwModal(false)}>Close</Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+          <NewPasswordModal
+            showPwModal={showPwModal}
+            setShowPwModal={setShowPwModal}
+            password={password}
+            setPassword={setPassword}
+            pwMatch={pwMatch}
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
+            codeMatch={codeMatch}
+            code={code}
+            setCode={setCode}
+            submitNewPassword={submitNewPassword}
+            />
           : null}
         <ModalOverlay />
         <ModalContent display={"flex"} flexDir={"row"} >
         {loading ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} /> : null}
-          <Flex flexDir={"column"} gap={4} justifyContent={"center"} borderRight={"1px solid black"}>
+          <Flex flexDir={"column"} gap={4} justifyContent={"flex-start"} borderRight={"1px solid black"}>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Profile")}>Profile Settings</Button>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Theme")}>Color Themes</Button>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Font")}>Fonts Styles</Button>

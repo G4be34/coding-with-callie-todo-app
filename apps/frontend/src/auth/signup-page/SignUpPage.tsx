@@ -1,11 +1,14 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Spinner, Text, useToast } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Icon, Input, InputGroup, InputRightElement, Link, Spinner, Text, useToast } from "@chakra-ui/react";
 import axios, { isAxiosError } from "axios";
 import { useState } from "react";
+import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 
 export const SignUpPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
+
   const [existingUser, setExistingUser] = useState(false);
   const [email, setEmail] = useState('');
   const [invalidEmail, setInvalidEmail] = useState(false);
@@ -18,6 +21,11 @@ export const SignUpPage = () => {
   const [code, setCode] = useState('');
   const [codeMatch, setCodeMatch] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [showPw, setShowPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
+
+  const passwordSymbolRegex = /[^A-Za-z0-9]/;
+  const passwordNumRegex = /^(?=.*\d)/;
 
   const createUser = async () => {
     try {
@@ -137,7 +145,16 @@ export const SignUpPage = () => {
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Username"
                   />
-                {username.length < 3 ? <FormErrorMessage>Username must be at least 3 characters long</FormErrorMessage> : null}
+                {username.length < 3
+                  ? <FormErrorMessage display={"flex"} alignItems={"center"} gap={2}>
+                      <IoMdCloseCircleOutline />
+                      Username must be at least 3 characters long
+                    </FormErrorMessage>
+                  : <FormHelperText color={"green"} display={"flex"} alignItems={"center"} gap={2}>
+                      <FaCheck />
+                      Username must be at least 3 characters long
+                    </FormHelperText>
+                }
               </FormControl>
 
               <FormControl isRequired isInvalid={existingUser}>
@@ -152,25 +169,68 @@ export const SignUpPage = () => {
                 {invalidEmail ? <Text mt={2} fontSize={"sm"} color={"red"}>Email must be a valid email address</Text > : null}
               </FormControl>
 
-              <FormControl isRequired isInvalid={password.length < 6}>
+              <FormControl isRequired isInvalid={password.length < 6 || !passwordSymbolRegex.test(password) || !passwordNumRegex.test(password)}>
                 <FormLabel>Password</FormLabel>
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  />
-                {password.length < 6 ? <FormErrorMessage>Password must be at least 6 characters</FormErrorMessage> : null}
+                <InputGroup>
+                  <Input
+                    type={showPw ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    />
+                  <InputRightElement>
+                    <Button onClick={() => setShowPw(!showPw)} variant={"link"}>
+                      <Icon as={showPw ? FaEyeSlash : FaEye} />
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+                {password.length < 6
+                  ? <FormErrorMessage display={"flex"} alignItems={"center"} gap={2}>
+                      <IoMdCloseCircleOutline />
+                      Password must be at least 6 characters
+                    </FormErrorMessage>
+                  : <FormHelperText color={"green"} display={"flex"} alignItems={"center"} gap={2}>
+                      <FaCheck />
+                      Password must be at least 6 characters
+                    </FormHelperText>
+                }
+                {!passwordSymbolRegex.test(password)
+                  ? <FormErrorMessage display={"flex"} alignItems={"center"} gap={2}>
+                      <IoMdCloseCircleOutline />
+                      Password must contain at least one special character
+                    </FormErrorMessage>
+                  : <FormHelperText color={"green"} display={"flex"} alignItems={"center"} gap={2}>
+                      <FaCheck />
+                      Password must contain at least one special character
+                    </FormHelperText>
+                }
+                {!passwordNumRegex.test(password)
+                  ? <FormErrorMessage display={"flex"} alignItems={"center"} gap={2}>
+                      <IoMdCloseCircleOutline />
+                      Password must contain at least one number
+                    </FormErrorMessage>
+                  : <FormHelperText color={"green"} display={"flex"} alignItems={"center"} gap={2}>
+                      <FaCheck />
+                      Password must contain at least one number
+                    </FormHelperText>
+                }
               </FormControl>
 
               <FormControl isRequired isInvalid={!pwMatch}>
                 <FormLabel>Confirm password</FormLabel>
-                <Input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm password"
-                  />
+                <InputGroup>
+                  <Input
+                    type={showConfirmPw ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm password"
+                    />
+                  <InputRightElement>
+                    <Button onClick={() => setShowConfirmPw(!showConfirmPw)} variant={"link"}>
+                      <Icon as={showConfirmPw ? FaEyeSlash : FaEye} />
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
                 {!pwMatch ? <FormErrorMessage>Passwords do not match</FormErrorMessage> : null}
               </FormControl>
 
