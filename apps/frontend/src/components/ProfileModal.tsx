@@ -44,11 +44,15 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
 
   const handleSubmit = (base64: string) => {
     const params = {
-      user_id: 15,
+      user_id: user._id,
       profile_photo_in_base64: base64.split(',')[1]
     }
 
-    const res = axios.post('api/image/s3_upload', params);
+    axios.post('api/image/s3_upload', params, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 
   const saveEdit = async (newItem: string) => {

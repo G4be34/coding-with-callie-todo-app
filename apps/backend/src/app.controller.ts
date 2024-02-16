@@ -1,5 +1,4 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { Public } from './decorators/public.decorator';
 import { UploaderService } from './uploader/uploader.service';
 
 @Controller('image')
@@ -22,11 +21,10 @@ export class AppController {
   }
 
   @Post('/s3_upload')
-  @Public()
   async s3Upload(
     @Body() data: { user_id: number; profile_photo_in_base64: string },
   ) {
-    const tmp = await this.uploader.uploadFileToS3(
+    await this.uploader.uploadFileToS3(
       process.env.S3_BUCKET_NAME,
       `profile_image/${data.user_id}.png`,
       data.profile_photo_in_base64,
