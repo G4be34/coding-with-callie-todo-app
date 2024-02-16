@@ -72,3 +72,6 @@ To run this project, you will need to add the following environment variables to
 `EMAIL_USER=` (Gmail address that will be used to send verification emails)
 
 `EMAIL_PASS=` (App password for the email address, for instructions on creating an app password in Gmail [click here](https://support.google.com/mail/answer/185833?hl=en))
+
+## Application Progress
+If you're interested in keeping up to date with my progress, take a look at my [Trello Board](https://trello.com/b/ArirteZF/todo-list)
