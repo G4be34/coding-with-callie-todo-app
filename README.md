@@ -2,6 +2,10 @@
 # Coding with Callie Todo App
 
 Welcome to the Coding with Callie Todo App, a feature-rich todo management application that goes beyond the basics. This application allows users to seamlessly create, edit, and delete todos while providing a personalized experience with custom themes. Users can organize their tasks in a calendar view, providing a visual representation of their schedule. Additionally, the app integrates with Google Calendar, enhancing connectivity and ensuring users stay on top of their commitments. The inclusion of insightful data graphs offers users a comprehensive overview of their productivity trends. With secure account creation and customization options, the Coding with Callie Todo App is designed to elevate your task management experience.
+
+## Application Progress
+If you're interested in keeping up to date with my progress, take a look at my [Trello Board](https://trello.com/b/ArirteZF/todo-list)!
+
 ## Tech Stack
 
 ### Client:
@@ -67,11 +71,10 @@ To run this project, you will need to add the following environment variables to
 
 `DB_PORT=`
 
-`JWT_SECRET=`
+`JWT_SECRET=` (A 'password' that will be used to encrypt the JWT)
 
 `EMAIL_USER=` (Gmail address that will be used to send verification emails)
 
 `EMAIL_PASS=` (App password for the email address, for instructions on creating an app password in Gmail [click here](https://support.google.com/mail/answer/185833?hl=en))
 
-## Application Progress
-If you're interested in keeping up to date with my progress, take a look at my [Trello Board](https://trello.com/b/ArirteZF/todo-list)
+
