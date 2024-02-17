@@ -52,6 +52,7 @@ If you're interested in keeping up to date with my progress, take a look at my [
 ## Run Locally
 
 Create a new database in PostgreSQL for this project using either SQL commands in the terminal or using the pgAdmin GUI
+
 For instructions on how to install pgAdmin [click here](https://www.pgadmin.org/download/)
 
 Clone the project
