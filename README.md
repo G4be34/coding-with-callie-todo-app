@@ -4,15 +4,15 @@
 Welcome to the Coding with Callie Todo App, a feature-rich todo management application that goes beyond the basics. This application allows users to seamlessly create, edit, and delete todos while providing a personalized experience with custom themes. Users can organize their tasks in a calendar view, providing a visual representation of their schedule. Additionally, the app integrates with Google Calendar, enhancing connectivity and ensuring users stay on top of their commitments. The inclusion of insightful data graphs offers users a comprehensive overview of their productivity trends. With secure account creation and customization options, the Coding with Callie Todo App is designed to elevate your task management experience.
 
 ## Notice
-This project uses Yarn as its package manager. If you do not already have Yarn installed you can open your terminal and use this command to install it using Homebrew:
+This project uses Yarn as its package manager. If you do not already have Yarn installed you can open your terminal and use this command to install it using Homebrew
 
 ```bash
   brew install yarn
 ```
 
-If you do not already have Homebrew installed on your computer you can follow [these instructions](https://brew.sh/).
+If you do not already have Homebrew installed on your computer you can follow [these instructions](https://brew.sh/)
 
-If you don't know if you have Yarn or Homebrew installed you can use the following commands in your terminal to verify:
+If you don't know if you have Yarn or Homebrew installed you can use the following commands in your terminal to verify
 
 ```bash
   yarn --version
@@ -51,7 +51,8 @@ If you're interested in keeping up to date with my progress, take a look at my [
 
 ## Run Locally
 
-Create a new database in PostgreSQL for this project using either SQL commands in the terminal or using the pgAdmin GUI.
+Create a new database in PostgreSQL for this project using either SQL commands in the terminal or using the pgAdmin GUI
+For instructions on how to install pgAdmin [click here](https://www.pgadmin.org/download/)
 
 Clone the project
 
