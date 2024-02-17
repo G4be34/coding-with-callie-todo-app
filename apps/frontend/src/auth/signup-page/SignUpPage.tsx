@@ -1,5 +1,5 @@
 import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Icon, Input, InputGroup, InputRightElement, Link, Spinner, Text, useToast } from "@chakra-ui/react";
-import axios, { isAxiosError } from "axios";
+import axios from "axios";
 import { useState } from "react";
 import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
@@ -26,6 +26,7 @@ export const SignUpPage = () => {
 
   const passwordSymbolRegex = /[^A-Za-z0-9]/;
   const passwordNumRegex = /^(?=.*\d)/;
+  const validEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const createUser = async () => {
     try {
@@ -57,12 +58,7 @@ export const SignUpPage = () => {
         position: 'top'
       })
     } catch (error) {
-      if (loading) {
-        setLoading(false);
-      }
-      if (isAxiosError(error) && error.response && error.response.data.message.includes('email must be an email')) {
-        setInvalidEmail(true);
-      }
+      setLoading(false);
       console.log("Error creating user: ", error);
       toast({
         title: 'Error',
@@ -77,6 +73,11 @@ export const SignUpPage = () => {
 
   const sendVerificationEmail = async (username: string, email: string) => {
     try {
+      if (!validEmailRegex.test(email)) {
+        setInvalidEmail(true);
+        return;
+      }
+
       setLoading(true);
       if (password !== confirmPassword) {
         setPwMatch(false);
@@ -107,9 +108,7 @@ export const SignUpPage = () => {
         position: 'top'
       })
     } catch (error) {
-      if (loading) {
-        setLoading(false);
-      }
+      setLoading(false);
       console.log(error);
       toast({
         title: 'Error',
@@ -157,7 +156,7 @@ export const SignUpPage = () => {
                 }
               </FormControl>
 
-              <FormControl isRequired isInvalid={existingUser}>
+              <FormControl isRequired isInvalid={existingUser || invalidEmail}>
                 <FormLabel>Email</FormLabel>
                 <Input
                   type="email"
@@ -239,7 +238,7 @@ export const SignUpPage = () => {
                 isDisabled={username.length < 3 || password.length < 6}
                 >
                   Sign up
-                </Button>
+              </Button>
             </>
           : <>
               <FormControl isRequired isInvalid={!codeMatch}>
