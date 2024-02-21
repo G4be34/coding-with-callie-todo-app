@@ -1,14 +1,15 @@
-import { Flex, SimpleGrid } from "@chakra-ui/react";
+import { Button, Flex, SimpleGrid } from "@chakra-ui/react";
 import { useState } from "react";
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { FaPlus } from "react-icons/fa";
 import { Column } from "../components/Column";
 
 const initialData = {
   tasks: {
-    'task-1': { id: 'task-1', content: 'Take out the garbage' },
-    'task-2': { id: 'task-2', content: 'Watch my favorite show' },
-    'task-3': { id: 'task-3', content: 'Charge my phone' },
-    'task-4': { id: 'task-4', content: 'Cook dinner' },
+    'task-1': { id: 'task-1', content: 'Take out the garbage', date_added: 1581744000000, date_completed: null },
+    'task-2': { id: 'task-2', content: 'Watch my favorite show and drink some soda and play with my dog', date_added: 1630972800000, date_completed: null },
+    'task-3': { id: 'task-3', content: 'Charge my phone', date_added: 1655731200000, date_completed: 1678102400000 },
+    'task-4': { id: 'task-4', content: 'Cook dinner', date_added: 1670073600000, date_completed: null },
   },
   columns: {
     'column-1': {
@@ -131,11 +132,15 @@ export const TodosPage = () => {
     }));
   };
 
+  const addNewColumn = () => {
+
+  }
+
 
   return (
-    <Flex flex={1} overflow={"auto"} p={10}>
+    <Flex flex={1} p={5}>
       <DragDropContext onDragEnd={onDragEnd}>
-        <SimpleGrid columns={stateData.columnOrder.length} spacing={4}>
+        <SimpleGrid columns={stateData.columnOrder.length} spacing={4} overflowX={"auto"}>
           {stateData.columnOrder.map((columnId) => {
             const column = stateData.columns[columnId];
             const tasks = column.taskIds.map((taskId: string) => stateData.tasks[taskId]);
@@ -143,6 +148,9 @@ export const TodosPage = () => {
             return <Column key={column.id} column={column} tasks={tasks} />;
           })}
         </SimpleGrid>
+        <Button mt={2} ml={4} leftIcon={<FaPlus size={20} />} onClick={addNewColumn} >
+          Add a new column
+        </Button>
       </DragDropContext>
     </Flex>
   )

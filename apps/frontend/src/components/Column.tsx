@@ -16,7 +16,7 @@ type ColumnData = {
 export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] }) => {
   return (
     <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"}>
-      <Editable defaultValue={column.title} textAlign={"center"}>
+      <Editable defaultValue={column.title} textAlign={"center"} border={"3px solid black"} borderBottom={"none"} borderRadius={10} width={"100%"} borderBottomLeftRadius={0} borderBottomRightRadius={0} fontSize={20} fontWeight={"bold"}>
         <EditablePreview />
         <EditableInput />
       </Editable>
@@ -27,9 +27,14 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
             {...provided.droppableProps}
             bg={snapshot.isDraggingOver ? "gray.200" : "white"}
             flexDir={"column"}
-            minH={"100%"}
-            minW={60}
-            border={"1px solid black"}
+            minH={"90%"}
+            minW={"100%"}
+            border={"3px solid black"}
+            borderRadius={10}
+            borderTopLeftRadius={0}
+            borderTopRightRadius={0}
+            p={4}
+            overflow={"auto"}
             >
             {tasks.map((task, index) => (
               <TaskItem key={task.id} task={task} index={index} />
