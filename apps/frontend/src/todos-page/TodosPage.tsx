@@ -1,4 +1,4 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex, useToast } from "@chakra-ui/react";
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { FaPlus } from "react-icons/fa";
 import { v4 as uuidv4 } from 'uuid';
@@ -9,6 +9,7 @@ import { useTodos } from "../context/TodosProvider";
 
 export const TodosPage = () => {
   const { todosData, setTodosData } = useTodos();
+  const toast = useToast();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -98,6 +99,14 @@ export const TodosPage = () => {
       },
       columnOrder: [...prevState.columnOrder, newColumn.id],
     }));
+
+    toast({
+      title: "New column added",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+    });
   };
 
 

@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Flex, Text, Textarea } from "@chakra-ui/react"
+import { Button, Card, CardBody, CardFooter, CardHeader, Flex, Text, Textarea, useToast } from "@chakra-ui/react"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { TiDelete } from "react-icons/ti"
@@ -11,25 +11,12 @@ const options: Intl.DateTimeFormatOptions = {
   day: 'numeric'
 }
 
-export const TaskItem = ({ task, index, deleteTodo }) => {
+export const TaskItem = ({ task, index, deleteTodo, completeTodo }) => {
   const { setTodosData } = useTodos();
+  const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [newTaskContent, setNewTaskContent] = useState("");
 
-  const completeTask = () => {
-    const currentDate = new Date();
-
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: {
-        ...prevState.tasks,
-        [task.id]: {
-          ...prevState.tasks[task.id],
-          date_completed: currentDate.getTime(),
-        },
-      },
-    }));
-  };
 
   const editTodo = () => {
     setTodosData(prevState => ({
@@ -42,6 +29,14 @@ export const TaskItem = ({ task, index, deleteTodo }) => {
         },
       },
     }))
+
+    toast({
+      title: "Task has been edited",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+    });
   };
 
   const handleEnterKey = (event: React.KeyboardEvent) => {
@@ -100,7 +95,7 @@ export const TaskItem = ({ task, index, deleteTodo }) => {
                   <Text fontWeight={"bold"} fontSize={"sm"}>Completed </Text>
                   <Text fontSize={"sm"}>{new Date(task.date_completed).toLocaleDateString('en-US', options)}</Text>
                 </Flex>
-              : <Button size={"xs"} onClick={completeTask} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Mark as Completed</Button>}
+              : <Button size={"xs"} onClick={() => completeTodo(task.id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Mark as Completed</Button>}
           </CardFooter>
         </Card>
       )}

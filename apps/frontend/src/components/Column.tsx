@@ -1,4 +1,4 @@
-import { Button, Editable, EditableInput, EditablePreview, Flex, Textarea } from "@chakra-ui/react";
+import { Button, Editable, EditableInput, EditablePreview, Flex, Textarea, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { FaMinusCircle, FaPlus } from "react-icons/fa";
@@ -21,15 +21,29 @@ type ColumnData = {
 
 export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] }) => {
   const { setTodosData, todosData } = useTodos();
+  const toast = useToast();
   const [showDelete, setShowDelete] = useState(true);
   const [addTodo, setAddTodo] = useState(false);
   const [newTodo, setNewTodo] = useState("");
 
   const deleteColumn = (columnId: string) => {
+    const taskIdsToDelete = todosData.columns[columnId].taskIds;
+    const updatedColumnOrder = todosData.columnOrder.filter(columnIdToDelete => columnIdToDelete !== columnId);
+
     setTodosData(prevState => ({
       ...prevState,
-      columnOrder: prevState.columnOrder.filter((id) => id !== columnId),
+      tasks: Object.fromEntries(Object.entries(prevState.tasks).filter(([taskId, _]) => !taskIdsToDelete.includes(taskId))),
+      columns: Object.fromEntries(Object.entries(prevState.columns).filter(([columnIdToDelete, _]) => columnIdToDelete !== columnId)),
+      columnOrder: updatedColumnOrder,
     }));
+
+    toast({
+      title: `Column ${column.title} has been deleted`,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+    });
   };
 
   const addNewTodo = () => {
@@ -62,6 +76,14 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
 
     setNewTodo("");
     setAddTodo(false);
+
+    toast({
+      title: "Task added",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+    });
   };
 
   const deleteTodo = (taskIdToDelete: string) => {
@@ -79,6 +101,49 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
         },
       },
     }));
+
+    toast({
+      title: "Task deleted",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+    });
+  };
+
+  const completeTodo = (taskId: string) => {
+    const currentDate = new Date();
+
+    setTodosData(prevState => ({
+      ...prevState,
+      tasks: {
+        ...prevState.tasks,
+        [taskId]: {
+          ...prevState.tasks[taskId],
+          date_completed: currentDate.getTime(),
+        },
+      },
+      columns: {
+        ...prevState.columns,
+        [prevState.columnOrder[0]]: {
+          ...prevState.columns[prevState.columnOrder[0]],
+          taskIds: [taskId, ...prevState.columns[prevState.columnOrder[0]].taskIds],
+        },
+        [column.id]: {
+          ...prevState.columns[column.id],
+          taskIds: prevState.columns[column.id].taskIds.filter(id => id !== taskId),
+        },
+      },
+    }));
+
+    toast({
+      title: "Task completed",
+      description: "Great work!",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+    });
   };
 
 
@@ -121,9 +186,11 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
             p={4}
             overflow={"auto"}
             >
-            <Button w={"100%"} mb={4} onClick={() => setAddTodo(true)}>
-              <FaPlus />
-            </Button>
+            {column.title !== "Completed"
+              ? <Button w={"100%"} mb={4} onClick={() => setAddTodo(true)}>
+                  <FaPlus />
+                </Button>
+              : null}
             {addTodo
               ? <Textarea
                   w={"100%"}
@@ -144,7 +211,7 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
               : null
               }
             {tasks.map((task, index) => (
-              <TaskItem key={task.id} task={task} index={index} deleteTodo={deleteTodo} />
+              <TaskItem key={task.id} task={task} index={index} deleteTodo={deleteTodo} completeTodo={completeTodo} />
             ))}
             {provided.placeholder}
           </Flex>
