@@ -1,38 +1,14 @@
-import { Button, Flex, SimpleGrid } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { FaPlus } from "react-icons/fa";
+import { v4 as uuidv4 } from 'uuid';
 import { Column } from "../components/Column";
 import { useTodos } from "../context/TodosProvider";
 
 
-type TaskType = {
-  id: string;
-  content: string;
-};
-
-type ColumnDataType = {
-  id: string;
-  title: string;
-  taskIds: string[];
-};
-
-type ColumnMapType = {
-  [key: string]: ColumnDataType;
-};
-
-type InitialDataType = {
-  tasks: {
-    [key: string]: TaskType;
-  };
-  columns: ColumnMapType;
-  columnOrder: string[];
-};
-
 
 export const TodosPage = () => {
-  const { todosData } = useTodos();
-  const [stateData, setStateData] = useState<InitialDataType>(todosData);
+  const { todosData, setTodosData } = useTodos();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -48,8 +24,8 @@ export const TodosPage = () => {
       return;
     }
 
-    const start = stateData.columns[source.droppableId];
-    const finish = stateData.columns[destination.droppableId];
+    const start = todosData.columns[source.droppableId];
+    const finish = todosData.columns[destination.droppableId];
 
     if (start === finish) {
       const newTaskIds = Array.from(start.taskIds);
@@ -61,7 +37,7 @@ export const TodosPage = () => {
         taskIds: newTaskIds,
       };
 
-      setStateData(prevState => ({
+      setTodosData(prevState => ({
         ...prevState,
         columns: {
           ...prevState.columns,
@@ -97,7 +73,7 @@ export const TodosPage = () => {
       };
     }
 
-    setStateData(prevState => ({
+    setTodosData(prevState => ({
       ...prevState,
       columns: {
         ...prevState.columns,
@@ -108,25 +84,45 @@ export const TodosPage = () => {
   };
 
   const addNewColumn = () => {
+    const newColumn = {
+      id: `column-${uuidv4()}`,
+      title: "Title",
+      taskIds: [],
+    };
 
-  }
+    setTodosData(prevState => ({
+      ...prevState,
+      columns: {
+        ...prevState.columns,
+        [newColumn.id]: newColumn,
+      },
+      columnOrder: [...prevState.columnOrder, newColumn.id],
+    }));
+  };
+
 
 
   return (
-    <Flex flex={1} p={5}>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <SimpleGrid columns={stateData.columnOrder.length} spacing={4} overflowX={"auto"}>
-          {stateData.columnOrder.map((columnId) => {
-            const column = stateData.columns[columnId];
-            const tasks = column.taskIds.map((taskId: string) => stateData.tasks[taskId]);
+    <Flex flex={1} px={5} overflowX={"auto"}>
+      <Flex flexDirection="row" alignItems="flex-start">
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Flex gap={8} overflowX={"auto"}>
+            {todosData.columnOrder.map((columnId) => {
+              const column = todosData.columns[columnId];
+              const tasks = column.taskIds.map((taskId: string) => todosData.tasks[taskId]);
 
-            return <Column key={column.id} column={column} tasks={tasks} />;
-          })}
-        </SimpleGrid>
-        <Button mt={2} ml={4} leftIcon={<FaPlus size={20} />} onClick={addNewColumn} >
+              return (
+                <Box key={column.id} minW={"300px"} flexShrink={0}>
+                  <Column key={column.id} column={column} tasks={tasks} />
+                </Box>
+              );
+            })}
+          </Flex>
+        </DragDropContext>
+        <Button mt={10} ml={8} leftIcon={<FaPlus size={20} />} onClick={addNewColumn} >
           Add a new column
         </Button>
-      </DragDropContext>
+      </Flex>
     </Flex>
   )
 }
