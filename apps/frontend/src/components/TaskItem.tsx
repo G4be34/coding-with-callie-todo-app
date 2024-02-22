@@ -10,7 +10,7 @@ const options: Intl.DateTimeFormatOptions = {
   day: 'numeric'
 }
 
-export const TaskItem = ({ task, index }) => {
+export const TaskItem = ({ task, index, deleteTodo }) => {
   const [editing, setEditing] = useState(false);
   const [taskContent, setTaskContent] = useState(task.content);
   const [completedDate, setCompletedDate] = useState(task.date_completed);
@@ -20,19 +20,10 @@ export const TaskItem = ({ task, index }) => {
     console.log("complete task")
   }
 
-  const deleteTask = () => {
-    console.log("delete task")
-  }
-
-  const handleEnterKey = (event) => {
+  const handleEnterKey = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
-      submitNewTask();
+      setEditing(false);
     }
-  }
-
-  const submitNewTask = () => {
-    console.log("submit new task")
-    setEditing(false);
   }
 
 
@@ -57,7 +48,7 @@ export const TaskItem = ({ task, index }) => {
             <Text fontSize={"sm"}>{new Date(task.date_added).toLocaleDateString('en-US', options)}</Text>
           </CardHeader>
           <Flex position={"absolute"} top={0} right={0} _hover={{ opacity: 0.5}}>
-            <TiDelete size={30} cursor={"pointer"} onClick={deleteTask}/>
+            <TiDelete size={30} cursor={"pointer"} onClick={() => deleteTodo(task.id)}/>
           </Flex>
           <CardBody>
             {editing
@@ -73,7 +64,6 @@ export const TaskItem = ({ task, index }) => {
               : <Text
                   onClick={() => setEditing(true)}
                   _hover={{ cursor: "pointer" }}
-                  onKeyDown={handleEnterKey}
                   >
                     {taskContent}
                   </Text>

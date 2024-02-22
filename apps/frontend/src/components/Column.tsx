@@ -20,7 +20,7 @@ type ColumnData = {
 };
 
 export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] }) => {
-  const { setTodosData } = useTodos();
+  const { setTodosData, todosData } = useTodos();
   const [showDelete, setShowDelete] = useState(true);
   const [addTodo, setAddTodo] = useState(false);
   const [newTodo, setNewTodo] = useState("");
@@ -62,6 +62,23 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
 
     setNewTodo("");
     setAddTodo(false);
+  };
+
+  const deleteTodo = (taskIdToDelete: string) => {
+    const updatedTasks = Object.entries(todosData.tasks).filter(([taskId, _]) => taskId !== taskIdToDelete);
+    const updatedColumnTaskIds = todosData.columns[column.id].taskIds.filter((id) => id !== taskIdToDelete);
+
+    setTodosData(prevState => ({
+      ...prevState,
+      tasks: Object.fromEntries(updatedTasks),
+      columns: {
+        ...prevState.columns,
+        [column.id]: {
+          ...prevState.columns[column.id],
+          taskIds: updatedColumnTaskIds,
+        },
+      },
+    }));
   };
 
 
@@ -127,7 +144,7 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
               : null
               }
             {tasks.map((task, index) => (
-              <TaskItem key={task.id} task={task} index={index} />
+              <TaskItem key={task.id} task={task} index={index} deleteTodo={deleteTodo} />
             ))}
             {provided.placeholder}
           </Flex>
