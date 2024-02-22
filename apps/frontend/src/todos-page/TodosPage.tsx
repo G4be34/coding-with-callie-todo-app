@@ -28,6 +28,26 @@ export const TodosPage = () => {
     const start = todosData.columns[source.droppableId];
     const finish = todosData.columns[destination.droppableId];
 
+    const updateDateCompleted = (taskId: string, date: number | null) => {
+      setTodosData((prevState) => ({
+        ...prevState,
+        tasks: {
+          ...prevState.tasks,
+          [taskId]: {
+            ...prevState.tasks[taskId],
+            date_completed: date,
+          },
+        },
+      }));
+    };
+
+    if (finish.id === 'column-1') {
+      const currentDate = new Date().getTime();
+      updateDateCompleted(draggableId, currentDate);
+    } else if (start.id === 'column-1') {
+      updateDateCompleted(draggableId, null);
+    }
+
     if (start === finish) {
       const newTaskIds = Array.from(start.taskIds);
       newTaskIds.splice(source.index, 1);

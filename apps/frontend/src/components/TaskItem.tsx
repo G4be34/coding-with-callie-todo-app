@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Flex, Text, Textarea, useToast } from "@chakra-ui/react"
+import { Button, Card, CardBody, CardFooter, CardHeader, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { TiDelete } from "react-icons/ti"
@@ -95,7 +95,25 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo }) => {
                   <Text fontWeight={"bold"} fontSize={"sm"}>Completed </Text>
                   <Text fontSize={"sm"}>{new Date(task.date_completed).toLocaleDateString('en-US', options)}</Text>
                 </Flex>
-              : <Button size={"xs"} onClick={() => completeTodo(task.id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Mark as Completed</Button>}
+              : <Flex w={"100%"} alignItems={"center"}>
+                  <Button size={"xs"} onClick={() => completeTodo(task.id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Complete</Button>
+                  <Spacer />
+                  <Select
+                    defaultValue={task.priority}
+                    size={"xs"}
+                    variant={"filled"}
+                    bg={task.priority === "Normal" ? "gray" : task.priority === "High" ? "orange" : task.priority === "Highest" ? "red" : "gray"}
+                    w={"35%"}
+                    color={task.priority === "High" ? "black" : "white"}
+                    borderRadius={10}
+                    >
+                    <option value={"Normal"}>Normal</option>
+                    <option value={"High"}>High</option>
+                    <option value={"Highest"}>Highest</option>
+                  </Select>
+                </Flex>
+
+              }
           </CardFooter>
         </Card>
       )}
