@@ -2,6 +2,7 @@ import { Button, Card, CardBody, CardFooter, CardHeader, Flex, Text, Textarea } 
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { TiDelete } from "react-icons/ti"
+import { useTodos } from "../context/TodosProvider"
 
 const options: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -11,20 +12,44 @@ const options: Intl.DateTimeFormatOptions = {
 }
 
 export const TaskItem = ({ task, index, deleteTodo }) => {
+  const { setTodosData } = useTodos();
   const [editing, setEditing] = useState(false);
-  const [taskContent, setTaskContent] = useState(task.content);
-  const [completedDate, setCompletedDate] = useState(task.date_completed);
+  const [newTaskContent, setNewTaskContent] = useState("");
 
   const completeTask = () => {
-    setCompletedDate(new Date());
-    console.log("complete task")
-  }
+    const currentDate = new Date();
+
+    setTodosData(prevState => ({
+      ...prevState,
+      tasks: {
+        ...prevState.tasks,
+        [task.id]: {
+          ...prevState.tasks[task.id],
+          date_completed: currentDate.getTime(),
+        },
+      },
+    }));
+  };
+
+  const editTodo = () => {
+    setTodosData(prevState => ({
+      ...prevState,
+      tasks: {
+        ...prevState.tasks,
+        [task.id]: {
+          ...prevState.tasks[task.id],
+          content: newTaskContent,
+        },
+      },
+    }))
+  };
 
   const handleEnterKey = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
+      editTodo();
       setEditing(false);
     }
-  }
+  };
 
 
   return (
@@ -53,9 +78,9 @@ export const TaskItem = ({ task, index, deleteTodo }) => {
           <CardBody>
             {editing
               ? <Textarea
-                  defaultValue={taskContent}
+                  defaultValue={task.content}
                   onBlur={() => setEditing(false)}
-                  onChange={(e) => setTaskContent(e.target.value)}
+                  onChange={(e) => setNewTaskContent(e.target.value)}
                   onKeyDown={handleEnterKey}
                   autoFocus
                   resize={"none"}
@@ -65,15 +90,15 @@ export const TaskItem = ({ task, index, deleteTodo }) => {
                   onClick={() => setEditing(true)}
                   _hover={{ cursor: "pointer" }}
                   >
-                    {taskContent}
+                    {task.content}
                   </Text>
                 }
           </CardBody>
           <CardFooter>
-            {completedDate
+            {task.date_completed
               ? <Flex flexDir={"column"}>
                   <Text fontWeight={"bold"} fontSize={"sm"}>Completed </Text>
-                  <Text fontSize={"sm"}>{new Date(completedDate).toLocaleDateString('en-US', options)}</Text>
+                  <Text fontSize={"sm"}>{new Date(task.date_completed).toLocaleDateString('en-US', options)}</Text>
                 </Flex>
               : <Button size={"xs"} onClick={completeTask} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Mark as Completed</Button>}
           </CardFooter>
