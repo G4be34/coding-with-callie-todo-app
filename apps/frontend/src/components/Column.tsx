@@ -1,10 +1,13 @@
-import { Button, Editable, EditableInput, EditablePreview, Flex, Select, Textarea, useToast } from "@chakra-ui/react";
+import { Button, Editable, EditableInput, EditablePreview, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 import { FaMinusCircle, FaPlus } from "react-icons/fa";
 import { v4 as uuid } from "uuid";
 import { useTodos } from "../context/TodosProvider";
 import { TaskItem } from "./TaskItem";
+
 
 type Task = {
   id: string;
@@ -27,6 +30,8 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
   const [showDelete, setShowDelete] = useState(true);
   const [addTodo, setAddTodo] = useState(false);
   const [newTodo, setNewTodo] = useState("");
+  const [dueDate, setDueDate] = useState<Date>(new Date());
+  const [priority, setPriority] = useState("Normal");
 
   const deleteColumn = (columnId: string) => {
     const taskIdsToDelete = todosData.columns[columnId].taskIds;
@@ -59,6 +64,8 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
       content: newTodo.trim(),
       date_added: currentDate.getTime(),
       date_completed: null,
+      priority,
+      due_date: dueDate.getTime(),
     };
 
     setTodosData(prevState => ({
@@ -240,22 +247,49 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
                 </Button>
               : null}
             {addTodo
-              ? <Textarea
-                  w={"100%"}
-                  onBlur={() => setAddTodo(false)}
-                  autoFocus
-                  resize={"none" }
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      addNewTodo();
-                      setAddTodo(false);
-                    }
-                  }}
-                  onChange={(e) => setNewTodo(e.target.value)}
-                  h={150}
-                  mb={4}
-                  value={newTodo}
-                  />
+              ? <Flex w={"100%"} flexDir={"column"} mb={4}>
+                  <Flex mb={2} alignItems={"center"}>
+                    <Flex flexDir={"column"}>
+                      <Text fontSize={"sm"}>Due Date:</Text>
+                      <DatePicker
+                        openToDate={new Date()}
+                        onChange={(date: Date) => setDueDate(date)}
+                        selected={new Date(dueDate)}
+                        fixedHeight
+                        showIcon
+                        toggleCalendarOnIconClick
+                        />
+                    </Flex>
+                    <Spacer />
+                    <Flex flexDir={"column"} ml={2}>
+                      <Text fontSize={"sm"}>Priority:</Text>
+                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"}>
+                        <option value="Normal">Normal</option>
+                        <option value="High">High</option>
+                        <option value="Highest">Highest</option>
+                      </Select>
+                    </Flex>
+                  </Flex>
+                  <Textarea
+                    w={"100%"}
+                    resize={"none" }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        addNewTodo();
+                        setAddTodo(false);
+                      }
+                    }}
+                    onChange={(e) => setNewTodo(e.target.value)}
+                    h={150}
+                    mb={4}
+                    value={newTodo}
+                    />
+                    <Flex w={"100%"}>
+                      <Button size={"xs"} onClick={addNewTodo} bgColor={"green"} _hover={{ bg: "green.500" }} color={"white"}>Add</Button>
+                      <Spacer />
+                      <Button size={"xs"} onClick={() => setAddTodo(false)}>Cancel</Button>
+                    </Flex>
+                </Flex>
               : null
               }
             {tasks.map((task, index) => (
