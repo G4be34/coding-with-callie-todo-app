@@ -1,6 +1,8 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
+import DatePicker from 'react-datepicker'
+import "react-datepicker/dist/react-datepicker.css"
 import { TiDelete } from "react-icons/ti"
 import { useTodos } from "../context/TodosProvider"
 
@@ -15,6 +17,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo }) => {
   const { setTodosData } = useTodos();
   const toast = useToast();
   const [editing, setEditing] = useState(false);
+  const [editDueDate, setEditDueDate] = useState(false);
   const [newTaskContent, setNewTaskContent] = useState("");
 
 
@@ -46,6 +49,34 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo }) => {
     }
   };
 
+  const changePriority = (priority: string) => {
+    setTodosData(prevState => ({
+      ...prevState,
+      tasks: {
+        ...prevState.tasks,
+        [task.id]: {
+          ...prevState.tasks[task.id],
+          priority,
+        },
+      },
+    }));
+  };
+
+  const changeDueDate = (date: Date) => {
+    setTodosData(prevState => ({
+      ...prevState,
+      tasks: {
+        ...prevState.tasks,
+        [task.id]: {
+          ...prevState.tasks[task.id],
+          due_date: date.getTime(),
+        },
+      },
+    }));
+
+    setEditDueDate(false);
+  };
+
 
   return (
     <Draggable draggableId={task.id} index={index}>
@@ -64,8 +95,21 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo }) => {
           borderRadius={10}
           >
           <CardHeader flexDir={"column"}>
-            <Text fontWeight={"bold"} fontSize={"sm"}>Added </Text>
-            <Text fontSize={"sm"}>{new Date(task.date_added).toLocaleDateString('en-US', options)}</Text>
+            {editDueDate
+              ? <DatePicker
+                  onBlur={() => setEditDueDate(false)}
+                  selected={new Date(task.due_date)}
+                  openToDate={new Date(task.due_date)}
+                  onChange={(date: Date) => changeDueDate(date)}
+                  fixedHeight
+                  showIcon
+                  />
+              : <>
+                  <Text fontWeight={"bold"} fontSize={"sm"}>Due</Text>
+                  <Text onClick={() => setEditDueDate(true)} fontSize={"sm"}>{new Date(task.due_date).toLocaleDateString('en-US', options)}</Text>
+                </>
+              }
+
           </CardHeader>
           <Flex position={"absolute"} top={0} right={0} _hover={{ opacity: 0.5}}>
             <TiDelete size={30} cursor={"pointer"} onClick={() => deleteTodo(task.id)}/>
@@ -106,6 +150,10 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo }) => {
                     w={"35%"}
                     color={task.priority === "High" ? "black" : "white"}
                     borderRadius={10}
+                    onChange={(e) => changePriority(e.target.value)}
+                    _hover={{ opacity: 0.70 }}
+                    cursor={"pointer"}
+                    _focus={{ backgroundColor: task.priority === "Normal" ? "gray" : task.priority === "High" ? "orange" : task.priority === "Highest" ? "red" : "gray" }}
                     >
                     <option value={"Normal"}>Normal</option>
                     <option value={"High"}>High</option>

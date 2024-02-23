@@ -2,10 +2,10 @@ import { createContext, useContext, useState } from "react";
 
 const initialData = {
   tasks: {
-    'task-1': { id: 'task-1', content: 'Take out the garbage', date_added: 1581744000000, date_completed: null, due_date: 1673001600000, priority: "Normal" },
-    'task-2': { id: 'task-2', content: 'Watch my favorite show and drink some soda and play with my dog', date_added: 1630972800000, date_completed: null, due_date: 1673356800000, priority: "High" },
+    'task-1': { id: 'task-1', content: 'Take out the garbage', date_added: 1581744000000, date_completed: null, due_date: 1672230400000, priority: "Normal" },
+    'task-2': { id: 'task-2', content: 'Watch my favorite show and drink some soda and play with my dog', date_added: 1630972800000, date_completed: null, due_date: 1671340800000, priority: "High" },
     'task-3': { id: 'task-3', content: 'Charge my phone', date_added: 1655731200000, date_completed: 1678102400000, due_date: 1673971200000, priority: "High" },
-    'task-4': { id: 'task-4', content: 'Cook dinner', date_added: 1670073600000, date_completed: null, due_date: 1674326400000, priority: "Highest" },
+    'task-4': { id: 'task-4', content: 'Cook dinner', date_added: 1670073600000, date_completed: null, due_date: 1670736000000, priority: "Highest" },
   },
   columns: {
     'column-1': {

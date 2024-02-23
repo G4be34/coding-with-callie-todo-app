@@ -2347,6 +2347,15 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-datepicker@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@types/react-datepicker/-/react-datepicker-6.0.1.tgz#1e6fad06a74308d4c2f3123480048ed427cb04d0"
+  integrity sha512-oAavACLXz+Vm6kO1XZe1/LQJClOO32UUv4xva9G16KQJ2hNROtXyeGzmRg6mktHrQ+YGLnnNlN6S/XykQE2HMA==
+  dependencies:
+    "@floating-ui/react" "^0.26.2"
+    "@types/react" "*"
+    date-fns "^3.3.1"
+
 "@types/react-dom@^18.2.17":
   version "18.2.18"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.2.18.tgz#16946e6cd43971256d874bc3d0a72074bb8571dd"

@@ -1,16 +1,21 @@
-import { Button, Editable, EditableInput, EditablePreview, Flex, Textarea, useToast } from "@chakra-ui/react";
+import { Button, Editable, EditableInput, EditablePreview, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 import { FaMinusCircle, FaPlus } from "react-icons/fa";
 import { v4 as uuid } from "uuid";
 import { useTodos } from "../context/TodosProvider";
 import { TaskItem } from "./TaskItem";
+
 
 type Task = {
   id: string;
   content: string;
   date_added: number;
   date_completed: number | null;
+  priority: string;
+  due_date: number | null;
 };
 
 type ColumnData = {
@@ -25,6 +30,8 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
   const [showDelete, setShowDelete] = useState(true);
   const [addTodo, setAddTodo] = useState(false);
   const [newTodo, setNewTodo] = useState("");
+  const [dueDate, setDueDate] = useState<Date>(new Date());
+  const [priority, setPriority] = useState("Normal");
 
   const deleteColumn = (columnId: string) => {
     const taskIdsToDelete = todosData.columns[columnId].taskIds;
@@ -57,6 +64,8 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
       content: newTodo.trim(),
       date_added: currentDate.getTime(),
       date_completed: null,
+      priority,
+      due_date: dueDate.getTime(),
     };
 
     setTodosData(prevState => ({
@@ -146,6 +155,44 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
     });
   };
 
+  const sortTasks = (sortValue: string) => {
+    if (sortValue === "Sort") return;
+
+    let sortedTasks: Task[] = [];
+
+    switch (sortValue) {
+      case "Newest":
+        sortedTasks = [...tasks].sort((a, b) => b.date_added - a.date_added);
+        break;
+      case "Oldest":
+        sortedTasks = [...tasks].sort((a, b) => a.date_added - b.date_added);
+        break;
+      case "Due":
+        sortedTasks = [...tasks].sort((a, b) => (a.due_date || Infinity) - (b.due_date || Infinity));
+        break;
+      case "Priority":
+        sortedTasks = [...tasks].sort((a, b) => {
+          const priorityOrder: { [key: string]: number } = { "Normal": 0, "High": 1, "Highest": 2 };
+          return priorityOrder[b.priority] - priorityOrder[a.priority];
+        });
+        break;
+      default:
+        sortedTasks = tasks;
+        break;
+    }
+
+    setTodosData(prevState => ({
+      ...prevState,
+      columns: {
+        ...prevState.columns,
+        [column.id]: {
+          ...prevState.columns[column.id],
+          taskIds: sortedTasks.map(task => task.id),
+        },
+      },
+    }));
+  }
+
 
   return (
     <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"}>
@@ -166,10 +213,18 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
               Delete Column
             </Button>
         }
-      <Editable defaultValue={column.title} textAlign={"center"} border={"3px solid black"} borderBottom={"none"} borderRadius={10} width={"100%"} borderBottomLeftRadius={0} borderBottomRightRadius={0} fontSize={20} fontWeight={"bold"}>
-        <EditablePreview />
-        <EditableInput />
-      </Editable>
+      <Flex flexDir={"column"} border={"3px solid black"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
+        <Select placeholder="Sort" size={"xs"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
+          <option value="Newest">Newest</option>
+          <option value="Oldest">Oldest</option>
+          <option value="Due">Due Date</option>
+          <option value="Priority">Priority</option>
+        </Select>
+        <Editable defaultValue={column.title} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"}>
+          <EditablePreview />
+          <EditableInput />
+        </Editable>
+      </Flex>
       <Droppable droppableId={column.id}>
         {(provided, snapshot) => (
           <Flex
@@ -192,22 +247,49 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
                 </Button>
               : null}
             {addTodo
-              ? <Textarea
-                  w={"100%"}
-                  onBlur={() => setAddTodo(false)}
-                  autoFocus
-                  resize={"none" }
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      addNewTodo();
-                      setAddTodo(false);
-                    }
-                  }}
-                  onChange={(e) => setNewTodo(e.target.value)}
-                  h={150}
-                  mb={4}
-                  value={newTodo}
-                  />
+              ? <Flex w={"100%"} flexDir={"column"} mb={4}>
+                  <Flex mb={2} alignItems={"center"}>
+                    <Flex flexDir={"column"}>
+                      <Text fontSize={"sm"}>Due Date:</Text>
+                      <DatePicker
+                        openToDate={new Date()}
+                        onChange={(date: Date) => setDueDate(date)}
+                        selected={new Date(dueDate)}
+                        fixedHeight
+                        showIcon
+                        toggleCalendarOnIconClick
+                        />
+                    </Flex>
+                    <Spacer />
+                    <Flex flexDir={"column"} ml={2}>
+                      <Text fontSize={"sm"}>Priority:</Text>
+                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"}>
+                        <option value="Normal">Normal</option>
+                        <option value="High">High</option>
+                        <option value="Highest">Highest</option>
+                      </Select>
+                    </Flex>
+                  </Flex>
+                  <Textarea
+                    w={"100%"}
+                    resize={"none" }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        addNewTodo();
+                        setAddTodo(false);
+                      }
+                    }}
+                    onChange={(e) => setNewTodo(e.target.value)}
+                    h={150}
+                    mb={4}
+                    value={newTodo}
+                    />
+                    <Flex w={"100%"}>
+                      <Button size={"xs"} onClick={addNewTodo} bgColor={"green"} _hover={{ bg: "green.500" }} color={"white"}>Add</Button>
+                      <Spacer />
+                      <Button size={"xs"} onClick={() => setAddTodo(false)}>Cancel</Button>
+                    </Flex>
+                </Flex>
               : null
               }
             {tasks.map((task, index) => (
