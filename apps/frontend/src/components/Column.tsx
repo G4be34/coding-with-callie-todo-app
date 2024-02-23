@@ -1,4 +1,4 @@
-import { Button, Editable, EditableInput, EditablePreview, Flex, Textarea, useToast } from "@chakra-ui/react";
+import { Button, Editable, EditableInput, EditablePreview, Flex, Select, Textarea, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { FaMinusCircle, FaPlus } from "react-icons/fa";
@@ -11,6 +11,8 @@ type Task = {
   content: string;
   date_added: number;
   date_completed: number | null;
+  priority: string;
+  due_date: number | null;
 };
 
 type ColumnData = {
@@ -146,6 +148,44 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
     });
   };
 
+  const sortTasks = (sortValue: string) => {
+    if (sortValue === "Sort") return;
+
+    let sortedTasks: Task[] = [];
+
+    switch (sortValue) {
+      case "Newest":
+        sortedTasks = [...tasks].sort((a, b) => b.date_added - a.date_added);
+        break;
+      case "Oldest":
+        sortedTasks = [...tasks].sort((a, b) => a.date_added - b.date_added);
+        break;
+      case "Due":
+        sortedTasks = [...tasks].sort((a, b) => (a.due_date || Infinity) - (b.due_date || Infinity));
+        break;
+      case "Priority":
+        sortedTasks = [...tasks].sort((a, b) => {
+          const priorityOrder: { [key: string]: number } = { "Normal": 0, "High": 1, "Highest": 2 };
+          return priorityOrder[b.priority] - priorityOrder[a.priority];
+        });
+        break;
+      default:
+        sortedTasks = tasks;
+        break;
+    }
+
+    setTodosData(prevState => ({
+      ...prevState,
+      columns: {
+        ...prevState.columns,
+        [column.id]: {
+          ...prevState.columns[column.id],
+          taskIds: sortedTasks.map(task => task.id),
+        },
+      },
+    }));
+  }
+
 
   return (
     <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"}>
@@ -166,10 +206,18 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
               Delete Column
             </Button>
         }
-      <Editable defaultValue={column.title} textAlign={"center"} border={"3px solid black"} borderBottom={"none"} borderRadius={10} width={"100%"} borderBottomLeftRadius={0} borderBottomRightRadius={0} fontSize={20} fontWeight={"bold"}>
-        <EditablePreview />
-        <EditableInput />
-      </Editable>
+      <Flex flexDir={"column"} border={"3px solid black"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
+        <Select placeholder="Sort" size={"xs"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
+          <option value="Newest">Newest</option>
+          <option value="Oldest">Oldest</option>
+          <option value="Due">Due Date</option>
+          <option value="Priority">Priority</option>
+        </Select>
+        <Editable defaultValue={column.title} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"}>
+          <EditablePreview />
+          <EditableInput />
+        </Editable>
+      </Flex>
       <Droppable droppableId={column.id}>
         {(provided, snapshot) => (
           <Flex
