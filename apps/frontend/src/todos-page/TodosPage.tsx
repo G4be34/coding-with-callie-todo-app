@@ -130,18 +130,17 @@ export const TodosPage = () => {
   };
 
 
-
   return (
     <Flex flex={1} px={5} overflowX={"auto"}>
       <Flex flexDirection="row" alignItems="flex-start">
         <DragDropContext onDragEnd={onDragEnd}>
-          <Flex gap={8} overflowX={"auto"}>
+          <Flex gap={8} minH={"75%"}>
             {todosData.columnOrder.map((columnId) => {
               const column = todosData.columns[columnId];
               const tasks = column.taskIds.map((taskId: string) => todosData.tasks[taskId]);
 
               return (
-                <Box key={column.id} minW={"300px"} flexShrink={0}>
+                <Box key={column.id} minW={"300px"} flexShrink={0} minH={"60%"}>
                   <Column key={column.id} column={column} tasks={tasks} />
                 </Box>
               );

@@ -84,6 +84,8 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
     }));
 
     setNewTodo("");
+    setDueDate(new Date());
+    setPriority("Normal");
     setAddTodo(false);
 
     toast({
@@ -195,7 +197,7 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
 
 
   return (
-    <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"}>
+    <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"} minH={"100%"} w={"100%"}>
       {showDelete
         ? <Flex mb={2} _hover={{ opacity: 0.5}}>
             <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"}/>
@@ -214,13 +216,13 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
             </Button>
         }
       <Flex flexDir={"column"} border={"3px solid black"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
-        <Select placeholder="Sort" size={"xs"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
+        <Select placeholder="Sort" size={"xs"} borderRadius={10} cursor={"pointer"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
           <option value="Newest">Newest</option>
           <option value="Oldest">Oldest</option>
           <option value="Due">Due Date</option>
           <option value="Priority">Priority</option>
         </Select>
-        <Editable defaultValue={column.title} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"}>
+        <Editable defaultValue={column.title} cursor={"pointer"} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"}>
           <EditablePreview />
           <EditableInput />
         </Editable>
@@ -232,8 +234,9 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
             {...provided.droppableProps}
             bg={snapshot.isDraggingOver ? "gray.200" : "white"}
             flexDir={"column"}
-            minH={"90%"}
+            h={"100%"}
             minW={"100%"}
+            flex={1}
             border={"3px solid black"}
             borderRadius={10}
             borderTopLeftRadius={0}
@@ -249,7 +252,7 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
             {addTodo
               ? <Flex w={"100%"} flexDir={"column"} mb={4}>
                   <Flex mb={2} alignItems={"center"}>
-                    <Flex flexDir={"column"}>
+                    <Flex flexDir={"column"} zIndex={100}>
                       <Text fontSize={"sm"}>Due Date:</Text>
                       <DatePicker
                         openToDate={new Date()}
@@ -284,17 +287,17 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
                     mb={4}
                     value={newTodo}
                     />
-                    <Flex w={"100%"}>
-                      <Button size={"xs"} onClick={addNewTodo} bgColor={"green"} _hover={{ bg: "green.500" }} color={"white"}>Add</Button>
-                      <Spacer />
-                      <Button size={"xs"} onClick={() => setAddTodo(false)}>Cancel</Button>
-                    </Flex>
+                  <Flex w={"100%"}>
+                    <Button size={"xs"} onClick={addNewTodo} bgColor={"green"} _hover={{ bg: "green.500" }} color={"white"}>Add</Button>
+                    <Spacer />
+                    <Button size={"xs"} onClick={() => setAddTodo(false)}>Cancel</Button>
+                  </Flex>
                 </Flex>
               : null
               }
-            {tasks.map((task, index) => (
+            {tasks.length > 0 ? tasks.map((task, index) => (
               <TaskItem key={task.id} task={task} index={index} deleteTodo={deleteTodo} completeTodo={completeTodo} />
-            ))}
+            )) : <Text my={2} textAlign={"center"}>Empty</Text>}
             {provided.placeholder}
           </Flex>
         )}

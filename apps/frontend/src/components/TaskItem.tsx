@@ -60,6 +60,14 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo }) => {
         },
       },
     }));
+
+    toast({
+      title: "Priority has been updated",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+    });
   };
 
   const changeDueDate = (date: Date) => {
@@ -75,6 +83,14 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo }) => {
     }));
 
     setEditDueDate(false);
+
+    toast({
+      title: "Due date has been updated",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+    });
   };
 
 
