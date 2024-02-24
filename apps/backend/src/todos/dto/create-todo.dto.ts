@@ -1,22 +1,25 @@
-import { IsArray, IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateTodoDto {
+  @IsString()
+  todo_id: string;
+
   @IsNotEmpty()
   description: string;
 
-  @IsString()
-  date: string;
+  @IsDate()
+  date_added: Date;
+
+  @IsDate()
+  due_date: Date;
+
+  @IsDate()
+  date_completed: Date | null;
 
   @IsNotEmpty()
-  priority: 'low' | 'medium' | 'high';
+  @IsString()
+  priority: 'Normal' | 'High' | 'Highest';
 
   @IsString()
   group: string;
-
-  @IsBoolean()
-  completed: boolean;
-
-  @IsString({ each: true })
-  @IsArray()
-  labels: string[];
 }

@@ -11,8 +11,9 @@ export class TodosService {
     @InjectRepository(Todo) private readonly todoRepository: Repository<Todo>,
   ) {}
   async create(createTodoDto: CreateTodoDto) {
-    const todo = this.todoRepository.create(createTodoDto);
-    return await this.todoRepository.save(todo);
+    // const todo = this.todoRepository.create(createTodoDto);
+    // return await this.todoRepository.save(todo);
+    return 'Created Todo';
   }
 
   findAll() {

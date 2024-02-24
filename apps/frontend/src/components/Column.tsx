@@ -56,7 +56,7 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
   const addNewTodo = () => {
     if (newTodo.trim() === "") return;
 
-    const newTaskId = `task-${uuid()}`;
+    const newTaskId = uuid();
     const currentDate = new Date();
 
     const newTask: Task = {

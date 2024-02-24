@@ -106,7 +106,7 @@ export const TodosPage = () => {
 
   const addNewColumn = () => {
     const newColumn = {
-      id: `column-${uuidv4()}`,
+      id: uuidv4(),
       title: "Title",
       taskIds: [],
     };

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Group } from 'src/groups/entities/group.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Todo {
@@ -6,20 +7,23 @@ export class Todo {
   id: number;
 
   @Column()
+  todo_id: string;
+
+  @Column()
   description: string;
 
   @Column()
-  completed: boolean;
-
-  @Column('text', { array: true })
-  labels: string[];
+  date_completed: Date | null;
 
   @Column()
-  date: Date;
+  due_date: Date;
 
   @Column()
-  group: string;
+  date_added: Date;
 
   @Column()
-  priority: 'low' | 'medium' | 'high';
+  priority: 'Normal' | 'High' | 'Highest';
+
+  @ManyToOne(() => Group, (group) => group.todos)
+  group: Group;
 }
