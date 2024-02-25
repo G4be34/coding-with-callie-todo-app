@@ -6,13 +6,13 @@ export class Todo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   todo_id: string;
 
   @Column()
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   date_completed: Date | null;
 
   @Column()

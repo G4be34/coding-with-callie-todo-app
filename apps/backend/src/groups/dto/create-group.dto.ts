@@ -11,4 +11,8 @@ export class CreateGroupDto {
   @IsNotEmpty()
   @IsNumber()
   position: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  user_id: number;
 }
