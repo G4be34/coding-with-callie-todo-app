@@ -22,7 +22,7 @@ export class Group {
   @Column()
   position: number;
 
-  @OneToMany(() => Todo, (todo) => todo.group)
+  @OneToMany(() => Todo, (todo) => todo.group, { eager: true })
   todos: Todo[];
 
   @ManyToOne(() => User, (user) => user.groups)

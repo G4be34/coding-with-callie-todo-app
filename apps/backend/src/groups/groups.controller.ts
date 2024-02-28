@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Public } from 'src/decorators/public.decorator';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -23,8 +24,9 @@ export class GroupsController {
   }
 
   @Get()
-  findAll() {
-    return this.groupsService.findAll();
+  @Public()
+  findAll(@Query('user') userId: string) {
+    return this.groupsService.findAll(userId);
   }
 
   @Get(':id')

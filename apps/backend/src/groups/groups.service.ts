@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
@@ -10,18 +11,21 @@ export class GroupsService {
   constructor(
     @InjectRepository(Group)
     private readonly groupRepository: Repository<Group>,
+    private readonly usersService: UsersService,
   ) {}
-  create(createGroupDto: CreateGroupDto) {
-    const group = this.groupRepository.create(createGroupDto);
+  async create(createGroupDto: CreateGroupDto) {
+    const group = await this.groupRepository.create(createGroupDto);
+    const user = await this.usersService.findOne(createGroupDto.userId);
+    group.user = user;
     return this.groupRepository.save(group);
   }
 
-  findAll() {
-    return this.groupRepository.find();
+  findAll(userId) {
+    return this.groupRepository.find({ where: { user: { id: userId } } });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} group`;
+    return this.groupRepository.findOne({ where: { id } });
   }
 
   update(id: number, updateGroupDto: UpdateGroupDto) {
