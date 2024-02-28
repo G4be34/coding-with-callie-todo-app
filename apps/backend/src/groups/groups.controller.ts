@@ -35,11 +35,13 @@ export class GroupsController {
   }
 
   @Patch(':id')
+  @Public()
   update(@Param('id') id: string, @Body() updateGroupDto: UpdateGroupDto) {
     return this.groupsService.update(+id, updateGroupDto);
   }
 
   @Delete(':id')
+  @Public()
   remove(@Param('id') id: string) {
     return this.groupsService.remove(+id);
   }

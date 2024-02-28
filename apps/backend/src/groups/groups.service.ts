@@ -28,11 +28,14 @@ export class GroupsService {
     return this.groupRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateGroupDto: UpdateGroupDto) {
-    return `This action updates a #${id} group`;
+  async update(id: number, updateGroupDto: UpdateGroupDto) {
+    const group = await this.groupRepository.findOne({ where: { id } });
+
+    Object.assign(group, updateGroupDto);
+    return this.groupRepository.save(group);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} group`;
+    return this.groupRepository.delete({ id });
   }
 }
