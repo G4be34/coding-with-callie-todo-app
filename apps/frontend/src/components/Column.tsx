@@ -34,6 +34,17 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
   const [priority, setPriority] = useState("Normal");
 
   const deleteColumn = (columnId: string) => {
+    if (column.title === "Completed") {
+      toast({
+        title: "Cannot delete Completed column",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+    }
+
     const taskIdsToDelete = todosData.columns[columnId].taskIds;
     const updatedColumnOrder = todosData.columnOrder.filter(columnIdToDelete => columnIdToDelete !== columnId);
 
