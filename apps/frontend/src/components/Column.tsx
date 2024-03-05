@@ -1,10 +1,12 @@
 import { Button, Editable, EditableInput, EditablePreview, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react";
+import axios from "axios";
 import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { FaMinusCircle, FaPlus } from "react-icons/fa";
 import { v4 as uuid } from "uuid";
+import { useAuth } from "../context/AuthProvider";
 import { useTodos } from "../context/TodosProvider";
 import { TaskItem } from "./TaskItem";
 
@@ -26,6 +28,7 @@ type ColumnData = {
 
 export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] }) => {
   const { setTodosData, todosData } = useTodos();
+  const { token, user } = useAuth();
   const toast = useToast();
   const [showDelete, setShowDelete] = useState(true);
   const [addTodo, setAddTodo] = useState(false);
@@ -33,7 +36,7 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
   const [dueDate, setDueDate] = useState<Date>(new Date());
   const [priority, setPriority] = useState("Normal");
 
-  const deleteColumn = (columnId: string) => {
+  const deleteColumn = async (columnId: string) => {
     if (column.title === "Completed") {
       toast({
         title: "Cannot delete Completed column",
@@ -62,6 +65,19 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
       isClosable: true,
       position: "top",
     });
+
+    try {
+      await axios.delete(`/api/groups/${columnId}`, { headers: { Authorization: `Bearer ${token}` } });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Failed to delete column",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
   };
 
   const addNewTodo = () => {

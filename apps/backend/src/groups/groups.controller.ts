@@ -24,7 +24,7 @@ export class GroupsController {
 
   @Get()
   @Public()
-  findAll(@Query('user') userId: string) {
+  async findAll(@Query('user') userId: string) {
     return this.groupsService.findAll(userId);
   }
 

@@ -20,8 +20,29 @@ export class GroupsService {
     return this.groupRepository.save(group);
   }
 
-  findAll(userId) {
-    return this.groupRepository.find({ where: { user: { id: userId } } });
+  async findAll(userId) {
+    const groups = await this.groupRepository.find({
+      where: { user: { id: userId } },
+      order: { position: 'ASC' },
+    });
+
+    const initialData = {
+      tasks: {},
+      columns: {},
+      columnOrder: [],
+    };
+
+    groups.forEach((group) => {
+      initialData.columns[group.id] = {
+        id: group.id,
+        title: group.title,
+        taskIds: group.todos.map((todo) => todo.id),
+      };
+
+      initialData.columnOrder.push(group.id);
+    });
+
+    return initialData;
   }
 
   findOne(id: number) {

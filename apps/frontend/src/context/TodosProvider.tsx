@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { useAuth } from "./AuthProvider";
 
 const initialData = {
   tasks: {},
@@ -55,12 +56,31 @@ type TodosProviderPropsType = {
 }
 
 export default function TodosProvider({ children }: TodosProviderPropsType) {
+  const { user, token } = useAuth();
   const [todosData, setTodosData] = useState<InitialDataType>(initialData);
 
   const value = {
     todosData,
     setTodosData,
   };
+
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const response = await axios.get('/api/groups?user=' + user._id, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+  //       // setTodosData(response.data);
+  //       console.log("recieved data: ", response.data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+
+  //   getData();
+  // }, []);
 
   return (
     <TodosContext.Provider value={value}>
