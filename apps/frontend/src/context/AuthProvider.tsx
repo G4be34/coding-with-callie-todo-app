@@ -41,6 +41,7 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
   const [badLogin, setBadLogin] = useState(false);
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
+  const [groupsData, setGroupsData] = useState({});
 
   const loginUser = async (email: string, password: string) => {
     try {
@@ -127,7 +128,7 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
     setUser,
     loading,
     expiration,
-    setBadLogin
+    setBadLogin,
   }
 
 
@@ -150,6 +151,8 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
               }
             });
 
+            console.log("user response: ", userResponse.data);
+
             const photoResponse = await axios.post('/api/image/s3_download', { user_id: timeResponse.data.sub }, {
               headers: {
                 Authorization: `Bearer ${access_token}`
@@ -158,7 +161,7 @@ export default function AuthProvider ({ children }: AuthProviderProps) {
             const photo = photoResponse.data;
             const photoBase64 = `data:image/png;base64,${photo}`;
 
-            setUser({_id: timeResponse.data.sub, ...userResponse.data, photo: photoBase64});
+            setUser({_id: timeResponse.data.sub, ...userResponse.data.user, photo: photoBase64});
             setToken(access_token);
             setExpiration(expiration_date);
             setLoading(false);

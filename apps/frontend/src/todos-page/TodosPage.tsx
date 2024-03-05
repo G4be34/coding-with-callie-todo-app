@@ -1,14 +1,17 @@
 import { Box, Button, Flex, useToast } from "@chakra-ui/react";
+import axios from "axios";
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { FaPlus } from "react-icons/fa";
 import { v4 as uuidv4 } from 'uuid';
 import { Column } from "../components/Column";
+import { useAuth } from "../context/AuthProvider";
 import { useTodos } from "../context/TodosProvider";
 
 
 
 export const TodosPage = () => {
   const { todosData, setTodosData } = useTodos();
+  const { token, user } = useAuth();
   const toast = useToast();
 
   const onDragEnd = (result: DropResult) => {
@@ -104,9 +107,9 @@ export const TodosPage = () => {
     }));
   };
 
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     const newColumn = {
-      id: `column-${uuidv4()}`,
+      id: uuidv4(),
       title: "Title",
       taskIds: [],
     };
@@ -120,28 +123,47 @@ export const TodosPage = () => {
       columnOrder: [...prevState.columnOrder, newColumn.id],
     }));
 
-    toast({
-      title: "New column added",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
-  };
+    try {
+      const apiColumn = {
+        column_id: newColumn.id,
+        title: newColumn.title,
+        position: todosData.columnOrder.length,
+        userId: user._id
+      };
 
+      await axios.post('/api/groups', apiColumn, { headers: { Authorization: `Bearer ${token}` } });
+
+      toast({
+        title: "New column added",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Failed to add new column",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  };
 
 
   return (
     <Flex flex={1} px={5} overflowX={"auto"}>
       <Flex flexDirection="row" alignItems="flex-start">
         <DragDropContext onDragEnd={onDragEnd}>
-          <Flex gap={8} overflowX={"auto"}>
+          <Flex gap={8} minH={"75%"}>
             {todosData.columnOrder.map((columnId) => {
               const column = todosData.columns[columnId];
               const tasks = column.taskIds.map((taskId: string) => todosData.tasks[taskId]);
 
               return (
-                <Box key={column.id} minW={"300px"} flexShrink={0}>
+                <Box key={column.id} minW={"300px"} flexShrink={0} minH={"60%"}>
                   <Column key={column.id} column={column} tasks={tasks} />
                 </Box>
               );

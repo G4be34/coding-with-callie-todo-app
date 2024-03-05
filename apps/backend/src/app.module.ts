@@ -8,6 +8,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import typeorm from './config/typeorm';
 import { EmailModule } from './email/email.module';
+import { GroupsModule } from './groups/groups.module';
 import { TodosModule } from './todos/todos.module';
 import { UploaderService } from './uploader/uploader.service';
 import { UsersModule } from './users/users.module';
@@ -24,6 +25,7 @@ import { UsersModule } from './users/users.module';
     TodosModule,
     AuthModule,
     EmailModule,
+    GroupsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Group } from 'src/groups/entities/group.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -22,4 +23,7 @@ export class User {
 
   @Column()
   font: string;
+
+  @OneToMany(() => Group, (group) => group.user, { eager: true })
+  groups: Group[];
 }

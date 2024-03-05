@@ -39,8 +39,8 @@ export const Header = ({ setShowModal, showOptions, setShowOptions }) => {
         />
       {showOptions ?
         <Flex flexDir={"column"} pos={"absolute"} right={5} top={20} border={"1px solid black"} borderRadius={10} bgColor={"white"} p={4} gap={2} zIndex={100}>
-          <Button onClick={openModal} >Settings</Button>
-          <Button onClick={handleLogout} >Logout</Button>
+          <Button onClick={openModal}>Settings</Button>
+          <Button onClick={handleLogout}>Logout</Button>
         </Flex>
         : null
       }
