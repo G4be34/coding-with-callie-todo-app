@@ -2,12 +2,10 @@ import { Button, Editable, EditableInput, EditablePreview, Flex, Heading, Image,
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
 import { EditableControls } from "./EditableControls";
 import { NewPasswordModal } from "./NewPasswordModal";
 
-export const ProfileModal = ({ setShowModal, showModal }) => {
-  const { user, token, setUser, logoutUser } = useAuth();
+export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, logoutUser }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const [currentTab, setCurrentTab] = useState("Profile");
@@ -201,7 +199,6 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
   return (
     <>
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} isCentered size={"2xl"}>
-
         {showConfirm ?
           <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} isCentered size={"sm"}>
             <ModalOverlay />

@@ -1,6 +1,5 @@
 import { Avatar, Button, Flex, Image, Link, Spacer } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
 
 const links = [
   { label: 'Todos', path: '/' },
@@ -8,8 +7,7 @@ const links = [
   { label: 'Calendar', path: '/calendar' },
 ]
 
-export const Header = ({ setShowModal, showOptions, setShowOptions }) => {
-  const { logoutUser, user } = useAuth();
+export const Header = ({ setShowModal, showOptions, setShowOptions, user, logoutUser }) => {
 
   const openModal = () => {
     setShowModal(true);

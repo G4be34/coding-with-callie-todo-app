@@ -1,18 +1,61 @@
 import { Box, Button, Flex, useToast } from "@chakra-ui/react";
 import axios from "axios";
+import { useState } from "react";
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { FaPlus } from "react-icons/fa";
+import { useLoaderData } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { Column } from "../components/Column";
-import { useAuth } from "../context/AuthProvider";
-import { useTodos } from "../context/TodosProvider";
 
 
+const initialData = {
+  tasks: {},
+  columns: {
+    'column-1': {
+      id: 'column-1',
+      title: 'Completed',
+      taskIds: [],
+    },
+    'column-2': {
+      id: 'column-2',
+      title: 'Title',
+      taskIds: [],
+    },
+  },
+  // Facilitate reordering of the columns
+  columnOrder: ['column-1', 'column-2'],
+};
+
+type TaskType = {
+  id: string
+  content: string
+  date_added: number
+  date_completed: number | null
+  priority: string
+  due_date: number | null
+}
+
+type ColumnType = {
+  id: string
+  title: string
+  taskIds: string[]
+}
+
+type InitialDataType = {
+  tasks: {
+    [key: string]: TaskType
+  };
+  columns: {
+    [key: string]: ColumnType
+  };
+  columnOrder: string[];
+}
 
 export const TodosPage = () => {
-  const { todosData, setTodosData } = useTodos();
-  const { token, user } = useAuth();
+  // const { todosData, setTodosData } = useTodos();
+  const fetchedTodosData = useLoaderData();
   const toast = useToast();
+  const [todosData, setTodosData] = useState<InitialDataType>(initialData);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -128,10 +171,10 @@ export const TodosPage = () => {
         column_id: newColumn.id,
         title: newColumn.title,
         position: todosData.columnOrder.length,
-        userId: user._id
+        userId: fetchedTodosData.userId
       };
 
-      await axios.post('/api/groups', apiColumn, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post('/api/groups', apiColumn, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
 
       toast({
         title: "New column added",
@@ -164,7 +207,7 @@ export const TodosPage = () => {
 
               return (
                 <Box key={column.id} minW={"300px"} flexShrink={0} minH={"60%"}>
-                  <Column key={column.id} column={column} tasks={tasks} />
+                  <Column key={column.id} column={column} tasks={tasks} setTodosData={setTodosData} todosData={todosData} />
                 </Box>
               );
             })}

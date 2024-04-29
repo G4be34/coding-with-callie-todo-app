@@ -4,7 +4,6 @@ import { Draggable } from "react-beautiful-dnd"
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css"
 import { TiDelete } from "react-icons/ti"
-import { useTodos } from "../context/TodosProvider"
 
 const options: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -13,8 +12,8 @@ const options: Intl.DateTimeFormatOptions = {
   day: 'numeric'
 }
 
-export const TaskItem = ({ task, index, deleteTodo, completeTodo }) => {
-  const { setTodosData } = useTodos();
+export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }) => {
+  // const { setTodosData } = useTodos();
   const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [editDueDate, setEditDueDate] = useState(false);

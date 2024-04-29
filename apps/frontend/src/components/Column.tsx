@@ -5,9 +5,8 @@ import { Droppable } from "react-beautiful-dnd";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { FaMinusCircle, FaPlus } from "react-icons/fa";
+import { useLoaderData } from "react-router-dom";
 import { v4 as uuid } from "uuid";
-import { useAuth } from "../context/AuthProvider";
-import { useTodos } from "../context/TodosProvider";
 import { TaskItem } from "./TaskItem";
 
 
@@ -26,9 +25,10 @@ type ColumnData = {
   taskIds: string[];
 };
 
-export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] }) => {
-  const { setTodosData, todosData } = useTodos();
-  const { token, user } = useAuth();
+export const Column = ({ column, tasks, setTodosData, todosData }: { column: ColumnData, tasks: Task[], setTodosData: any, todosData: any }) => {
+  // const { setTodosData, todosData } = useTodos();
+  // const { token, user } = useAuth();
+  const fetchedTodosData = useLoaderData();
   const toast = useToast();
   const [showDelete, setShowDelete] = useState(true);
   const [addTodo, setAddTodo] = useState(false);
@@ -67,7 +67,7 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
     });
 
     try {
-      await axios.delete(`/api/groups/${columnId}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`/api/groups/${columnId}`, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
     } catch (error) {
       console.error(error);
       toast({
@@ -323,7 +323,7 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
               : null
               }
             {tasks.length > 0 ? tasks.map((task, index) => (
-              <TaskItem key={task.id} task={task} index={index} deleteTodo={deleteTodo} completeTodo={completeTodo} />
+              <TaskItem key={task.id} task={task} index={index} deleteTodo={deleteTodo} completeTodo={completeTodo} setTodosData={setTodosData} />
             )) : <Text my={2} textAlign={"center"}>Empty</Text>}
             {provided.placeholder}
           </Flex>
