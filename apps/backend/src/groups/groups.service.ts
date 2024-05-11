@@ -13,10 +13,14 @@ export class GroupsService {
     private readonly groupRepository: Repository<Group>,
     private readonly usersService: UsersService,
   ) {}
+
   async create(createGroupDto: CreateGroupDto) {
     const group = await this.groupRepository.create(createGroupDto);
+    console.log('Made it past the create function');
     const user = await this.usersService.findOne(createGroupDto.userId);
+    console.log('Made it past the findOne function');
     group.user = user;
+    console.log('User value: ', user);
     return this.groupRepository.save(group);
   }
 
@@ -28,8 +32,8 @@ export class GroupsService {
 
     const initialData = {
       tasks: {},
-      columns: {},
-      columnOrder: [],
+      columns: { 2000: { id: 2000, title: 'Completed', taskIds: [] } },
+      columnOrder: [2000],
     };
 
     groups.forEach((group) => {

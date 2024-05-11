@@ -43,6 +43,7 @@ export const LoginPage = () => {
           Authorization: `Bearer ${token}`
         }
       });
+
       const expirationDate = timeResponse.data.exp;
       const userId = timeResponse.data.sub;
 
@@ -84,7 +85,7 @@ export const LoginPage = () => {
 
   return (
     <Flex justifyContent={"center"} alignItems={"center"} h={"100vh"} flexDirection={"column"} position={"relative"} bgColor={"gray.300"}>
-      <Heading position={"absolute"} top={"15%"} p={4}>Welcome to CWC Todo App!</Heading>
+      <Heading position={"absolute"} top={{ base: "15%", md: "5%", sm: "2%" }} p={4}>Welcome to CWC Todo App!</Heading>
       <Flex flexDir={"column"} as="form" border={"1px solid black"} borderRadius={10} p={6} w={"450px"} mb={4} rowGap={8} bgColor={"white"}>
         <Heading>Login</Heading>
 

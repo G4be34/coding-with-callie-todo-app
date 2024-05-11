@@ -49,23 +49,23 @@ export class UsersService {
 
     user.groups.sort((a, b) => a.position - b.position);
 
-    const initialData = {
-      tasks: {},
-      columns: {},
-      columnOrder: [],
-    };
+    // const initialData = {
+    //   tasks: {},
+    //   columns: {},
+    //   columnOrder: [],
+    // };
 
-    user.groups.forEach((group) => {
-      initialData.columns[group.id] = {
-        id: group.id,
-        title: group.title,
-        taskIds: group.todos.map((todo) => todo.id),
-      };
+    // user.groups.forEach((group) => {
+    //   initialData.columns[group.id] = {
+    //     id: group.id,
+    //     title: group.title,
+    //     taskIds: group.todos.map((todo) => todo.id),
+    //   };
 
-      initialData.columnOrder.push(group.id);
-    });
+    //   initialData.columnOrder.push(group.id);
+    // });
 
-    return { user, initialData } as UserWithInitialData;
+    return user;
   }
 
   validateUser(email: string) {

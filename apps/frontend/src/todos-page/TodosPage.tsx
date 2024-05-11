@@ -8,23 +8,23 @@ import { v4 as uuidv4 } from 'uuid';
 import { Column } from "../components/Column";
 
 
-const initialData = {
-  tasks: {},
-  columns: {
-    'column-1': {
-      id: 'column-1',
-      title: 'Completed',
-      taskIds: [],
-    },
-    'column-2': {
-      id: 'column-2',
-      title: 'Title',
-      taskIds: [],
-    },
-  },
-  // Facilitate reordering of the columns
-  columnOrder: ['column-1', 'column-2'],
-};
+// const initialData = {
+//   tasks: {},
+//   columns: {
+//     'column-1': {  initial state
+//       id: 'column-1',
+//       title: 'Completed',
+//       taskIds: [],
+//     },
+//     'column-2': {
+//       id: 'column-2',
+//       title: 'Title',
+//       taskIds: [],
+//     },
+//   },
+//   // Facilitate reordering of the columns
+//   columnOrder: ['column-1', 'column-2'],
+// };
 
 type TaskType = {
   id: string
@@ -51,11 +51,16 @@ type InitialDataType = {
   columnOrder: string[];
 }
 
+type LoadedTodosDataType = {
+  fetchedTodosData: InitialDataType
+  access_token: string
+  userId: string
+}
+
 export const TodosPage = () => {
-  // const { todosData, setTodosData } = useTodos();
-  const fetchedTodosData = useLoaderData();
+  const loadedTodosData = useLoaderData() as LoadedTodosDataType;
   const toast = useToast();
-  const [todosData, setTodosData] = useState<InitialDataType>(initialData);
+  const [todosData, setTodosData] = useState(loadedTodosData.fetchedTodosData);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -171,10 +176,10 @@ export const TodosPage = () => {
         column_id: newColumn.id,
         title: newColumn.title,
         position: todosData.columnOrder.length,
-        userId: fetchedTodosData.userId
+        userId: loadedTodosData.userId
       };
 
-      await axios.post('/api/groups', apiColumn, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
+      await axios.post('/api/groups', apiColumn, { headers: { Authorization: `Bearer ${loadedTodosData.access_token}` } });
 
       toast({
         title: "New column added",

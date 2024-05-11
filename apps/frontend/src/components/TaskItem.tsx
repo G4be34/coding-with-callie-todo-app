@@ -13,7 +13,6 @@ const options: Intl.DateTimeFormatOptions = {
 }
 
 export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }) => {
-  // const { setTodosData } = useTodos();
   const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [editDueDate, setEditDueDate] = useState(false);

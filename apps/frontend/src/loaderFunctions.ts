@@ -1,3 +1,4 @@
+import axios from "axios";
 import { redirect } from "react-router-dom";
 
 export const authenticateUser = async ({ request }: { request: Request }) => {
@@ -23,8 +24,15 @@ export const getTodosData = async () => {
   const userId = parseInt(preParsedId!, 10);
   const { access_token } = JSON.parse(token!);
 
+  const response = await axios.get('/api/groups?user=' + userId, {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
 
-  return { access_token, userId };
+  const fetchedTodosData = response.data;
+
+  return { access_token, userId, fetchedTodosData };
 };
 
 export const getGraphsData = async () => {

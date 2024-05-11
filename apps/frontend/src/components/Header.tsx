@@ -5,9 +5,17 @@ const links = [
   { label: 'Todos', path: '/' },
   { label: 'Graphs', path: '/data' },
   { label: 'Calendar', path: '/calendar' },
-]
+];
 
-export const Header = ({ setShowModal, showOptions, setShowOptions, user, logoutUser }) => {
+type HeaderPropTypes = {
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
+  showOptions: boolean,
+  setShowOptions: React.Dispatch<React.SetStateAction<boolean>>,
+  user: any,
+  logoutUser: () => void
+}
+
+export const Header = ({ setShowModal, showOptions, setShowOptions, user, logoutUser }: HeaderPropTypes) => {
 
   const openModal = () => {
     setShowModal(true);

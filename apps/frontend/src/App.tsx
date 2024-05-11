@@ -93,7 +93,7 @@ function Layout() {
         const photo = photoResponse.data;
         const photoBase64 = `data:image/png;base64,${photo}`;
 
-        setUser({_id: userId, ...userResponse.data.user, photo: photoBase64});
+        setUser({_id: userId, ...userResponse.data, photo: photoBase64});
 
         toast({
           title: `Welcome ${userResponse.data.username}!`,
