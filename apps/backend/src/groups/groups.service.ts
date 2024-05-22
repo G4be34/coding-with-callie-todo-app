@@ -16,11 +16,8 @@ export class GroupsService {
 
   async create(createGroupDto: CreateGroupDto) {
     const group = await this.groupRepository.create(createGroupDto);
-    console.log('Made it past the create function');
     const user = await this.usersService.findOne(createGroupDto.userId);
-    console.log('Made it past the findOne function');
     group.user = user;
-    console.log('User value: ', user);
     return this.groupRepository.save(group);
   }
 
@@ -39,6 +36,7 @@ export class GroupsService {
     groups.forEach((group) => {
       initialData.columns[group.id] = {
         id: group.id,
+        column_id: group.column_id,
         title: group.title,
         taskIds: group.todos.map((todo) => todo.id),
       };

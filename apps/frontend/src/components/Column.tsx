@@ -10,6 +10,31 @@ import { v4 as uuid } from "uuid";
 import { TaskItem } from "./TaskItem";
 
 
+type TaskType = {
+  id: string
+  content: string
+  date_added: number
+  date_completed: number | null
+  priority: string
+  due_date: number | null
+};
+
+type ColumnType = {
+  id: string
+  title: string
+  taskIds: string[]
+};
+
+type InitialDataType = {
+  tasks: {
+    [key: string]: TaskType
+  };
+  columns: {
+    [key: string]: ColumnType
+  };
+  columnOrder: string[];
+};
+
 type Task = {
   id: string;
   content: string;
@@ -25,9 +50,14 @@ type ColumnData = {
   taskIds: string[];
 };
 
-export const Column = ({ column, tasks, setTodosData, todosData }: { column: ColumnData, tasks: Task[], setTodosData: any, todosData: any }) => {
-  // const { setTodosData, todosData } = useTodos();
-  // const { token, user } = useAuth();
+type ColumnProps = {
+  column: ColumnData;
+  tasks: Task[];
+  setTodosData: React.Dispatch<React.SetStateAction<InitialDataType>>;
+  todosData: InitialDataType;
+};
+
+export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) => {
   const fetchedTodosData = useLoaderData();
   const toast = useToast();
   const [showDelete, setShowDelete] = useState(true);
@@ -69,7 +99,7 @@ export const Column = ({ column, tasks, setTodosData, todosData }: { column: Col
     try {
       await axios.delete(`/api/groups/${columnId}`, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
     } catch (error) {
-      console.error(error);
+      console.error("Failed to delete column", error);
       toast({
         title: "Failed to delete column",
         status: "error",
@@ -220,7 +250,31 @@ export const Column = ({ column, tasks, setTodosData, todosData }: { column: Col
         },
       },
     }));
-  }
+  };
+
+  const changeTitle = async (newTitle: string) => {
+    try {
+      await axios.patch(`/api/groups/${column.id}`, {title: newTitle});
+
+      toast({
+        title: "Column title updated",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
+    } catch (error) {
+      console.error("Error updating column title:", error);
+      toast({
+        title: "Error updating column title",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
+    }
+  };
 
 
   return (
@@ -249,12 +303,12 @@ export const Column = ({ column, tasks, setTodosData, todosData }: { column: Col
           <option value="Due">Due Date</option>
           <option value="Priority">Priority</option>
         </Select>
-        <Editable defaultValue={column.title} cursor={"pointer"} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"}>
+        <Editable defaultValue={column.title} cursor={"pointer"} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"} onSubmit={changeTitle}>
           <EditablePreview />
           <EditableInput />
         </Editable>
       </Flex>
-      <Droppable droppableId={column.id}>
+      <Droppable droppableId={`column-${column.id}`}>
         {(provided, snapshot) => (
           <Flex
             ref={provided.innerRef}

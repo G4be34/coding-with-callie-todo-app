@@ -33,13 +33,13 @@ type TaskType = {
   date_completed: number | null
   priority: string
   due_date: number | null
-}
+};
 
 type ColumnType = {
   id: string
   title: string
   taskIds: string[]
-}
+};
 
 type InitialDataType = {
   tasks: {
@@ -49,13 +49,13 @@ type InitialDataType = {
     [key: string]: ColumnType
   };
   columnOrder: string[];
-}
+};
 
 type LoadedTodosDataType = {
   fetchedTodosData: InitialDataType
   access_token: string
   userId: string
-}
+};
 
 export const TodosPage = () => {
   const loadedTodosData = useLoaderData() as LoadedTodosDataType;
@@ -156,30 +156,30 @@ export const TodosPage = () => {
   };
 
   const addNewColumn = async () => {
-    const newColumn = {
-      id: uuidv4(),
-      title: "Title",
-      taskIds: [],
-    };
-
-    setTodosData(prevState => ({
-      ...prevState,
-      columns: {
-        ...prevState.columns,
-        [newColumn.id]: newColumn,
-      },
-      columnOrder: [...prevState.columnOrder, newColumn.id],
-    }));
-
     try {
       const apiColumn = {
-        column_id: newColumn.id,
-        title: newColumn.title,
+        column_id: uuidv4(),
+        title: "Title",
         position: todosData.columnOrder.length,
         userId: loadedTodosData.userId
       };
 
-      await axios.post('/api/groups', apiColumn, { headers: { Authorization: `Bearer ${loadedTodosData.access_token}` } });
+      const response = await axios.post('/api/groups', apiColumn, { headers: { Authorization: `Bearer ${loadedTodosData.access_token}` } });
+
+      const newColumn = {
+        id: response.data.id,
+        title: "Title",
+        taskIds: [],
+      };
+
+      setTodosData(prevState => ({
+        ...prevState,
+        columns: {
+          ...prevState.columns,
+          [newColumn.id]: newColumn,
+        },
+        columnOrder: [...prevState.columnOrder, newColumn.id],
+      }));
 
       toast({
         title: "New column added",
