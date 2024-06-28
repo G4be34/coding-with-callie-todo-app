@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { GroupsService } from 'src/groups/groups.service';
 import { Repository } from 'typeorm';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
@@ -8,12 +9,19 @@ import { Todo } from './entities/todo.entity';
 @Injectable()
 export class TodosService {
   constructor(
-    @InjectRepository(Todo) private readonly todoRepository: Repository<Todo>,
+    @InjectRepository(Todo)
+    private readonly todoRepository: Repository<Todo>,
+    private readonly groupService: GroupsService,
   ) {}
   async create(createTodoDto: CreateTodoDto) {
-    // const todo = this.todoRepository.create(createTodoDto);
-    // return await this.todoRepository.save(todo);
-    return 'Created Todo';
+    console.log('Made it into create function');
+    const todo = this.todoRepository.create(createTodoDto);
+    const group = await this.groupService.findOne(createTodoDto.groupId);
+    todo.group = group;
+    console.log('first todo: ', todo);
+    const newTodo = await this.todoRepository.save(todo);
+    console.log('new todo: ', newTodo);
+    return newTodo;
   }
 
   findAll() {

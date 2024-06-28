@@ -1,4 +1,10 @@
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import {
+  Allow,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateTodoDto {
   @IsString()
@@ -7,19 +13,20 @@ export class CreateTodoDto {
   @IsNotEmpty()
   description: string;
 
-  @IsDate()
-  date_added: Date;
+  @Allow()
+  date_added: string;
 
-  @IsDate()
-  due_date: Date;
+  @Allow()
+  due_date: string | null;
 
-  @IsDate()
-  date_completed: Date | null;
+  @IsString()
+  @IsOptional()
+  date_completed: string | null;
 
   @IsNotEmpty()
   @IsString()
   priority: 'Normal' | 'High' | 'Highest';
 
-  @IsString()
-  group: string;
+  @IsInt()
+  groupId: number;
 }

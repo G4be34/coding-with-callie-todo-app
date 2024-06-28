@@ -27,15 +27,18 @@ import { Column } from "../components/Column";
 // };
 
 type TaskType = {
+  todo_id: string
   id: string
-  content: string
+  description: string
   date_added: number
   date_completed: number | null
   priority: string
   due_date: number | null
+  groupId: string
 };
 
 type ColumnType = {
+  column_id: string
   id: string
   title: string
   taskIds: string[]
@@ -149,16 +152,18 @@ export const TodosPage = () => {
       ...prevState,
       columns: {
         ...prevState.columns,
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish,
+        [newStart.column_id]: newStart,
+        [newFinish.column_id]: newFinish,
       },
     }));
   };
 
   const addNewColumn = async () => {
     try {
+      const columnId = uuidv4();
+
       const apiColumn = {
-        column_id: uuidv4(),
+        column_id: columnId,
         title: "Title",
         position: todosData.columnOrder.length,
         userId: loadedTodosData.userId
@@ -168,6 +173,7 @@ export const TodosPage = () => {
 
       const newColumn = {
         id: response.data.id,
+        column_id: columnId,
         title: "Title",
         taskIds: [],
       };
@@ -176,9 +182,9 @@ export const TodosPage = () => {
         ...prevState,
         columns: {
           ...prevState.columns,
-          [newColumn.id]: newColumn,
+          [newColumn.column_id]: newColumn,
         },
-        columnOrder: [...prevState.columnOrder, newColumn.id],
+        columnOrder: [...prevState.columnOrder, newColumn.column_id],
       }));
 
       toast({
@@ -208,6 +214,7 @@ export const TodosPage = () => {
           <Flex gap={8} minH={"75%"}>
             {todosData.columnOrder.map((columnId) => {
               const column = todosData.columns[columnId];
+              console.log("This is column: ", column);
               const tasks = column.taskIds.map((taskId: string) => todosData.tasks[taskId]);
 
               return (

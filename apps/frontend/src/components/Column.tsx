@@ -10,42 +10,30 @@ import { v4 as uuid } from "uuid";
 import { TaskItem } from "./TaskItem";
 
 
-type TaskType = {
-  id: string
-  content: string
-  date_added: number
-  date_completed: number | null
-  priority: string
-  due_date: number | null
-};
-
-type ColumnType = {
-  id: string
-  title: string
-  taskIds: string[]
-};
-
 type InitialDataType = {
   tasks: {
-    [key: string]: TaskType
+    [key: string]: Task
   };
   columns: {
-    [key: string]: ColumnType
+    [key: string]: ColumnData
   };
   columnOrder: string[];
 };
 
 type Task = {
+  todo_id: string;
   id: string;
-  content: string;
+  description: string;
   date_added: number;
   date_completed: number | null;
   priority: string;
   due_date: number | null;
+  groupId: string;
 };
 
 type ColumnData = {
   id: string;
+  column_id: string;
   title: string;
   taskIds: string[];
 };
@@ -57,8 +45,25 @@ type ColumnProps = {
   todosData: InitialDataType;
 };
 
+type LoadedTodosDataType = {
+  fetchedTodosData: InitialDataType
+  access_token: string
+  userId: string
+};
+
+type NewTaskType = {
+  todo_id: string
+  description: string
+  date_added: number | string
+  date_completed: number | string | null
+  priority: string
+  due_date: number | string | null
+  groupId: string
+  id?: number
+}
+
 export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) => {
-  const fetchedTodosData = useLoaderData();
+  const fetchedTodosData = useLoaderData() as LoadedTodosDataType;
   const toast = useToast();
   const [showDelete, setShowDelete] = useState(true);
   const [addTodo, setAddTodo] = useState(false);
@@ -110,48 +115,70 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
     }
   };
 
-  const addNewTodo = () => {
+  const addNewTodo = async () => {
     if (newTodo.trim() === "") return;
 
-    const newTaskId = uuid();
     const currentDate = new Date();
+    try {
+      let newTask: NewTaskType = {
+        todo_id: uuid(),
+        description: newTodo.trim(),
+        date_added: (currentDate.getTime()).toString(),
+        date_completed: null,
+        priority,
+        due_date: (dueDate.getTime()).toString(),
+        groupId: column.id
+      };
 
-    const newTask: Task = {
-      id: newTaskId,
-      content: newTodo.trim(),
-      date_added: currentDate.getTime(),
-      date_completed: null,
-      priority,
-      due_date: dueDate.getTime(),
-    };
+      const response = await axios.post('/api/todos', newTask, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
 
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: {
-        ...prevState.tasks,
-        [newTaskId]: newTask,
-      },
-      columns: {
-        ...prevState.columns,
-        [column.id]: {
-          ...prevState.columns[column.id],
-          taskIds: [newTaskId, ...prevState.columns[column.id].taskIds],
+      const newTaskId = response.data.id;
+
+      newTask = {
+        ...newTask,
+        date_added: currentDate.getTime(),
+        due_date: dueDate.getTime(),
+        id: newTaskId
+      };
+
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: {
+          ...prevState.tasks,
+          [newTaskId]: newTask,
         },
-      },
-    }));
+        columns: {
+          ...prevState.columns,
+          [column.column_id]: {
+            ...prevState.columns[column.column_id],
+            taskIds: [newTaskId, ...prevState.columns[column.column_id].taskIds],
+          },
+        },
+      }));
 
-    setNewTodo("");
-    setDueDate(new Date());
-    setPriority("Normal");
-    setAddTodo(false);
+      toast({
+        title: "Task added",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
 
-    toast({
-      title: "Task added",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+    } catch (error) {
+      console.error("Error adding task: ", error);
+      toast({
+        title: "Failed to add task",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } finally {
+      setNewTodo("");
+      setDueDate(new Date());
+      setPriority("Normal");
+      setAddTodo(false);
+    }
   };
 
   const deleteTodo = (taskIdToDelete: string) => {
@@ -246,7 +273,7 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
         ...prevState.columns,
         [column.id]: {
           ...prevState.columns[column.id],
-          taskIds: sortedTasks.map(task => task.id),
+          taskIds: sortedTasks.map(task => task.todo_id),
         },
       },
     }));
@@ -308,7 +335,7 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
           <EditableInput />
         </Editable>
       </Flex>
-      <Droppable droppableId={`column-${column.id}`}>
+      <Droppable droppableId={column.column_id}>
         {(provided, snapshot) => (
           <Flex
             ref={provided.innerRef}

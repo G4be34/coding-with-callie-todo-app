@@ -12,14 +12,14 @@ export class Todo {
   @Column()
   description: string;
 
-  @Column({ nullable: true })
-  date_completed: Date | null;
+  @Column({ nullable: true, type: 'bigint' })
+  date_completed: string | null;
 
-  @Column()
-  due_date: Date;
+  @Column({ nullable: true, type: 'bigint' })
+  due_date: string | null;
 
-  @Column()
-  date_added: Date;
+  @Column({ type: 'bigint' })
+  date_added: string;
 
   @Column()
   priority: 'Normal' | 'High' | 'Highest';

@@ -24,8 +24,8 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
       ...prevState,
       tasks: {
         ...prevState.tasks,
-        [task.id]: {
-          ...prevState.tasks[task.id],
+        [task.todo_id]: {
+          ...prevState.tasks[task.todo_id],
           content: newTaskContent,
         },
       },
@@ -93,7 +93,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
 
 
   return (
-    <Draggable draggableId={task.id} index={index}>
+    <Draggable draggableId={task.todo_id} index={index}>
       {(provided, snapshot) => (
         <Card
           {...provided.draggableProps}
@@ -131,7 +131,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
           <CardBody>
             {editing
               ? <Textarea
-                  defaultValue={task.content}
+                  defaultValue={task.description}
                   onBlur={() => setEditing(false)}
                   onChange={(e) => setNewTaskContent(e.target.value)}
                   onKeyDown={handleEnterKey}
@@ -143,7 +143,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
                   onClick={() => setEditing(true)}
                   _hover={{ cursor: "pointer" }}
                   >
-                    {task.content}
+                    {task.description}
                   </Text>
                 }
           </CardBody>

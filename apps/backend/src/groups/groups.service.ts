@@ -25,23 +25,36 @@ export class GroupsService {
     const groups = await this.groupRepository.find({
       where: { user: { id: userId } },
       order: { position: 'ASC' },
+      relations: { todos: true },
     });
+    console.log('groups: ', groups[1].todos);
 
     const initialData = {
       tasks: {},
-      columns: { 2000: { id: 2000, title: 'Completed', taskIds: [] } },
-      columnOrder: [2000],
+      columns: {
+        'column-1': {
+          id: 'column-1',
+          column_id: 'column-1',
+          title: 'Completed',
+          taskIds: [],
+        },
+      },
+      columnOrder: ['column-1'],
     };
 
     groups.forEach((group) => {
-      initialData.columns[group.id] = {
+      initialData.columns[group.column_id] = {
         id: group.id,
         column_id: group.column_id,
         title: group.title,
         taskIds: group.todos.map((todo) => todo.id),
       };
 
-      initialData.columnOrder.push(group.id);
+      group.todos.forEach((todo) => {
+        initialData.tasks[todo.id] = todo;
+      });
+
+      initialData.columnOrder.push(group.column_id);
     });
 
     return initialData;
