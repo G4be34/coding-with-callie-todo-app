@@ -216,6 +216,7 @@ export const TodosPage = () => {
               const column = todosData.columns[columnId];
               console.log("This is column: ", column);
               const tasks = column.taskIds.map((taskId: string) => todosData.tasks[taskId]);
+              console.log("This is tasks: ", tasks);
 
               return (
                 <Box key={column.id} minW={"300px"} flexShrink={0} minH={"60%"}>
