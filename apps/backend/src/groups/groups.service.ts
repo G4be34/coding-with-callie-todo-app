@@ -27,7 +27,6 @@ export class GroupsService {
       order: { position: 'ASC' },
       relations: { todos: true },
     });
-    console.log('groups: ', groups[1].todos);
 
     const initialData = {
       tasks: {},

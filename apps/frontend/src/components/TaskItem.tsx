@@ -120,7 +120,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
                   />
               : <>
                   <Text fontWeight={"bold"} fontSize={"sm"}>Due</Text>
-                  <Text onClick={() => setEditDueDate(true)} fontSize={"sm"}>{new Date(task.due_date).toLocaleDateString('en-US', options)}</Text>
+                  <Text onClick={() => setEditDueDate(true)} fontSize={"sm"}>{new Date(parseInt(task.due_date)).toLocaleDateString('en-US', options)}</Text>
                 </>
               }
 
@@ -154,7 +154,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
                   <Text fontSize={"sm"}>{new Date(task.date_completed).toLocaleDateString('en-US', options)}</Text>
                 </Flex>
               : <Flex w={"100%"} alignItems={"center"}>
-                  <Button size={"xs"} onClick={() => completeTodo(task.id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Complete</Button>
+                  <Button size={"xs"} onClick={() => completeTodo(task.todo_id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Complete</Button>
                   <Spacer />
                   <Select
                     defaultValue={task.priority}

@@ -224,9 +224,9 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
           ...prevState.columns[prevState.columnOrder[0]],
           taskIds: [taskId, ...prevState.columns[prevState.columnOrder[0]].taskIds],
         },
-        [column.id]: {
-          ...prevState.columns[column.id],
-          taskIds: prevState.columns[column.id].taskIds.filter(id => id !== taskId),
+        [column.column_id]: {
+          ...prevState.columns[column.column_id],
+          taskIds: prevState.columns[column.column_id].taskIds.filter(id => id !== taskId),
         },
       },
     }));
