@@ -1,9 +1,46 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react"
+import axios from "axios"
 import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css"
 import { TiDelete } from "react-icons/ti"
+import { useLoaderData } from "react-router-dom"
+
+
+type LoadedTodosDataType = {
+  fetchedTodosData: InitialDataType
+  access_token: string
+  userId: string
+};
+
+type InitialDataType = {
+  tasks: {
+    [key: string]: Task
+  };
+  columns: {
+    [key: string]: ColumnData
+  };
+  columnOrder: string[];
+};
+
+type Task = {
+  todo_id: string;
+  id: string;
+  description: string;
+  date_added: number;
+  date_completed: number | null;
+  priority: string;
+  due_date: number | null;
+  groupId: string;
+};
+
+type ColumnData = {
+  id: string;
+  column_id: string;
+  title: string;
+  taskIds: string[];
+};
 
 const options: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -13,31 +50,51 @@ const options: Intl.DateTimeFormatOptions = {
 }
 
 export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }) => {
+  const fetchedTodosData = useLoaderData() as LoadedTodosDataType
   const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [editDueDate, setEditDueDate] = useState(false);
   const [newTaskContent, setNewTaskContent] = useState("");
 
 
-  const editTodo = () => {
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: {
-        ...prevState.tasks,
-        [task.todo_id]: {
-          ...prevState.tasks[task.todo_id],
-          content: newTaskContent,
-        },
-      },
-    }))
+  const editTodo = async () => {
+    try {
+      await axios.patch(`/api/todos/${task.todo_id}`, {
+        description: newTaskContent
+      }, {
+        headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
+      });
 
-    toast({
-      title: "Task has been edited",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: {
+          ...prevState.tasks,
+          [task.todo_id]: {
+            ...prevState.tasks[task.todo_id],
+            description: newTaskContent,
+          },
+        },
+      }))
+
+      toast({
+        title: "Task has been edited",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error editing task description:", error);
+      toast({
+        title: "Error editing task description",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
+    }
+
   };
 
   const handleEnterKey = (event: React.KeyboardEvent) => {

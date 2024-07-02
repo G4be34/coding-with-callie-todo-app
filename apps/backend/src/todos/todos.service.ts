@@ -14,13 +14,10 @@ export class TodosService {
     private readonly groupService: GroupsService,
   ) {}
   async create(createTodoDto: CreateTodoDto) {
-    console.log('Made it into create function');
     const todo = this.todoRepository.create(createTodoDto);
     const group = await this.groupService.findOne(createTodoDto.groupId);
     todo.group = group;
-    console.log('first todo: ', todo);
     const newTodo = await this.todoRepository.save(todo);
-    console.log('new todo: ', newTodo);
     return newTodo;
   }
 
@@ -32,8 +29,9 @@ export class TodosService {
     return this.todoRepository.findOne({ where: { id } });
   }
 
-  async update(id: number, updateTodoDto: UpdateTodoDto) {
-    const todo = await this.todoRepository.findOne({ where: { id } });
+  async update(id: string, updateTodoDto: UpdateTodoDto) {
+    const todo = await this.todoRepository.findOne({ where: { todo_id: id } });
+
     Object.assign(todo, updateTodoDto);
     return await this.todoRepository.save(todo);
   }
