@@ -104,25 +104,43 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
     }
   };
 
-  const changePriority = (priority: string) => {
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: {
-        ...prevState.tasks,
-        [task.id]: {
-          ...prevState.tasks[task.id],
-          priority,
-        },
-      },
-    }));
+  const changePriority = async (priority: string) => {
+    try {
+      await axios.patch(`/api/todos/${task.todo_id}`, {
+        priority
+      }, {
+        headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
+      })
 
-    toast({
-      title: "Priority has been updated",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: {
+          ...prevState.tasks,
+          [task.todo_id]: {
+            ...prevState.tasks[task.todo_id],
+            priority,
+          },
+        },
+      }));
+
+      toast({
+        title: "Priority has been updated",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error changing priority:", error);
+      toast({
+        title: "Error changing priority",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
+    }
   };
 
   const changeDueDate = (date: Date) => {
