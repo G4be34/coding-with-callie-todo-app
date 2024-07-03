@@ -180,29 +180,44 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
     }
   };
 
-  const deleteTodo = (taskIdToDelete: string) => {
+  const deleteTodo = async (taskIdToDelete: string) => {
     const updatedTasks = Object.entries(todosData.tasks).filter(([taskId, _]) => taskId !== taskIdToDelete);
-    const updatedColumnTaskIds = todosData.columns[column.id].taskIds.filter((id) => id !== taskIdToDelete);
+    const updatedColumnTaskIds = todosData.columns[column.column_id].taskIds.filter((id) => id !== taskIdToDelete);
 
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: Object.fromEntries(updatedTasks),
-      columns: {
-        ...prevState.columns,
-        [column.id]: {
-          ...prevState.columns[column.id],
-          taskIds: updatedColumnTaskIds,
+    try {
+      await axios.delete(`/api/todos/${taskIdToDelete}`, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
+
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: Object.fromEntries(updatedTasks),
+        columns: {
+          ...prevState.columns,
+          [column.column_id]: {
+            ...prevState.columns[column.column_id],
+            taskIds: updatedColumnTaskIds,
+          },
         },
-      },
-    }));
+      }));
 
-    toast({
-      title: "Task deleted",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+      toast({
+        title: "Task deleted",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Failed to delete task: ", error);
+      toast({
+        title: "Failed to delete task",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
   };
 
   const completeTodo = (taskId: string) => {

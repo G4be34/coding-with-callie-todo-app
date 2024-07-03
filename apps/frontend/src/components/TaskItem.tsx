@@ -55,6 +55,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
   const [editing, setEditing] = useState(false);
   const [editDueDate, setEditDueDate] = useState(false);
   const [newTaskContent, setNewTaskContent] = useState("");
+  const [dueDate, setDueDate] = useState(task.due_date);
 
 
   const editTodo = async () => {
@@ -149,7 +150,9 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
         due_date: date.getTime()
       }, {
         headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
-      })
+      });
+
+      setDueDate(date.getTime());
 
       setTodosData(prevState => ({
         ...prevState,
@@ -213,13 +216,13 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
                   />
               : <>
                   <Text fontWeight={"bold"} fontSize={"sm"}>Due</Text>
-                  <Text onClick={() => setEditDueDate(true)} fontSize={"sm"}>{new Date(parseInt(task.due_date)).toLocaleDateString('en-US', options)}</Text>
+                  <Text onClick={() => setEditDueDate(true)} fontSize={"sm"}>{new Date(parseInt(dueDate)).toLocaleDateString('en-US', options)}</Text>
                 </>
               }
 
           </CardHeader>
           <Flex position={"absolute"} top={0} right={0} _hover={{ opacity: 0.5}}>
-            <TiDelete size={30} cursor={"pointer"} onClick={() => deleteTodo(task.id)}/>
+            <TiDelete size={30} cursor={"pointer"} onClick={() => deleteTodo(task.todo_id)}/>
           </Flex>
           <CardBody>
             {editing

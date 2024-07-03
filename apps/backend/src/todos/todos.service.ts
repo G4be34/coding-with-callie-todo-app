@@ -36,7 +36,7 @@ export class TodosService {
     return await this.todoRepository.save(todo);
   }
 
-  remove(id: number) {
-    return this.todoRepository.delete({ id });
+  remove(id: string) {
+    return this.todoRepository.delete({ todo_id: id });
   }
 }
