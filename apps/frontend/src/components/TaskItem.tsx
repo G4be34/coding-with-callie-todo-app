@@ -143,27 +143,45 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
     }
   };
 
-  const changeDueDate = (date: Date) => {
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: {
-        ...prevState.tasks,
-        [task.id]: {
-          ...prevState.tasks[task.id],
-          due_date: date.getTime(),
+  const changeDueDate = async (date: Date) => {
+    try {
+      await axios.patch(`/api/todos/${task.todo_id}`, {
+        due_date: date.getTime()
+      }, {
+        headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
+      })
+
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: {
+          ...prevState.tasks,
+          [task.todo_id]: {
+            ...prevState.tasks[task.todo_id],
+            due_date: date.getTime(),
+          },
         },
-      },
-    }));
+      }));
 
-    setEditDueDate(false);
+      setEditDueDate(false);
 
-    toast({
-      title: "Due date has been updated",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+      toast({
+        title: "Due date has been updated",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error changing due date:", error);
+      toast({
+        title: "Error changing due date",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
+    }
   };
 
 
@@ -187,8 +205,8 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
             {editDueDate
               ? <DatePicker
                   onBlur={() => setEditDueDate(false)}
-                  selected={new Date(task.due_date)}
-                  openToDate={new Date(task.due_date)}
+                  selected={new Date(parseInt(task.due_date))}
+                  openToDate={new Date(parseInt(task.due_date))}
                   onChange={(date: Date) => changeDueDate(date)}
                   fixedHeight
                   showIcon
