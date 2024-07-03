@@ -85,24 +85,23 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
 
     const taskIdsToDelete = todosData.columns[columnId].taskIds;
     const updatedColumnOrder = todosData.columnOrder.filter(columnIdToDelete => columnIdToDelete !== columnId);
-
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: Object.fromEntries(Object.entries(prevState.tasks).filter(([taskId, _]) => !taskIdsToDelete.includes(taskId))),
-      columns: Object.fromEntries(Object.entries(prevState.columns).filter(([columnIdToDelete, _]) => columnIdToDelete !== columnId)),
-      columnOrder: updatedColumnOrder,
-    }));
-
-    toast({
-      title: `Column ${column.title} has been deleted`,
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
-
     try {
       await axios.delete(`/api/groups/${columnId}`, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
+
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: Object.fromEntries(Object.entries(prevState.tasks).filter(([taskId, _]) => !taskIdsToDelete.includes(taskId))),
+        columns: Object.fromEntries(Object.entries(prevState.columns).filter(([columnIdToDelete, _]) => columnIdToDelete !== columnId)),
+        columnOrder: updatedColumnOrder,
+      }));
+
+      toast({
+        title: `Column ${column.title} has been deleted`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
     } catch (error) {
       console.error("Failed to delete column", error);
       toast({
@@ -313,7 +312,7 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
         : <Button
             autoFocus
             size={"xs"}
-            onClick={() => deleteColumn(column.id)}
+            onClick={() => deleteColumn(column.column_id)}
             mb={2}
             onBlur={() => setShowDelete(true)}
             bg={"red.400"}

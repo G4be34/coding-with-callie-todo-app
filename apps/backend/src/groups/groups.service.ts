@@ -70,7 +70,7 @@ export class GroupsService {
     return this.groupRepository.save(group);
   }
 
-  remove(id: number) {
-    return this.groupRepository.delete({ id });
+  remove(id: string) {
+    return this.groupRepository.delete({ column_id: id });
   }
 }
