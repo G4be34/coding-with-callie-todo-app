@@ -56,6 +56,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
   const [editDueDate, setEditDueDate] = useState(false);
   const [newTaskContent, setNewTaskContent] = useState("");
   const [dueDate, setDueDate] = useState(task.due_date);
+  const [priority, setPriority] = useState(task.priority);
 
 
   const editTodo = async () => {
@@ -123,6 +124,8 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
           },
         },
       }));
+
+      setPriority(priority);
 
       toast({
         title: "Priority has been updated",
@@ -253,17 +256,17 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
                   <Button size={"xs"} onClick={() => completeTodo(task.todo_id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Complete</Button>
                   <Spacer />
                   <Select
-                    defaultValue={task.priority}
+                    defaultValue={priority}
                     size={"xs"}
                     variant={"filled"}
-                    bg={task.priority === "Normal" ? "gray" : task.priority === "High" ? "orange" : task.priority === "Highest" ? "red" : "gray"}
+                    bg={priority === "Normal" ? "gray" : priority === "High" ? "orange" : priority === "Highest" ? "red" : "gray"}
                     w={"35%"}
-                    color={task.priority === "High" ? "black" : "white"}
+                    color={priority === "High" ? "black" : "white"}
                     borderRadius={10}
                     onChange={(e) => changePriority(e.target.value)}
                     _hover={{ opacity: 0.70 }}
                     cursor={"pointer"}
-                    _focus={{ backgroundColor: task.priority === "Normal" ? "gray" : task.priority === "High" ? "orange" : task.priority === "Highest" ? "red" : "gray" }}
+                    _focus={{ backgroundColor: priority === "Normal" ? "gray" : priority === "High" ? "orange" : priority === "Highest" ? "red" : "gray" }}
                     >
                     <option value={"Normal"}>Normal</option>
                     <option value={"High"}>High</option>
