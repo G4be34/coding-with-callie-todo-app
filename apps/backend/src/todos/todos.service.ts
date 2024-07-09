@@ -32,7 +32,17 @@ export class TodosService {
   async update(id: string, updateTodoDto: UpdateTodoDto) {
     const todo = await this.todoRepository.findOne({ where: { todo_id: id } });
 
-    Object.assign(todo, updateTodoDto);
+    if (updateTodoDto.groupId) {
+      const group = await this.groupService.findOne(updateTodoDto.groupId);
+      todo.group = group;
+
+      if (updateTodoDto.date_completed) {
+        todo.date_completed = updateTodoDto.date_completed;
+      }
+    } else {
+      Object.assign(todo, updateTodoDto);
+    }
+
     return await this.todoRepository.save(todo);
   }
 

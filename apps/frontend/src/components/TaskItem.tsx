@@ -250,7 +250,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
             {task.date_completed
               ? <Flex flexDir={"column"}>
                   <Text fontWeight={"bold"} fontSize={"sm"}>Completed </Text>
-                  <Text fontSize={"sm"}>{new Date(task.date_completed).toLocaleDateString('en-US', options)}</Text>
+                  <Text fontSize={"sm"}>{new Date(parseInt(task.date_completed)).toLocaleDateString('en-US', options)}</Text>
                 </Flex>
               : <Flex w={"100%"} alignItems={"center"}>
                   <Button size={"xs"} onClick={() => completeTodo(task.todo_id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Complete</Button>

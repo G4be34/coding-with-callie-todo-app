@@ -1,10 +1,4 @@
-import {
-  Allow,
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { Allow, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateTodoDto {
   @IsString()
@@ -27,6 +21,6 @@ export class CreateTodoDto {
   @IsString()
   priority: 'Normal' | 'High' | 'Highest';
 
-  @IsInt()
-  groupId: number;
+  @IsString()
+  groupId: string;
 }

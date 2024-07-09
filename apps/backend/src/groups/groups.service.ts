@@ -46,8 +46,16 @@ export class GroupsService {
         id: group.id,
         column_id: group.column_id,
         title: group.title,
-        taskIds: group.todos.map((todo) => todo.todo_id),
+        taskIds: group.todos
+          .filter((todo) => todo.date_completed === null)
+          .map((todo) => todo.todo_id),
       };
+
+      const completedTodos = group.todos
+        .filter((todo) => todo.date_completed)
+        .map((todo) => todo.todo_id);
+
+      initialData.columns['column-1'].taskIds.push(...completedTodos);
 
       group.todos.forEach((todo) => {
         initialData.tasks[todo.todo_id] = todo;
@@ -59,8 +67,8 @@ export class GroupsService {
     return initialData;
   }
 
-  findOne(id: number) {
-    return this.groupRepository.findOne({ where: { id } });
+  findOne(id: string) {
+    return this.groupRepository.findOne({ where: { column_id: id } });
   }
 
   async update(id: number, updateGroupDto: UpdateGroupDto) {

@@ -30,13 +30,12 @@ export class GroupsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.groupsService.findOne(+id);
+    return this.groupsService.findOne(id);
   }
 
   @Patch(':id')
   @Public()
   update(@Param('id') id: string, @Body() updateGroupDto: UpdateGroupDto) {
-    console.log('the id: ', id);
     return this.groupsService.update(+id, updateGroupDto);
   }
 

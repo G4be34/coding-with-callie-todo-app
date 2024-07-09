@@ -217,42 +217,55 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
         position: "top",
       });
     }
-
   };
 
-  const completeTodo = (taskId: string) => {
-    const currentDate = new Date();
+  const completeTodo = async (taskId: string) => {
+    try {
+      const currentDate = new Date();
 
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: {
-        ...prevState.tasks,
-        [taskId]: {
-          ...prevState.tasks[taskId],
-          date_completed: currentDate.getTime(),
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: {
+          ...prevState.tasks,
+          [taskId]: {
+            ...prevState.tasks[taskId],
+            date_completed: currentDate.getTime(),
+          },
         },
-      },
-      columns: {
-        ...prevState.columns,
-        [prevState.columnOrder[0]]: {
-          ...prevState.columns[prevState.columnOrder[0]],
-          taskIds: [taskId, ...prevState.columns[prevState.columnOrder[0]].taskIds],
+        columns: {
+          ...prevState.columns,
+          [prevState.columnOrder[0]]: {
+            ...prevState.columns[prevState.columnOrder[0]],
+            taskIds: [taskId, ...prevState.columns[prevState.columnOrder[0]].taskIds],
+          },
+          [column.column_id]: {
+            ...prevState.columns[column.column_id],
+            taskIds: prevState.columns[column.column_id].taskIds.filter(id => id !== taskId),
+          },
         },
-        [column.column_id]: {
-          ...prevState.columns[column.column_id],
-          taskIds: prevState.columns[column.column_id].taskIds.filter(id => id !== taskId),
-        },
-      },
-    }));
+      }));
 
-    toast({
-      title: "Task completed",
-      description: "Great work!",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+      await axios.patch(`/api/todos/${taskId}`, { date_completed: currentDate.getTime().toString(), groupId: column.column_id }, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } }); //double check that todos with existing date completed values go to the completed column
+
+      toast({
+        title: "Task completed",
+        description: "Great work!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error completing task: ", error);
+      toast({
+        title: "Failed to complete task",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
+    }
   };
 
   const sortTasks = (sortValue: string) => {
