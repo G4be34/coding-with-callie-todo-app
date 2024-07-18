@@ -1,30 +1,12 @@
 import { Box, Button, Flex, useToast } from "@chakra-ui/react";
+import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import axios from "axios";
 import { useState } from "react";
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { FaPlus } from "react-icons/fa";
 import { useLoaderData } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { Column } from "../components/Column";
 
-
-// const initialData = {
-//   tasks: {},
-//   columns: {
-//     'column-1': {  initial state
-//       id: 'column-1',
-//       title: 'Completed',
-//       taskIds: [],
-//     },
-//     'column-2': {
-//       id: 'column-2',
-//       title: 'Title',
-//       taskIds: [],
-//     },
-//   },
-//   // Facilitate reordering of the columns
-//   columnOrder: ['column-1', 'column-2'],
-// };
 
 type TaskType = {
   todo_id: string
@@ -165,7 +147,7 @@ export const TodosPage = () => {
       const apiColumn = {
         column_id: columnId,
         title: "Title",
-        position: todosData.columnOrder.length,
+        position: todosData.columnOrder.length, //Move this logic into the sign up page after a user gets created
         userId: loadedTodosData.userId
       };
 

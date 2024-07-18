@@ -1,7 +1,7 @@
 import { Button, Editable, EditableInput, EditablePreview, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react";
+import { Droppable } from "@hello-pangea/dnd";
 import axios from "axios";
 import { useState } from "react";
-import { Droppable } from "react-beautiful-dnd";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { FaMinusCircle, FaPlus } from "react-icons/fa";
@@ -126,7 +126,7 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
         date_completed: null,
         priority,
         due_date: (dueDate.getTime()).toString(),
-        groupId: column.id
+        groupId: column.column_id
       };
 
       const response = await axios.post('/api/todos', newTask, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
@@ -245,8 +245,7 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
         },
       }));
 
-      await axios.patch(`/api/todos/${taskId}`, { date_completed: currentDate.getTime().toString(), groupId: column.column_id }, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } }); //double check that todos with existing date completed values go to the completed column
-
+      await axios.patch(`/api/todos/${taskId}`, { date_completed: currentDate.getTime().toString(), groupId: column.column_id }, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
       toast({
         title: "Task completed",
         description: "Great work!",

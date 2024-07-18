@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react"
+import { Draggable } from "@hello-pangea/dnd"
 import axios from "axios"
 import { useState } from "react"
-import { Draggable } from "react-beautiful-dnd"
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css"
 import { TiDelete } from "react-icons/ti"

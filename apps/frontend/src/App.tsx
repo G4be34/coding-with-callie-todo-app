@@ -124,7 +124,7 @@ function Layout() {
 
   return (
     <Flex flexDirection={"column"} minH={"100vh"} justifyContent={"space-between"}>
-      {showModal && <ProfileModal setShowModal={setShowModal} showModal={showModal} user={user} setUser={setUser} token={token} logoutUser={logoutUser} />}
+      {showModal && <ProfileModal setShowModal={setShowModal} showModal={showModal} user={user} setUser={setUser} token={access_token} logoutUser={logoutUser} />}
       <Header setShowModal={setShowModal} setShowOptions={setShowOptions} showOptions={showOptions} logoutUser={logoutUser} user={user} />
       <Outlet />
       <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={4} borderTop={"1px solid black"}>
