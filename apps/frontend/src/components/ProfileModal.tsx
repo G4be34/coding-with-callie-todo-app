@@ -103,10 +103,8 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         position: 'top'
       })
     } catch (error) {
-      if (loading) {
-        setLoading(false);
-      }
-      console.log(error);
+      setLoading(false);
+      console.log('Error deleting profile: ', error);
     }
   }
 

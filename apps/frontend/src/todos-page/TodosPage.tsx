@@ -151,7 +151,7 @@ export const TodosPage = () => {
         userId: loadedTodosData.userId
       };
 
-      const response = await axios.post('/api/groups', apiColumn, { headers: { Authorization: `Bearer ${loadedTodosData.access_token}` } });
+      const response = await axios.post('/api/groups', apiColumn);
 
       const newColumn = {
         id: response.data.id,
@@ -177,7 +177,7 @@ export const TodosPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error(error);
+      console.error('Error adding new column: ', error);
       toast({
         title: "Failed to add new column",
         status: "error",

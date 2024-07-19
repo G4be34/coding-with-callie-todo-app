@@ -30,15 +30,8 @@ export class GroupsService {
 
     const initialData = {
       tasks: {},
-      columns: {
-        'column-1': {
-          id: 'column-1',
-          column_id: 'column-1',
-          title: 'Completed',
-          taskIds: [],
-        },
-      },
-      columnOrder: ['column-1'],
+      columns: {},
+      columnOrder: [],
     };
 
     groups.forEach((group) => {
@@ -50,12 +43,6 @@ export class GroupsService {
           .filter((todo) => todo.date_completed === null)
           .map((todo) => todo.todo_id),
       };
-
-      const completedTodos = group.todos
-        .filter((todo) => todo.date_completed)
-        .map((todo) => todo.todo_id);
-
-      initialData.columns['column-1'].taskIds.push(...completedTodos);
 
       group.todos.forEach((todo) => {
         initialData.tasks[todo.todo_id] = todo;

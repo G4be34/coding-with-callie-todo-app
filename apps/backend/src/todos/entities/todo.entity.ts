@@ -24,6 +24,6 @@ export class Todo {
   @Column()
   priority: 'Normal' | 'High' | 'Highest';
 
-  @ManyToOne(() => Group, (group) => group.todos)
+  @ManyToOne(() => Group, (group) => group.todos, { onDelete: 'CASCADE' })
   group: Group;
 }

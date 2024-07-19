@@ -24,6 +24,6 @@ export class User {
   @Column()
   font: string;
 
-  @OneToMany(() => Group, (group) => group.user, { eager: true })
+  @OneToMany(() => Group, (group) => group.user, { eager: true, cascade: true })
   groups: Group[];
 }
