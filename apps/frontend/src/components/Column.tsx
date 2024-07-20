@@ -153,7 +153,6 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
         isClosable: true,
         position: "top",
       });
-
     } catch (error) {
       console.error("Error adding task: ", error);
       toast({
@@ -236,7 +235,7 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
         },
       }));
 
-      await axios.patch(`/api/todos/${taskId}`, { date_completed: currentDate.getTime().toString(), groupId: column.column_id }, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
+      await axios.patch(`/api/todos/${taskId}`, { date_completed: currentDate.getTime().toString(), groupId: 'column-1' }, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
       toast({
         title: "Task completed",
         description: "Great work!",

@@ -69,7 +69,6 @@ export const TodosPage = () => {
 
       const updateDateCompleted = async (taskId: string, date: number | null) => {
         try {
-          console.log("This is todos data: ", todosData);
           setTodosData((prevState) => ({
             ...prevState,
             tasks: {
@@ -80,12 +79,12 @@ export const TodosPage = () => {
               },
             },
           }));
+
           await axios.patch(`/api/todos/${taskId}`, { date_completed: (date ? date.toString() : null), groupId: finish.column_id }, {
             headers: {
               Authorization: `Bearer ${loadedTodosData.access_token}`,
             },
           });
-          console.log("Date completed updated successfully");
         } catch (error) {
           console.error("Error updating date completed: ", error);
           toast({
