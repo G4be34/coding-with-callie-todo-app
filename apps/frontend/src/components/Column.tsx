@@ -22,12 +22,12 @@ type InitialDataType = {
 
 type Task = {
   todo_id: string;
-  id: string;
+  id: string | number | undefined;
   description: string;
-  date_added: number;
-  date_completed: number | null;
+  date_added: number | string;
+  date_completed: number | string | null;
   priority: string;
-  due_date: number | null;
+  due_date: number | string;
   groupId: string;
 };
 
@@ -51,16 +51,6 @@ type LoadedTodosDataType = {
   userId: string
 };
 
-type NewTaskType = {
-  todo_id: string
-  description: string
-  date_added: number | string
-  date_completed: number | string | null
-  priority: string
-  due_date: number | string | null
-  groupId: string
-  id?: number
-}
 
 export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) => {
   const fetchedTodosData = useLoaderData() as LoadedTodosDataType;
@@ -90,8 +80,8 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
 
       setTodosData(prevState => ({
         ...prevState,
-        tasks: Object.fromEntries(Object.entries(prevState.tasks).filter(([taskId, _]) => !taskIdsToDelete.includes(taskId))),
-        columns: Object.fromEntries(Object.entries(prevState.columns).filter(([columnIdToDelete, _]) => columnIdToDelete !== columnId)),
+        tasks: Object.fromEntries(Object.entries(prevState.tasks).filter(([taskId]) => !taskIdsToDelete.includes(taskId))),
+        columns: Object.fromEntries(Object.entries(prevState.columns).filter(([columnIdToDelete]) => columnIdToDelete !== columnId)),
         columnOrder: updatedColumnOrder,
       }));
 
@@ -119,14 +109,15 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
 
     const currentDate = new Date();
     try {
-      let newTask: NewTaskType = {
+      let newTask: Task = {
         todo_id: uuid(),
         description: newTodo.trim(),
         date_added: (currentDate.getTime()).toString(),
         date_completed: null,
         priority,
         due_date: (dueDate.getTime()).toString(),
-        groupId: column.column_id
+        groupId: column.column_id,
+        id: undefined
       };
 
       const response = await axios.post('/api/todos', newTask, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
@@ -144,13 +135,13 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
         ...prevState,
         tasks: {
           ...prevState.tasks,
-          [newTaskId]: newTask,
+          [newTask.todo_id]: newTask,
         },
         columns: {
           ...prevState.columns,
           [column.column_id]: {
             ...prevState.columns[column.column_id],
-            taskIds: [newTaskId, ...prevState.columns[column.column_id].taskIds],
+            taskIds: [newTask.todo_id, ...prevState.columns[column.column_id].taskIds],
           },
         },
       }));
@@ -181,7 +172,7 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
   };
 
   const deleteTodo = async (taskIdToDelete: string) => {
-    const updatedTasks = Object.entries(todosData.tasks).filter(([taskId, _]) => taskId !== taskIdToDelete);
+    const updatedTasks = Object.entries(todosData.tasks).filter(([taskId]) => taskId !== taskIdToDelete);
     const updatedColumnTaskIds = todosData.columns[column.column_id].taskIds.filter((id) => id !== taskIdToDelete);
 
     try {
@@ -274,13 +265,13 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
 
     switch (sortValue) {
       case "Newest":
-        sortedTasks = [...tasks].sort((a, b) => b.date_added - a.date_added);
+        sortedTasks = [...tasks].sort((a, b) => parseInt(b.date_added.toString()) - parseInt(a.date_added.toString()));
         break;
       case "Oldest":
-        sortedTasks = [...tasks].sort((a, b) => a.date_added - b.date_added);
+        sortedTasks = [...tasks].sort((a, b) => parseInt(a.date_added.toString()) - parseInt(b.date_added.toString()));
         break;
       case "Due":
-        sortedTasks = [...tasks].sort((a, b) => (a.due_date || Infinity) - (b.due_date || Infinity));
+        sortedTasks = [...tasks].sort((a, b) => (parseInt(a.due_date.toString())) - (parseInt(b.due_date.toString())));
         break;
       case "Priority":
         sortedTasks = [...tasks].sort((a, b) => {

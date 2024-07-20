@@ -10,12 +10,12 @@ import { Column } from "../components/Column";
 
 type TaskType = {
   todo_id: string
-  id: string
+  id: string | number | undefined
   description: string
-  date_added: number
-  date_completed: number | null
+  date_added: number | string
+  date_completed: number | string | null
   priority: string
-  due_date: number | null
+  due_date: number | string
   groupId: string
 };
 
@@ -51,6 +51,8 @@ export const TodosPage = () => {
     try {
       const { destination, source, draggableId } = result;
 
+      console.log("This is the entire block: ", result)
+
       if (!destination) {
         return;
       }
@@ -67,6 +69,7 @@ export const TodosPage = () => {
 
       const updateDateCompleted = async (taskId: string, date: number | null) => {
         try {
+          console.log("This is todos data: ", todosData);
           setTodosData((prevState) => ({
             ...prevState,
             tasks: {
@@ -77,7 +80,7 @@ export const TodosPage = () => {
               },
             },
           }));
-          await axios.patch(`/api/todos/${taskId}`, { date_completed: date?.toString(), groupId: taskId }, {
+          await axios.patch(`/api/todos/${taskId}`, { date_completed: (date ? date.toString() : null), groupId: finish.column_id }, {
             headers: {
               Authorization: `Bearer ${loadedTodosData.access_token}`,
             },
@@ -95,13 +98,6 @@ export const TodosPage = () => {
           });
         }
       };
-
-      if (finish.column_id === 'column-1') {
-        const currentDate = new Date().getTime();
-        updateDateCompleted(draggableId, currentDate);
-      } else if (start.column_id === 'column-1') {
-        updateDateCompleted(draggableId, null);
-      }
 
       if (start === finish) {
         const newTaskIds = Array.from(start.taskIds);
@@ -134,6 +130,7 @@ export const TodosPage = () => {
       };
 
       let newFinish = finish;
+      console.log("This is finish: ", finish);
 
       // If the destination column is empty, initialize its taskIds array
       if (finish.taskIds.length === 0) {
@@ -148,6 +145,13 @@ export const TodosPage = () => {
           ...finish,
           taskIds: finishTaskIds,
         };
+      }
+
+      if (finish.column_id === 'column-1') {
+        const currentDate = new Date().getTime();
+        updateDateCompleted(draggableId, currentDate);
+      } else if (start.column_id === 'column-1') {
+        updateDateCompleted(draggableId, null);
       }
 
       setTodosData(prevState => ({

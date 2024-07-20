@@ -26,12 +26,12 @@ type InitialDataType = {
 
 type Task = {
   todo_id: string;
-  id: string;
+  id: string | number | undefined;
   description: string;
   date_added: number;
   date_completed: number | null;
   priority: string;
-  due_date: number | null;
+  due_date: number;
   groupId: string;
 };
 
@@ -50,7 +50,7 @@ const options: Intl.DateTimeFormatOptions = {
 }
 
 export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }) => {
-  const fetchedTodosData = useLoaderData() as LoadedTodosDataType
+  const fetchedTodosData = useLoaderData() as LoadedTodosDataType;
   const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [editDueDate, setEditDueDate] = useState(false);
@@ -150,12 +150,12 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
   const changeDueDate = async (date: Date) => {
     try {
       await axios.patch(`/api/todos/${task.todo_id}`, {
-        due_date: date.getTime()
+        due_date: date.getTime().toString()
       }, {
         headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
       });
 
-      setDueDate(date.getTime());
+      setDueDate(date.getTime().toString());
 
       setTodosData(prevState => ({
         ...prevState,
