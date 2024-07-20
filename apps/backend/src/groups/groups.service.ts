@@ -39,9 +39,7 @@ export class GroupsService {
         id: group.id,
         column_id: group.column_id,
         title: group.title,
-        taskIds: group.todos
-          .filter((todo) => todo.date_completed === null)
-          .map((todo) => todo.todo_id),
+        taskIds: group.todos.map((todo) => todo.todo_id),
       };
 
       group.todos.forEach((todo) => {

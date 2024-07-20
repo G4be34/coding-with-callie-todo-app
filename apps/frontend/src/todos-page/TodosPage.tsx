@@ -47,97 +47,135 @@ export const TodosPage = () => {
   const toast = useToast();
   const [todosData, setTodosData] = useState(loadedTodosData.fetchedTodosData);
 
-  const onDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId } = result;
+  const onDragEnd = async (result: DropResult) => {
+    try {
+      const { destination, source, draggableId } = result;
 
-    if (!destination) {
-      return;
-    }
+      if (!destination) {
+        return;
+      }
 
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
+      if (
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+      ) {
+        return;
+      }
 
-    const start = todosData.columns[source.droppableId];
-    const finish = todosData.columns[destination.droppableId];
+      const start = todosData.columns[source.droppableId];
+      const finish = todosData.columns[destination.droppableId];
 
-    const updateDateCompleted = (taskId: string, date: number | null) => {
-      setTodosData((prevState) => ({
-        ...prevState,
-        tasks: {
-          ...prevState.tasks,
-          [taskId]: {
-            ...prevState.tasks[taskId],
-            date_completed: date,
-          },
-        },
-      }));
-    };
-
-    if (finish.id === 'column-1') {
-      const currentDate = new Date().getTime();
-      updateDateCompleted(draggableId, currentDate);
-    } else if (start.id === 'column-1') {
-      updateDateCompleted(draggableId, null);
-    }
-
-    if (start === finish) {
-      const newTaskIds = Array.from(start.taskIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
-
-      const newColumn = {
-        ...start,
-        taskIds: newTaskIds,
+      const updateDateCompleted = async (taskId: string, date: number | null) => {
+        try {
+          setTodosData((prevState) => ({
+            ...prevState,
+            tasks: {
+              ...prevState.tasks,
+              [taskId]: {
+                ...prevState.tasks[taskId],
+                date_completed: date,
+              },
+            },
+          }));
+          await axios.patch(`/api/todos/${taskId}`, { date_completed: date?.toString(), groupId: taskId }, {
+            headers: {
+              Authorization: `Bearer ${loadedTodosData.access_token}`,
+            },
+          });
+          console.log("Date completed updated successfully");
+        } catch (error) {
+          console.error("Error updating date completed: ", error);
+          toast({
+            title: 'Error updating date completed',
+            description: "Please try again",
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+            position: 'top'
+          });
+        }
       };
+
+      if (finish.column_id === 'column-1') {
+        const currentDate = new Date().getTime();
+        updateDateCompleted(draggableId, currentDate);
+      } else if (start.column_id === 'column-1') {
+        updateDateCompleted(draggableId, null);
+      }
+
+      if (start === finish) {
+        const newTaskIds = Array.from(start.taskIds);
+        newTaskIds.splice(source.index, 1);
+        newTaskIds.splice(destination.index, 0, draggableId);
+
+        const newColumn = {
+          ...start,
+          taskIds: newTaskIds,
+        };
+        console.log('This is new column: ', newColumn);
+
+        setTodosData(prevState => ({
+          ...prevState,
+          columns: {
+            ...prevState.columns,
+            [newColumn.column_id]: newColumn,
+          },
+        }));
+        return;
+      }
+
+      // Moving from one list to another
+      const startTaskIds = Array.from(start.taskIds);
+      startTaskIds.splice(source.index, 1);
+
+      const newStart = {
+        ...start,
+        taskIds: startTaskIds,
+      };
+
+      let newFinish = finish;
+
+      // If the destination column is empty, initialize its taskIds array
+      if (finish.taskIds.length === 0) {
+        newFinish = {
+          ...finish,
+          taskIds: [draggableId], // Add the dragged task to the destination column
+        };
+      } else {
+        const finishTaskIds = Array.from(finish.taskIds);
+        finishTaskIds.splice(destination.index, 0, draggableId);
+        newFinish = {
+          ...finish,
+          taskIds: finishTaskIds,
+        };
+      }
 
       setTodosData(prevState => ({
         ...prevState,
         columns: {
           ...prevState.columns,
-          [newColumn.id]: newColumn,
+          [newStart.column_id]: newStart,
+          [newFinish.column_id]: newFinish,
         },
       }));
-      return;
+
+      await axios.patch(`/api/todos/${draggableId}`, { groupId: newFinish.column_id }, {
+        headers: {
+          Authorization: `Bearer ${loadedTodosData.access_token}`,
+        },
+      });
+      console.log("Moved task: ", draggableId);
+    } catch (error) {
+      console.error("Error updating todo: ", error);
+      toast({
+        title: "Error updating todo",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
     }
-
-    // Moving from one list to another
-    const startTaskIds = Array.from(start.taskIds);
-    startTaskIds.splice(source.index, 1);
-
-    const newStart = {
-      ...start,
-      taskIds: startTaskIds,
-    };
-
-    let newFinish = finish;
-
-    // If the destination column is empty, initialize its taskIds array
-    if (finish.taskIds.length === 0) {
-      newFinish = {
-        ...finish,
-        taskIds: [draggableId], // Add the dragged task to the destination column
-      };
-    } else {
-      const finishTaskIds = Array.from(finish.taskIds);
-      finishTaskIds.splice(destination.index, 0, draggableId);
-      newFinish = {
-        ...finish,
-        taskIds: finishTaskIds,
-      };
-    }
-
-    setTodosData(prevState => ({
-      ...prevState,
-      columns: {
-        ...prevState.columns,
-        [newStart.column_id]: newStart,
-        [newFinish.column_id]: newFinish,
-      },
-    }));
   };
 
   const addNewColumn = async () => {
@@ -147,7 +185,7 @@ export const TodosPage = () => {
       const apiColumn = {
         column_id: columnId,
         title: "Title",
-        position: todosData.columnOrder.length, //Move this logic into the sign up page after a user gets created
+        position: todosData.columnOrder.length,
         userId: loadedTodosData.userId
       };
 
