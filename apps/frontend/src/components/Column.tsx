@@ -287,8 +287,8 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
       ...prevState,
       columns: {
         ...prevState.columns,
-        [column.id]: {
-          ...prevState.columns[column.id],
+        [column.column_id]: {
+          ...prevState.columns[column.column_id],
           taskIds: sortedTasks.map(task => task.todo_id),
         },
       },
