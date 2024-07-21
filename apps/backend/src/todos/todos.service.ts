@@ -36,7 +36,7 @@ export class TodosService {
       const group = await this.groupService.findOne(updateTodoDto.groupId);
       todo.group = group;
 
-      if (updateTodoDto.date_completed) {
+      if (updateTodoDto.date_completed !== undefined) {
         todo.date_completed = updateTodoDto.date_completed;
       }
     } else {
