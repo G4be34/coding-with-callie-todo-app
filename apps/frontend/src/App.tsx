@@ -123,10 +123,12 @@ function Layout() {
   }
 
   return (
-    <Flex flexDirection={"column"} minH={"100vh"} justifyContent={"space-between"}>
+    <Flex flexDirection={"column"} minH={"100vh"} maxH={"100vh"} justifyContent={"space-between"}>
       {showModal && <ProfileModal setShowModal={setShowModal} showModal={showModal} user={user} setUser={setUser} token={access_token} logoutUser={logoutUser} />}
       <Header setShowModal={setShowModal} setShowOptions={setShowOptions} showOptions={showOptions} logoutUser={logoutUser} user={user} />
-      <Outlet />
+      <Flex flex={1} overflow={"hidden"}>
+        <Outlet />
+      </Flex>
       <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={4} borderTop={"1px solid black"}>
         © 2024 CWC Todo App. All rights reserved.
       </Flex>
