@@ -31,7 +31,6 @@ export const getTodosData = async () => {
   });
 
   const fetchedTodosData = response.data;
-  console.log("fetchedTodosData: ", fetchedTodosData);
 
   return { access_token, userId, fetchedTodosData };
 };

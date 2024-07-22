@@ -51,8 +51,6 @@ export const TodosPage = () => {
     try {
       const { destination, source, draggableId } = result;
 
-      console.log("This is the entire block: ", result)
-
       if (!destination) {
         return;
       }
@@ -107,7 +105,6 @@ export const TodosPage = () => {
           ...start,
           taskIds: newTaskIds,
         };
-        console.log('This is new column: ', newColumn);
 
         setTodosData(prevState => ({
           ...prevState,
@@ -129,7 +126,6 @@ export const TodosPage = () => {
       };
 
       let newFinish = finish;
-      console.log("This is finish: ", finish);
 
       // If the destination column is empty, initialize its taskIds array
       if (finish.taskIds.length === 0) {
@@ -167,7 +163,6 @@ export const TodosPage = () => {
           Authorization: `Bearer ${loadedTodosData.access_token}`,
         },
       });
-      console.log("Moved task: ", draggableId);
     } catch (error) {
       console.error("Error updating todo: ", error);
       toast({
@@ -237,9 +232,7 @@ export const TodosPage = () => {
           <Flex gap={8} minH={"75%"}>
             {todosData.columnOrder.map((columnId) => {
               const column = todosData.columns[columnId];
-              console.log("This is column: ", column);
               const tasks = column.taskIds.map((taskId: string) => todosData.tasks[taskId]);
-              console.log("This is tasks: ", tasks);
 
               return (
                 <Box key={column.id} minW={"300px"} flexShrink={0} minH={"60%"}>
