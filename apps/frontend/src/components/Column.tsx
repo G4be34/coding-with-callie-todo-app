@@ -43,6 +43,7 @@ type ColumnProps = {
   tasks: Task[];
   setTodosData: React.Dispatch<React.SetStateAction<InitialDataType>>;
   todosData: InitialDataType;
+  setSelectedTodos: React.Dispatch<React.SetStateAction<string[]>>
 };
 
 type LoadedTodosDataType = {
@@ -52,7 +53,7 @@ type LoadedTodosDataType = {
 };
 
 
-export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) => {
+export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodos }: ColumnProps) => {
   const fetchedTodosData = useLoaderData() as LoadedTodosDataType;
   const toast = useToast();
   const [showDelete, setShowDelete] = useState(true);
@@ -420,7 +421,15 @@ export const Column = ({ column, tasks, setTodosData, todosData }: ColumnProps) 
               : null
               }
             {tasks.length > 0 ? tasks.map((task, index) => (
-              <TaskItem key={task.id} task={task} index={index} deleteTodo={deleteTodo} completeTodo={completeTodo} setTodosData={setTodosData} />
+              <TaskItem
+                key={task.id}
+                task={task}
+                index={index}
+                deleteTodo={deleteTodo}
+                completeTodo={completeTodo}
+                setTodosData={setTodosData}
+                setSelectedTodos={setSelectedTodos}
+                />
             )) : <Text my={2} textAlign={"center"}>Empty</Text>}
             {provided.placeholder}
           </Flex>

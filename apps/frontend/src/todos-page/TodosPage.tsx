@@ -46,6 +46,7 @@ export const TodosPage = () => {
   const loadedTodosData = useLoaderData() as LoadedTodosDataType;
   const toast = useToast();
   const [todosData, setTodosData] = useState(loadedTodosData.fetchedTodosData);
+  const [selectedTodos, setSelectedTodos] = useState<string[]>([]);
 
   const onDragEnd = async (result: DropResult) => {
     try {
@@ -224,9 +225,29 @@ export const TodosPage = () => {
     }
   };
 
+  const deleteTodos = async () => {
+    try {
+      console.log("Deleting todos: ", selectedTodos);
+    } catch (error) {
+      console.error("Error deleting todos: ", error);
+      toast({
+        title: "Error deleting todos",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
+    }
+  };
 
   return (
-    <Flex flex={1} px={5} overflowX={"auto"}>
+    <Flex flex={1} px={5} overflowX={"auto"} direction="column">
+      {selectedTodos.length > 0
+        ? <Box display={"flex"} justifyContent={"center"} alignItems={"center"} p={2}>
+            <Button bg={"red"} color={"white"} onClick={deleteTodos}>Delete selected Tasks</Button>
+          </Box>
+        : null}
       <Flex flexDirection="row" alignItems="flex-start">
         <DragDropContext onDragEnd={onDragEnd}>
           <Flex gap={8} minH={"75%"}>
@@ -236,7 +257,14 @@ export const TodosPage = () => {
 
               return (
                 <Box key={column.id} minW={"300px"} flexShrink={0} minH={"60%"}>
-                  <Column key={column.id} column={column} tasks={tasks} setTodosData={setTodosData} todosData={todosData} />
+                  <Column
+                    key={column.id}
+                    column={column}
+                    tasks={tasks}
+                    setTodosData={setTodosData}
+                    todosData={todosData}
+                    setSelectedTodos={setSelectedTodos}
+                    />
                 </Box>
               );
             })}

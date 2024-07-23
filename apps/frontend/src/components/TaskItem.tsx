@@ -1,9 +1,11 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react"
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react"
 import { Draggable } from "@hello-pangea/dnd"
 import axios from "axios"
 import { useState } from "react"
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css"
+import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md"
+import { RxHamburgerMenu } from "react-icons/rx"
 import { TiDelete } from "react-icons/ti"
 import { useLoaderData } from "react-router-dom"
 
@@ -49,7 +51,7 @@ const options: Intl.DateTimeFormatOptions = {
   day: 'numeric'
 }
 
-export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }) => {
+export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, setSelectedTodos }) => {
   const fetchedTodosData = useLoaderData() as LoadedTodosDataType;
   const toast = useToast();
   const [editing, setEditing] = useState(false);
@@ -57,6 +59,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
   const [newTaskContent, setNewTaskContent] = useState("");
   const [dueDate, setDueDate] = useState(task.due_date);
   const [priority, setPriority] = useState(task.priority);
+  const [checked, setChecked] = useState(false);
 
 
   const editTodo = async () => {
@@ -190,6 +193,18 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
     }
   };
 
+  const selectTodo = () => {
+    if (!checked) {
+      setChecked(true);
+      setSelectedTodos(prevState => [...prevState, task.todo_id]);
+      console.log("Selected todo")
+    } else {
+      setChecked(false);
+      setSelectedTodos(prevState => prevState.filter(id => id !== task.todo_id));
+      console.log("Unselected todo")
+    }
+  };
+
 
   return (
     <Draggable draggableId={task.todo_id} index={index}>
@@ -207,7 +222,14 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
           pos={"relative"}
           borderRadius={10}
           >
-          <CardHeader flexDir={"column"}>
+          <Box borderBottom={"1px solid black"} p={1} display={"flex"} flexDir={"row"} justifyContent={"space-between"} alignItems={"center"}>
+            {checked
+              ? <MdCheckBox onClick={selectTodo} size={20} cursor={"pointer"} color={"green"} />
+              : <MdCheckBoxOutlineBlank onClick={selectTodo} size={20} cursor={"pointer"} />}
+            <RxHamburgerMenu size={20} />
+            <TiDelete size={30} cursor={"pointer"} onClick={() => deleteTodo(task.todo_id)} />
+          </Box>
+          <CardHeader flexDir={"column"} cursor={"pointer"}>
             {editDueDate
               ? <DatePicker
                   onBlur={() => setEditDueDate(false)}
@@ -222,11 +244,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData }
                   <Text onClick={() => setEditDueDate(true)} fontSize={"sm"}>{new Date(parseInt(dueDate)).toLocaleDateString('en-US', options)}</Text>
                 </>
               }
-
           </CardHeader>
-          <Flex position={"absolute"} top={0} right={0} _hover={{ opacity: 0.5}}>
-            <TiDelete size={30} cursor={"pointer"} onClick={() => deleteTodo(task.todo_id)}/>
-          </Flex>
           <CardBody>
             {editing
               ? <Textarea
