@@ -227,7 +227,44 @@ export const TodosPage = () => {
 
   const deleteTodos = async () => {
     try {
+      await axios.delete('/api/todos', {
+        params: {
+          ids: selectedTodos
+        },
+        headers: {
+          Authorization: `Bearer ${loadedTodosData.access_token}`
+        }
+      });
       console.log("Deleting todos: ", selectedTodos);
+
+      const newTasks = Object.fromEntries(
+        Object.entries(todosData.tasks).filter(([taskId]) => !selectedTodos.includes(taskId))
+      );
+
+      const newColumns = Object.fromEntries(
+        Object.entries(todosData.columns).map(([columnId, column]) => [
+          columnId,
+          {
+            ...column,
+            taskIds: column.taskIds.filter((taskId) => !selectedTodos.includes(taskId)),
+          },
+        ])
+      );
+
+      setTodosData((prevState) => ({
+        ...prevState,
+        tasks: newTasks,
+        columns: newColumns,
+      }));
+
+      toast({
+        title: "Success",
+        status: "success",
+        description: "Todos successfully deleted",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
     } catch (error) {
       console.error("Error deleting todos: ", error);
       toast({
@@ -244,7 +281,7 @@ export const TodosPage = () => {
   return (
     <Flex flex={1} px={5} overflowX={"auto"} direction="column">
       {selectedTodos.length > 0
-        ? <Box display={"flex"} justifyContent={"center"} alignItems={"center"} p={2}>
+        ? <Box display={"flex"} justifyContent={"center"} alignItems={"center"} p={4}>
             <Button bg={"red"} color={"white"} onClick={deleteTodos}>Delete selected Tasks</Button>
           </Box>
         : null}

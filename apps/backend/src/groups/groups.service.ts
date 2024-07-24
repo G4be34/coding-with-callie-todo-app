@@ -43,7 +43,10 @@ export class GroupsService {
       };
 
       group.todos.forEach((todo) => {
-        initialData.tasks[todo.todo_id] = todo;
+        initialData.tasks[todo.todo_id] = {
+          ...todo,
+          groupId: group.column_id,
+        };
       });
 
       initialData.columnOrder.push(group.column_id);

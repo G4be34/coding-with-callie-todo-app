@@ -205,6 +205,38 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
     }
   };
 
+  const openDatePicker = () => {
+    if (task.groupId === "column-1") {
+      toast({
+        title: "Error",
+        description: "Due date cannot be edited for completed tasks",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      return
+    }
+
+    setEditDueDate(true);
+  };
+
+  const openDescriptionEditor = () => {
+    if (task.groupId === "column-1") {
+      toast({
+        title: "Error",
+        description: "Task description cannot be edited for completed tasks",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      return
+    }
+
+    setEditing(true);
+  };
+
 
   return (
     <Draggable draggableId={task.todo_id} index={index}>
@@ -241,7 +273,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                   />
               : <>
                   <Text fontWeight={"bold"} fontSize={"sm"}>Due</Text>
-                  <Text onClick={() => setEditDueDate(true)} fontSize={"sm"}>{new Date(parseInt(dueDate)).toLocaleDateString('en-US', options)}</Text>
+                  <Text onClick={openDatePicker} fontSize={"sm"}>{new Date(parseInt(dueDate)).toLocaleDateString('en-US', options)}</Text>
                 </>
               }
           </CardHeader>
@@ -257,7 +289,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                   width={"100%"}
                   />
               : <Text
-                  onClick={() => setEditing(true)}
+                  onClick={openDescriptionEditor}
                   _hover={{ cursor: "pointer" }}
                   >
                     {task.description}

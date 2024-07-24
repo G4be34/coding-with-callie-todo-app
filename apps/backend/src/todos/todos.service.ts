@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GroupsService } from 'src/groups/groups.service';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { Todo } from './entities/todo.entity';
@@ -46,7 +46,11 @@ export class TodosService {
     return await this.todoRepository.save(todo);
   }
 
-  remove(id: string) {
-    return this.todoRepository.delete({ todo_id: id });
+  remove(id: string | string[]) {
+    if (Array.isArray(id)) {
+      return this.todoRepository.delete({ todo_id: In(id) });
+    } else {
+      return this.todoRepository.delete({ todo_id: id });
+    }
   }
 }
