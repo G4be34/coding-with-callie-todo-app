@@ -46,6 +46,13 @@ export class TodosService {
     return await this.todoRepository.save(todo);
   }
 
+  async completeMultiple(ids: string[]) {
+    const todos = await this.todoRepository.find({
+      where: { todo_id: In(ids) },
+    });
+    console.log('This is the todos: ', todos);
+  }
+
   remove(id: string | string[]) {
     if (Array.isArray(id)) {
       return this.todoRepository.delete({ todo_id: In(id) });

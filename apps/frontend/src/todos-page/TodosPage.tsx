@@ -235,7 +235,6 @@ export const TodosPage = () => {
           Authorization: `Bearer ${loadedTodosData.access_token}`
         }
       });
-      console.log("Deleting todos: ", selectedTodos);
 
       const newTasks = Object.fromEntries(
         Object.entries(todosData.tasks).filter(([taskId]) => !selectedTodos.includes(taskId))
@@ -278,10 +277,84 @@ export const TodosPage = () => {
     }
   };
 
+  const completeTodos = async () => {
+    const currentDate = new Date().getTime();
+
+    try {
+      await axios.patch('/api/todos', {
+          ids: selectedTodos
+        }, {
+          headers: {
+            Authorization: `Bearer ${loadedTodosData.access_token}`
+          }
+        });
+
+      const newTasks = Object.fromEntries(
+        Object.entries(todosData.tasks).map(([taskId, task]) => {
+          if (selectedTodos.includes(taskId)) {
+            return [taskId, {
+              ...task,
+              date_completed: currentDate,
+              groupId: 'column-1'
+            }]
+          }
+
+          return [taskId, task];
+        })
+      );
+
+      const newColumns = Object.fromEntries(
+        Object.entries(todosData.columns).map(([columnId, column]) => {
+          if (column.column_id === 'column-1') {
+            return [columnId, {
+              ...column,
+              taskIds: [...selectedTodos, ...column.taskIds],
+            }]
+          }
+
+          if (column.taskIds.some((taskId) => selectedTodos.includes(taskId))) {
+            return [columnId, {
+              ...column,
+              taskIds: column.taskIds.filter((taskId) => !selectedTodos.includes(taskId)),
+            }];
+          }
+
+          return [columnId, column];
+        })
+      );
+
+      setTodosData((prevState) => ({
+        ...prevState,
+        tasks: newTasks,
+        columns: newColumns,
+      }));
+
+      toast({
+        title: "Success",
+        status: "success",
+        description: "Todos successfully completed",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error completing todos: ", error);
+      toast({
+        title: "Error completing todos",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  };
+
   return (
     <Flex flex={1} px={5} overflowX={"auto"} direction="column">
       {selectedTodos.length > 0
         ? <Box display={"flex"} justifyContent={"center"} alignItems={"center"} p={4}>
+            <Button bg={"green"} color={"white"} onClick={completeTodos} mr={4}>Complete selected Tasks</Button>
             <Button bg={"red"} color={"white"} onClick={deleteTodos}>Delete selected Tasks</Button>
           </Box>
         : null}

@@ -37,6 +37,11 @@ export class TodosController {
     return this.todosService.update(id, updateTodoDto);
   }
 
+  @Patch()
+  completeMultipleTodos(@Body('ids') ids: string[]) {
+    return this.todosService.completeMultiple(ids);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.todosService.remove(id);
