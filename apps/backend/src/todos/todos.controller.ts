@@ -38,8 +38,11 @@ export class TodosController {
   }
 
   @Patch()
-  completeMultipleTodos(@Body('ids') ids: string[]) {
-    return this.todosService.completeMultiple(ids);
+  completeMultipleTodos(
+    @Body() body: { ids: string[]; dateCompleted: string },
+  ) {
+    const { ids, dateCompleted } = body;
+    return this.todosService.completeMultiple(ids, dateCompleted);
   }
 
   @Delete(':id')

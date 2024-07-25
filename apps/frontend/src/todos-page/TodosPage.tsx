@@ -250,6 +250,8 @@ export const TodosPage = () => {
         ])
       );
 
+      setSelectedTodos([]);
+
       setTodosData((prevState) => ({
         ...prevState,
         tasks: newTasks,
@@ -282,7 +284,8 @@ export const TodosPage = () => {
 
     try {
       await axios.patch('/api/todos', {
-          ids: selectedTodos
+          ids: selectedTodos,
+          dateCompleted: currentDate.toString()
         }, {
           headers: {
             Authorization: `Bearer ${loadedTodosData.access_token}`
@@ -322,6 +325,8 @@ export const TodosPage = () => {
           return [columnId, column];
         })
       );
+
+      setSelectedTodos([]);
 
       setTodosData((prevState) => ({
         ...prevState,

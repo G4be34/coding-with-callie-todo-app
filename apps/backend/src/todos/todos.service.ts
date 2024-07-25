@@ -46,11 +46,18 @@ export class TodosService {
     return await this.todoRepository.save(todo);
   }
 
-  async completeMultiple(ids: string[]) {
+  async completeMultiple(ids: string[], date_completed: string) {
     const todos = await this.todoRepository.find({
       where: { todo_id: In(ids) },
     });
-    console.log('This is the todos: ', todos);
+    const completedGroup = await this.groupService.findOne('column-1');
+
+    todos.forEach((todo) => {
+      todo.date_completed = date_completed;
+      todo.group = completedGroup;
+    });
+
+    return await this.todoRepository.save(todos);
   }
 
   remove(id: string | string[]) {
