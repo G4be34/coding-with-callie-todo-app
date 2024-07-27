@@ -28,6 +28,7 @@ type Task = {
   date_completed: number | string | null;
   priority: string;
   due_date: number | string;
+  position: number;
   groupId: string;
 };
 
@@ -116,10 +117,16 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         date_added: (currentDate.getTime()).toString(),
         date_completed: null,
         priority,
+        position: 0,
         due_date: (dueDate.getTime()).toString(),
         groupId: column.column_id,
         id: undefined
       };
+
+      const updatedTasks = tasks.map(task => ({
+        ...task,
+        position: task.position + 1
+      }));
 
       const response = await axios.post('/api/todos', newTask, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
 
@@ -136,6 +143,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         ...prevState,
         tasks: {
           ...prevState.tasks,
+          ...Object.fromEntries(updatedTasks.map(task => [task.todo_id, task])),
           [newTask.todo_id]: newTask,
         },
         columns: {
@@ -359,6 +367,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             {...provided.droppableProps}
             bg={snapshot.isDraggingOver ? "gray.200" : "white"}
             flexDir={"column"}
+            minH={"500px"}
             h={"100%"}
             minW={"100%"}
             flex={1}

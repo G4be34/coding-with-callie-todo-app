@@ -35,6 +35,8 @@ export class GroupsService {
     };
 
     groups.forEach((group) => {
+      group.todos.sort((a, b) => a.position - b.position);
+
       initialData.columns[group.column_id] = {
         id: group.id,
         column_id: group.column_id,

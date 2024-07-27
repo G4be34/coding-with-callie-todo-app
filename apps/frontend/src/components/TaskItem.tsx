@@ -99,7 +99,6 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         position: "top",
       })
     }
-
   };
 
   const handleEnterKey = (event: React.KeyboardEvent) => {

@@ -14,6 +14,11 @@ export class TodosService {
     private readonly groupService: GroupsService,
   ) {}
   async create(createTodoDto: CreateTodoDto) {
+    await this.todoRepository.increment(
+      { todo_id: createTodoDto.todo_id },
+      'position',
+      1,
+    );
     const todo = this.todoRepository.create(createTodoDto);
     const group = await this.groupService.findOne(createTodoDto.groupId);
     todo.group = group;

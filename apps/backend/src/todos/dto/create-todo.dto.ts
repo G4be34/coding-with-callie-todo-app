@@ -1,4 +1,10 @@
-import { Allow, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  Allow,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateTodoDto {
   @IsString()
@@ -16,6 +22,9 @@ export class CreateTodoDto {
   @IsString()
   @IsOptional()
   date_completed: string | null;
+
+  @IsNumber()
+  position: number;
 
   @IsNotEmpty()
   @IsString()

@@ -22,6 +22,9 @@ export class Todo {
   date_added: string;
 
   @Column()
+  position: number;
+
+  @Column()
   priority: 'Normal' | 'High' | 'Highest';
 
   @ManyToOne(() => Group, (group) => group.todos, { onDelete: 'CASCADE' })
