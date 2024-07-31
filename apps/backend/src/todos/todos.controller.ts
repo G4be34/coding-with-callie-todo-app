@@ -32,14 +32,14 @@ export class TodosController {
     return this.todosService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return this.todosService.update(id, updateTodoDto);
-  }
-
   @Patch('update-positions')
   updatePositions(@Body() body: { ids: string[] }) {
     return this.todosService.updatePositions(body.ids);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
+    return this.todosService.update(id, updateTodoDto);
   }
 
   @Patch()

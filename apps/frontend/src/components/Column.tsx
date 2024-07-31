@@ -128,6 +128,16 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         position: task.position + 1
       }));
 
+      const taskIdsToUpdate = updatedTasks.map(task => task.todo_id);
+
+      if (updatedTasks.length > 0) {
+        await axios.patch('/api/todos/update-positions', {
+          ids: taskIdsToUpdate
+        }, {
+          headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
+        });
+      }
+
       const response = await axios.post('/api/todos', newTask, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
 
       const newTaskId = response.data.id;

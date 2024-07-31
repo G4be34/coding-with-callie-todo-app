@@ -122,17 +122,16 @@ export const TodosPage = () => {
           taskIds: newTaskIds,
         };
 
-        await axios.patch(`/api/todos/${draggableId}`, {
-          groupId: finish.column_id,
-          position: newPosition
+        await axios.patch('/api/todos/update-positions', {
+          ids: tasksToUpdate
         }, {
           headers: {
             Authorization: `Bearer ${loadedTodosData.access_token}`
           }
         });
 
-        await axios.patch('/api/todos/update-positions', {
-          body: { ids: tasksToUpdate }
+        await axios.patch(`/api/todos/${draggableId}`, {
+          position: newPosition
         }, {
           headers: {
             Authorization: `Bearer ${loadedTodosData.access_token}`
