@@ -17,6 +17,7 @@ type TaskType = {
   priority: string
   due_date: number | string
   groupId: string
+  position: number
 };
 
 type ColumnType = {
@@ -99,13 +100,44 @@ export const TodosPage = () => {
 
       if (start === finish) {
         const newTaskIds = Array.from(start.taskIds);
+
+        const newPosition = todosData.tasks[newTaskIds[destination.index]].position;
+        const newTask = { ...todosData.tasks[draggableId], position: newPosition };
+
+        const tasksToUpdate = newTaskIds.slice(destination.index);
+        const updatedTasks = tasksToUpdate.map((taskId) => {
+          todosData.tasks[taskId].position += 1;
+          return [taskId, todosData.tasks[taskId]];
+        });
+
+        const joinedTasks = [...updatedTasks, [draggableId, newTask]];
+        const arrayToObjectTasks = Object.fromEntries(joinedTasks);
+
         newTaskIds.splice(source.index, 1);
         newTaskIds.splice(destination.index, 0, draggableId);
+
 
         const newColumn = {
           ...start,
           taskIds: newTaskIds,
         };
+
+        await axios.patch(`/api/todos/${draggableId}`, {
+          groupId: finish.column_id,
+          position: newPosition
+        }, {
+          headers: {
+            Authorization: `Bearer ${loadedTodosData.access_token}`
+          }
+        });
+
+        await axios.patch('/api/todos/update-positions', {
+          body: { ids: tasksToUpdate }
+        }, {
+          headers: {
+            Authorization: `Bearer ${loadedTodosData.access_token}`
+          }
+        });
 
         setTodosData(prevState => ({
           ...prevState,
@@ -113,7 +145,12 @@ export const TodosPage = () => {
             ...prevState.columns,
             [newColumn.column_id]: newColumn,
           },
+          tasks: {
+            ...prevState.tasks,
+            ...arrayToObjectTasks
+          }
         }));
+
         return;
       }
 

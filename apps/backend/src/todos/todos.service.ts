@@ -51,6 +51,16 @@ export class TodosService {
     return await this.todoRepository.save(todo);
   }
 
+  async updatePositions(ids: string[]) {
+    const todos = await this.todoRepository.find({
+      where: { todo_id: In(ids) },
+    });
+    todos.forEach((todo) => {
+      todo.position += 1;
+    });
+    return await this.todoRepository.save(todos);
+  }
+
   async completeMultiple(ids: string[], date_completed: string) {
     const todos = await this.todoRepository.find({
       where: { todo_id: In(ids) },

@@ -37,6 +37,11 @@ export class TodosController {
     return this.todosService.update(id, updateTodoDto);
   }
 
+  @Patch('update-positions')
+  updatePositions(@Body() body: { ids: string[] }) {
+    return this.todosService.updatePositions(body.ids);
+  }
+
   @Patch()
   completeMultipleTodos(
     @Body() body: { ids: string[]; dateCompleted: string },
