@@ -163,16 +163,52 @@ export const TodosPage = () => {
       };
 
       let newFinish = finish;
+      let newPosition = 0;
+      let arrayToObjectTasks = {};
 
       // If the destination column is empty, initialize its taskIds array
       if (finish.taskIds.length === 0) {
+        arrayToObjectTasks = {
+          [draggableId]: {
+            ...todosData.tasks[draggableId],
+            position: newPosition
+          }
+        };
+
         newFinish = {
           ...finish,
           taskIds: [draggableId], // Add the dragged task to the destination column
         };
       } else {
         const finishTaskIds = Array.from(finish.taskIds);
+
+        if (destination.index >= finishTaskIds.length) {
+          newPosition = todosData.tasks[finishTaskIds[finishTaskIds.length - 1]].position + 1;
+        } else {
+          newPosition = todosData.tasks[finishTaskIds[destination.index]].position;
+        }
+
+        const newTask = { ...todosData.tasks[draggableId], position: newPosition };
+
+        const tasksToUpdate = finishTaskIds.slice(destination.index);
+        const updatedTasks = tasksToUpdate.map((taskId) => {
+          todosData.tasks[taskId].position += 1;
+          return [taskId, todosData.tasks[taskId]];
+        });
+
+        const joinedTasks = [...updatedTasks, [draggableId, newTask]];
+        arrayToObjectTasks = Object.fromEntries(joinedTasks);
+
         finishTaskIds.splice(destination.index, 0, draggableId);
+
+        await axios.patch('/api/todos/update-positions', {
+          ids: tasksToUpdate
+        }, {
+          headers: {
+            Authorization: `Bearer ${loadedTodosData.access_token}`
+          }
+        });
+
         newFinish = {
           ...finish,
           taskIds: finishTaskIds,
@@ -193,9 +229,16 @@ export const TodosPage = () => {
           [newStart.column_id]: newStart,
           [newFinish.column_id]: newFinish,
         },
+        tasks: {
+          ...prevState.tasks,
+          ...arrayToObjectTasks
+        }
       }));
 
-      await axios.patch(`/api/todos/${draggableId}`, { groupId: newFinish.column_id }, {
+      await axios.patch(`/api/todos/${draggableId}`, {
+        groupId: newFinish.column_id,
+        position: newPosition
+      }, {
         headers: {
           Authorization: `Bearer ${loadedTodosData.access_token}`,
         },

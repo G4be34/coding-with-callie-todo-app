@@ -44,6 +44,10 @@ export class TodosService {
       if (updateTodoDto.date_completed !== undefined) {
         todo.date_completed = updateTodoDto.date_completed;
       }
+
+      if (updateTodoDto.position !== undefined) {
+        todo.position = updateTodoDto.position;
+      }
     } else {
       Object.assign(todo, updateTodoDto);
     }
