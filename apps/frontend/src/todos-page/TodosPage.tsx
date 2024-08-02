@@ -69,17 +69,6 @@ export const TodosPage = () => {
 
       const updateDateCompleted = async (taskId: string, date: number | null) => {
         try {
-          setTodosData((prevState) => ({
-            ...prevState,
-            tasks: {
-              ...prevState.tasks,
-              [taskId]: {
-                ...prevState.tasks[taskId],
-                date_completed: date,
-              },
-            },
-          }));
-
           await axios.patch(`/api/todos/${taskId}`, { date_completed: (date ? date.toString() : null), groupId: finish.column_id }, {
             headers: {
               Authorization: `Bearer ${loadedTodosData.access_token}`,
@@ -164,7 +153,7 @@ export const TodosPage = () => {
 
       let newFinish = finish;
       let newPosition = 0;
-      let arrayToObjectTasks = {};
+      let arrayToObjectTasks: { [key: string]: TaskType } = {};
 
       // If the destination column is empty, initialize its taskIds array
       if (finish.taskIds.length === 0) {
@@ -217,9 +206,11 @@ export const TodosPage = () => {
 
       if (finish.column_id === 'column-1') {
         const currentDate = new Date().getTime();
-        updateDateCompleted(draggableId, currentDate);
+        await updateDateCompleted(draggableId, currentDate);
+        arrayToObjectTasks[draggableId].date_completed = currentDate;
       } else if (start.column_id === 'column-1') {
-        updateDateCompleted(draggableId, null);
+        await updateDateCompleted(draggableId, null);
+        arrayToObjectTasks[draggableId].date_completed = null;
       }
 
       setTodosData(prevState => ({

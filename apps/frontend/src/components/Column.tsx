@@ -231,6 +231,21 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
   const completeTodo = async (taskId: string) => {
     try {
       const currentDate = new Date();
+      const todosToUpdate = todosData.columns['column-1'].taskIds ? todosData.columns['column-1'].taskIds : [];
+      let updatedTodos: Task[] = [];
+
+      if (todosToUpdate.length > 0) {
+        updatedTodos = todosToUpdate.map((id) => {
+          todosData.tasks[id].position = todosData.tasks[id].position + 1;
+          return todosData.tasks[id];
+        });
+
+        await axios.patch('/api/todos/update-positions', {
+          ids: todosToUpdate
+        }, {
+          headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
+        });
+      }
 
       setTodosData(prevState => ({
         ...prevState,
@@ -239,7 +254,9 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
           [taskId]: {
             ...prevState.tasks[taskId],
             date_completed: currentDate.getTime(),
+            position: 0
           },
+          ...Object.fromEntries(updatedTodos.map(task => [task.todo_id, task])),
         },
         columns: {
           ...prevState.columns,
@@ -254,7 +271,20 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         },
       }));
 
-      await axios.patch(`/api/todos/${taskId}`, { date_completed: currentDate.getTime().toString(), groupId: 'column-1' }, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
+      await axios.patch(`/api/todos/${taskId}`, {
+        date_completed: currentDate.getTime().toString(),
+        groupId: 'column-1',
+        position: 0
+      }, {
+        headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
+      });
+
+      await axios.patch('api/todos/update-positions', {
+        ids: todosToUpdate
+      }, {
+        headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
+      });
+
       toast({
         title: "Task completed",
         description: "Great work!",
