@@ -327,6 +327,9 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
           return priorityOrder[b.priority] - priorityOrder[a.priority];
         });
         break;
+      case "Date Completed":
+        sortedTasks = [...tasks].sort((a, b) => parseInt(b.date_completed!.toString()) - parseInt(a.date_completed!.toString()));
+        break;
       default:
         sortedTasks = tasks;
         break;
@@ -394,6 +397,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
           <option value="Oldest">Oldest</option>
           <option value="Due">Due Date</option>
           <option value="Priority">Priority</option>
+          {column.column_id === "column-1" ? <option value={"Date Completed"}>Date Completed</option> : null}
         </Select>
         <Editable defaultValue={column.title} cursor={"pointer"} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"} onSubmit={changeTitle}>
           <EditablePreview />

@@ -60,6 +60,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
   const [dueDate, setDueDate] = useState(task.due_date);
   const [priority, setPriority] = useState(task.priority);
   const [checked, setChecked] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
 
   const editTodo = async () => {
@@ -258,7 +259,18 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
               ? <MdCheckBox onClick={selectTodo} size={20} cursor={"pointer"} color={"green"} />
               : <MdCheckBoxOutlineBlank onClick={selectTodo} size={20} cursor={"pointer"} />}
             <RxHamburgerMenu size={20} />
-            <TiDelete size={30} cursor={"pointer"} onClick={() => deleteTodo(task.todo_id)} />
+            {isDeleting
+              ? <Button
+                  autoFocus
+                  onBlur={() => setIsDeleting(false)}
+                  bg={"red"} color={"white"} size={"xs"}
+                  onClick={() => deleteTodo(task.todo_id)}
+                  marginY={1}
+                  >
+                    Delete Task?
+                  </Button>
+              : <TiDelete size={30} cursor={"pointer"} onClick={() => setIsDeleting(true)} />
+              }
           </Box>
           <CardHeader flexDir={"column"} cursor={"pointer"}>
             {editDueDate
