@@ -90,10 +90,17 @@ export const TodosPage = () => {
       if (start === finish) {
         const newTaskIds = Array.from(start.taskIds);
 
-        const newPosition = todosData.tasks[newTaskIds[destination.index]].position;
+        let newPosition = todosData.tasks[newTaskIds[destination.index]].position;
         const newTask = { ...todosData.tasks[draggableId], position: newPosition };
+        let tasksToUpdate = newTaskIds.slice(destination.index);
 
-        const tasksToUpdate = newTaskIds.slice(destination.index);
+        if (destination.index >= newTaskIds.length - 1) {
+          newPosition = todosData.tasks[newTaskIds[newTaskIds.length - 1]].position + 1;
+          tasksToUpdate = [];
+        }
+
+        console.log("Destination Index: ", destination.index);
+        console.log("TasksToUpdate: ", tasksToUpdate);
         const updatedTasks = tasksToUpdate.map((taskId) => {
           todosData.tasks[taskId].position += 1;
           return [taskId, todosData.tasks[taskId]];
@@ -171,7 +178,7 @@ export const TodosPage = () => {
       } else {
         const finishTaskIds = Array.from(finish.taskIds);
 
-        if (destination.index >= finishTaskIds.length) {
+        if (destination.index >= finishTaskIds.length - 1) {
           newPosition = todosData.tasks[finishTaskIds[finishTaskIds.length - 1]].position + 1;
         } else {
           newPosition = todosData.tasks[finishTaskIds[destination.index]].position;
