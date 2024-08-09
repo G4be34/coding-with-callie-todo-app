@@ -33,8 +33,10 @@ export class TodosController {
   }
 
   @Patch('update-positions')
-  updatePositions(@Body() body: { ids: string[] }) {
-    return this.todosService.updatePositions(body.ids);
+  updatePositions(
+    @Body() body: { tasksToUpdate: { todo_id: string; position: number }[] },
+  ) {
+    return this.todosService.updatePositions(body.tasksToUpdate);
   }
 
   @Patch(':id')

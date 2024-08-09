@@ -50,196 +50,162 @@ export const TodosPage = () => {
   const [selectedTodos, setSelectedTodos] = useState<string[]>([]);
 
   const onDragEnd = async (result: DropResult) => {
-    try {
-      const { destination, source, draggableId } = result;
+    const { destination, source, draggableId } = result;
 
-      if (!destination) {
-        return;
-      }
+    if (!destination) {
+      return;
+    }
 
-      if (
-        destination.droppableId === source.droppableId &&
-        destination.index === source.index
-      ) {
-        return;
-      }
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
 
-      const start = todosData.columns[source.droppableId];
-      const finish = todosData.columns[destination.droppableId];
+    const start = todosData.columns[source.droppableId];
+    const finish = todosData.columns[destination.droppableId];
+    const newTaskIds = Array.from(start.taskIds);
 
-      const updateDateCompleted = async (taskId: string, date: number | null) => {
-        try {
-          await axios.patch(`/api/todos/${taskId}`, { date_completed: (date ? date.toString() : null), groupId: finish.column_id }, {
-            headers: {
-              Authorization: `Bearer ${loadedTodosData.access_token}`,
-            },
-          });
-        } catch (error) {
-          console.error("Error updating date completed: ", error);
-          toast({
-            title: 'Error updating date completed',
-            description: "Please try again",
-            status: 'error',
-            duration: 3000,
-            isClosable: true,
-            position: 'top'
-          });
-        }
-      };
+    if (start === finish) {
+      // Reordering within the same column
+      newTaskIds.splice(source.index, 1);
+      newTaskIds.splice(destination.index, 0, draggableId); //look into optimizing this, the previous version is still ctrl + z behind
 
-      if (start === finish) {
-        const newTaskIds = Array.from(start.taskIds);
+      let tasksToUpdate: {todo_id: string, position: number}[] = [];
 
-        let newPosition = todosData.tasks[newTaskIds[destination.index]].position;
-        const newTask = { ...todosData.tasks[draggableId], position: newPosition };
-        let tasksToUpdate = newTaskIds.slice(destination.index);
+      const updatedTasks = newTaskIds.map((taskId, index) => {
+        tasksToUpdate = [...tasksToUpdate, {
+          todo_id: taskId,
+          position: index
+        }];
 
-        if (destination.index >= newTaskIds.length - 1) {
-          newPosition = todosData.tasks[newTaskIds[newTaskIds.length - 1]].position + 1;
-          tasksToUpdate = [];
-        }
-
-        console.log("Destination Index: ", destination.index);
-        console.log("TasksToUpdate: ", tasksToUpdate);
-        const updatedTasks = tasksToUpdate.map((taskId) => {
-          todosData.tasks[taskId].position += 1;
-          return [taskId, todosData.tasks[taskId]];
-        });
-
-        const joinedTasks = [...updatedTasks, [draggableId, newTask]];
-        const arrayToObjectTasks = Object.fromEntries(joinedTasks);
-
-        newTaskIds.splice(source.index, 1);
-        newTaskIds.splice(destination.index, 0, draggableId);
-
-
-        const newColumn = {
-          ...start,
-          taskIds: newTaskIds,
+        return {
+          ...todosData.tasks[taskId], //update the create task function to accommodate the new api
+          position: index,
         };
+      });
 
-        await axios.patch('/api/todos/update-positions', {
-          ids: tasksToUpdate
-        }, {
-          headers: {
-            Authorization: `Bearer ${loadedTodosData.access_token}`
-          }
-        });
-
-        await axios.patch(`/api/todos/${draggableId}`, {
-          position: newPosition
-        }, {
-          headers: {
-            Authorization: `Bearer ${loadedTodosData.access_token}`
-          }
-        });
-
-        setTodosData(prevState => ({
-          ...prevState,
-          columns: {
-            ...prevState.columns,
-            [newColumn.column_id]: newColumn,
-          },
-          tasks: {
-            ...prevState.tasks,
-            ...arrayToObjectTasks
-          }
-        }));
-
-        return;
-      }
-
-      // Moving from one list to another
-      const startTaskIds = Array.from(start.taskIds);
-      startTaskIds.splice(source.index, 1);
-
-      const newStart = {
+      const newColumn = {
         ...start,
-        taskIds: startTaskIds,
+        taskIds: newTaskIds,
       };
 
-      let newFinish = finish;
-      let newPosition = 0;
-      let arrayToObjectTasks: { [key: string]: TaskType } = {};
-
-      // If the destination column is empty, initialize its taskIds array
-      if (finish.taskIds.length === 0) {
-        arrayToObjectTasks = {
-          [draggableId]: {
-            ...todosData.tasks[draggableId],
-            position: newPosition
-          }
-        };
-
-        newFinish = {
-          ...finish,
-          taskIds: [draggableId], // Add the dragged task to the destination column
-        };
-      } else {
-        const finishTaskIds = Array.from(finish.taskIds);
-
-        if (destination.index >= finishTaskIds.length - 1) {
-          newPosition = todosData.tasks[finishTaskIds[finishTaskIds.length - 1]].position + 1;
-        } else {
-          newPosition = todosData.tasks[finishTaskIds[destination.index]].position;
-        }
-
-        const newTask = { ...todosData.tasks[draggableId], position: newPosition };
-
-        const tasksToUpdate = finishTaskIds.slice(destination.index);
-        const updatedTasks = tasksToUpdate.map((taskId) => {
-          todosData.tasks[taskId].position += 1;
-          return [taskId, todosData.tasks[taskId]];
-        });
-
-        const joinedTasks = [...updatedTasks, [draggableId, newTask]];
-        arrayToObjectTasks = Object.fromEntries(joinedTasks);
-
-        finishTaskIds.splice(destination.index, 0, draggableId);
-
-        await axios.patch('/api/todos/update-positions', {
-          ids: tasksToUpdate
-        }, {
-          headers: {
-            Authorization: `Bearer ${loadedTodosData.access_token}`
-          }
-        });
-
-        newFinish = {
-          ...finish,
-          taskIds: finishTaskIds,
-        };
-      }
-
-      if (finish.column_id === 'column-1') {
-        const currentDate = new Date().getTime();
-        await updateDateCompleted(draggableId, currentDate);
-        arrayToObjectTasks[draggableId].date_completed = currentDate;
-      } else if (start.column_id === 'column-1') {
-        await updateDateCompleted(draggableId, null);
-        arrayToObjectTasks[draggableId].date_completed = null;
-      }
+      const newTasks = Object.fromEntries(updatedTasks.map(task => [task.todo_id, task]));
 
       setTodosData(prevState => ({
         ...prevState,
         columns: {
           ...prevState.columns,
-          [newStart.column_id]: newStart,
-          [newFinish.column_id]: newFinish,
+          [newColumn.column_id]: newColumn,
         },
         tasks: {
           ...prevState.tasks,
-          ...arrayToObjectTasks
-        }
+          ...newTasks,
+        },
       }));
 
-      await axios.patch(`/api/todos/${draggableId}`, {
-        groupId: newFinish.column_id,
-        position: newPosition
+      // Optimistic UI update, then API call
+      try {
+        await axios.patch('/api/todos/update-positions', {
+          tasksToUpdate
+        }, {
+          headers: {
+            Authorization: `Bearer ${loadedTodosData.access_token}`
+          }
+        });
+
+        // await axios.patch(`/api/todos/${draggableId}`, {
+        //   position: destination.index
+        // }, {
+        //   headers: {
+        //     Authorization: `Bearer ${loadedTodosData.access_token}`
+        //   }
+        // });
+      } catch (error) {
+        console.error("Error updating todo: ", error);
+        toast({
+          title: "Error updating todo",
+          description: "Please try again",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
+
+      return;
+    }
+
+    // Moving from one list to another
+    const startTaskIds = Array.from(start.taskIds);
+    startTaskIds.splice(source.index, 1);
+
+    const finishTaskIds = Array.from(finish.taskIds);
+    finishTaskIds.splice(destination.index, 0, draggableId);
+
+    const updatedStartTasks = startTaskIds.map((taskId, index) => ({
+      ...todosData.tasks[taskId],
+      position: index,
+    }));
+
+    const updatedFinishTasks = finishTaskIds.map((taskId, index) => ({
+      ...todosData.tasks[taskId],
+      position: index,
+    }));
+
+    const newStart = {
+      ...start,
+      taskIds: startTaskIds,
+    };
+
+    const newFinish = {
+      ...finish,
+      taskIds: finishTaskIds,
+    };
+
+    const newTasks = {
+      ...Object.fromEntries(updatedStartTasks.map(task => [task.todo_id, task])),
+      ...Object.fromEntries(updatedFinishTasks.map(task => [task.todo_id, task])),
+      [draggableId]: {
+        ...todosData.tasks[draggableId],
+        groupId: finish.column_id,
+        position: destination.index,
+        date_completed: finish.column_id === 'column-1' ? new Date().getTime() : null,
+      },
+    };
+
+    setTodosData(prevState => ({
+      ...prevState,
+      columns: {
+        ...prevState.columns,
+        [newStart.column_id]: newStart,
+        [newFinish.column_id]: newFinish,
+      },
+      tasks: {
+        ...prevState.tasks,
+        ...newTasks,
+      },
+    }));
+
+    // Optimistic UI update, then API call
+    try {
+      await axios.patch('/api/todos/update-positions', {
+        ids: [...startTaskIds, ...finishTaskIds]
       }, {
         headers: {
-          Authorization: `Bearer ${loadedTodosData.access_token}`,
-        },
+          Authorization: `Bearer ${loadedTodosData.access_token}`
+        }
+      });
+
+      await axios.patch(`/api/todos/${draggableId}`, {
+        groupId: finish.column_id,
+        position: destination.index,
+        date_completed: finish.column_id === 'column-1' ? new Date().getTime().toString() : null,
+      }, {
+        headers: {
+          Authorization: `Bearer ${loadedTodosData.access_token}`
+        }
       });
     } catch (error) {
       console.error("Error updating todo: ", error);
@@ -250,9 +216,10 @@ export const TodosPage = () => {
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
+
 
   const addNewColumn = async () => {
     try {

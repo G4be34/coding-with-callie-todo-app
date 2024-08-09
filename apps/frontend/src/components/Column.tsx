@@ -123,16 +123,22 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         id: undefined
       };
 
-      const updatedTasks = tasks.map(task => ({
-        ...task,
-        position: task.position + 1
-      }));
+      let tasksToUpdate: { todo_id: string; position: number }[] = [];
 
-      const taskIdsToUpdate = updatedTasks.map(task => task.todo_id);
+      const updatedTasks = tasks.map((task, index) => {
+        tasksToUpdate = [...tasksToUpdate, { todo_id: task.todo_id, position: index + 1 }];
+
+        return {
+          ...task,
+          position: index + 1
+        }
+      });
+
+      //const taskIdsToUpdate = updatedTasks.map(task => task.todo_id);
 
       if (updatedTasks.length > 0) {
         await axios.patch('/api/todos/update-positions', {
-          ids: taskIdsToUpdate
+          tasksToUpdate
         }, {
           headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
         });
