@@ -237,56 +237,79 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
   const completeTodo = async (taskId: string) => {
     try {
       const currentDate = new Date();
-      const todosToUpdate = todosData.columns['column-1'].taskIds ? todosData.columns['column-1'].taskIds : [];
-      let updatedTodos: Task[] = [];
 
-      if (todosToUpdate.length > 0) {
-        updatedTodos = todosToUpdate.map((id) => {
-          todosData.tasks[id].position = todosData.tasks[id].position + 1;
-          return todosData.tasks[id];
-        });
+      const startTaskIds = Array.from(todosData.columns[column.column_id].taskIds);
+      startTaskIds.splice(startTaskIds.indexOf(taskId), 1);
 
-        await axios.patch('/api/todos/update-positions', {
-          ids: todosToUpdate
-        }, {
-          headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
-        });
+      const finishTaskIds = todosData.columns['column-1'].taskIds ? todosData.columns['column-1'].taskIds : [];
+      finishTaskIds.splice(0, 0, taskId);
+
+      let startTasksToUpdate: {todo_id: string, position: number}[] = [];
+      let finishTasksToUpdate: {todo_id: string, position: number}[] = [];
+
+      const updatedStartTasks = startTaskIds.map((taskId, index) => {
+        startTasksToUpdate = [...startTasksToUpdate, {
+          todo_id: taskId,
+          position: index
+        }];
+
+        return {
+          ...todosData.tasks[taskId],
+          position: index,
+        }
+      });
+
+      const updatedFinishTasks = finishTaskIds.map((taskId, index) => {
+        finishTasksToUpdate = [...finishTasksToUpdate, {
+          todo_id: taskId,
+          position: index
+        }];
+
+        return {
+          ...todosData.tasks[taskId],
+          position: index,
+        }
+      });
+
+      const newTasks = {
+        ...Object.fromEntries(updatedStartTasks.map(task => [task.todo_id, task])),
+        ...Object.fromEntries(updatedFinishTasks.map(task => [task.todo_id, task])),
+        [taskId]: {
+          ...todosData.tasks[taskId],
+          groupId: 'column-1',
+          position: 0,
+          date_completed: currentDate.getTime()
+        }
       }
 
       setTodosData(prevState => ({
         ...prevState,
         tasks: {
           ...prevState.tasks,
-          [taskId]: {
-            ...prevState.tasks[taskId],
-            date_completed: currentDate.getTime(),
-            position: 0
-          },
-          ...Object.fromEntries(updatedTodos.map(task => [task.todo_id, task])),
+          ...newTasks,
         },
         columns: {
           ...prevState.columns,
-          [prevState.columnOrder[0]]: {
-            ...prevState.columns[prevState.columnOrder[0]],
-            taskIds: [taskId, ...prevState.columns[prevState.columnOrder[0]].taskIds],
-          },
           [column.column_id]: {
             ...prevState.columns[column.column_id],
-            taskIds: prevState.columns[column.column_id].taskIds.filter(id => id !== taskId),
+            taskIds: startTaskIds,
+          },
+          'column-1': {
+            ...prevState.columns['column-1'],
+            taskIds: finishTaskIds,
           },
         },
       }));
 
-      await axios.patch(`/api/todos/${taskId}`, {
-        date_completed: currentDate.getTime().toString(),
-        groupId: 'column-1',
-        position: 0
+      await axios.patch('api/todos/update-positions', {
+        tasksToUpdate: [...startTasksToUpdate, ...finishTasksToUpdate]
       }, {
         headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
       });
 
-      await axios.patch('api/todos/update-positions', {
-        ids: todosToUpdate
+      await axios.patch(`/api/todos/${taskId}`, {
+        date_completed: currentDate.getTime().toString(),
+        groupId: 'column-1',
       }, {
         headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
       });
