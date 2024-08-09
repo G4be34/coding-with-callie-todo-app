@@ -70,7 +70,7 @@ export const TodosPage = () => {
     if (start === finish) {
       // Reordering within the same column
       newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId); //look into optimizing this, the previous version is still ctrl + z behind
+      newTaskIds.splice(destination.index, 0, draggableId);
 
       let tasksToUpdate: {todo_id: string, position: number}[] = [];
 
@@ -81,7 +81,7 @@ export const TodosPage = () => {
         }];
 
         return {
-          ...todosData.tasks[taskId], //update the create task function to accommodate the new api
+          ...todosData.tasks[taskId],
           position: index,
         };
       });
@@ -105,7 +105,6 @@ export const TodosPage = () => {
         },
       }));
 
-      // Optimistic UI update, then API call
       try {
         await axios.patch('/api/todos/update-positions', {
           tasksToUpdate
@@ -114,14 +113,6 @@ export const TodosPage = () => {
             Authorization: `Bearer ${loadedTodosData.access_token}`
           }
         });
-
-        // await axios.patch(`/api/todos/${draggableId}`, {
-        //   position: destination.index
-        // }, {
-        //   headers: {
-        //     Authorization: `Bearer ${loadedTodosData.access_token}`
-        //   }
-        // });
       } catch (error) {
         console.error("Error updating todo: ", error);
         toast({
@@ -144,15 +135,32 @@ export const TodosPage = () => {
     const finishTaskIds = Array.from(finish.taskIds);
     finishTaskIds.splice(destination.index, 0, draggableId);
 
-    const updatedStartTasks = startTaskIds.map((taskId, index) => ({
-      ...todosData.tasks[taskId],
-      position: index,
-    }));
+    let startTasksToUpdate: {todo_id: string, position: number}[] = [];
+    let finishTasksToUpdate: {todo_id: string, position: number}[] = [];
 
-    const updatedFinishTasks = finishTaskIds.map((taskId, index) => ({
-      ...todosData.tasks[taskId],
-      position: index,
-    }));
+    const updatedStartTasks = startTaskIds.map((taskId, index) => {
+      startTasksToUpdate = [...startTasksToUpdate, {
+        todo_id: taskId,
+        position: index
+      }];
+
+      return {
+        ...todosData.tasks[taskId],
+        position: index,
+      }
+    });
+
+    const updatedFinishTasks = finishTaskIds.map((taskId, index) => {
+      finishTasksToUpdate = [...finishTasksToUpdate, {
+        todo_id: taskId,
+        position: index
+      }];
+
+      return {
+        ...todosData.tasks[taskId],
+        position: index,
+      }
+    });
 
     const newStart = {
       ...start,
@@ -188,10 +196,9 @@ export const TodosPage = () => {
       },
     }));
 
-    // Optimistic UI update, then API call
     try {
       await axios.patch('/api/todos/update-positions', {
-        ids: [...startTaskIds, ...finishTaskIds]
+        tasksToUpdate: [...startTasksToUpdate, ...finishTasksToUpdate]
       }, {
         headers: {
           Authorization: `Bearer ${loadedTodosData.access_token}`
@@ -200,7 +207,6 @@ export const TodosPage = () => {
 
       await axios.patch(`/api/todos/${draggableId}`, {
         groupId: finish.column_id,
-        position: destination.index,
         date_completed: finish.column_id === 'column-1' ? new Date().getTime().toString() : null,
       }, {
         headers: {
