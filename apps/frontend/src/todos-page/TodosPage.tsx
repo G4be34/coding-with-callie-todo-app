@@ -332,57 +332,74 @@ export const TodosPage = () => {
   const completeTodos = async () => {
     const currentDate = new Date().getTime();
 
+    let tasksToUpdate: { todo_id: string; position: number }[] = [];
+
+    const newCompletedTodos = [...selectedTodos, ...todosData.columns['column-1'].taskIds];
+
+    const newTasks = newCompletedTodos.map((taskId, index) => {
+      tasksToUpdate = [...tasksToUpdate, {
+        todo_id: taskId,
+        position: index
+      }];
+
+      const newTask = {
+        ...todosData.tasks[taskId],
+        position: index,
+        date_completed: currentDate,
+        groupId: 'column-1'
+      };
+
+      return newTask
+    });
+
+    const newColumns = Object.fromEntries(
+      Object.entries(todosData.columns).map(([columnId, column]) => {
+        if (column.column_id === 'column-1') {
+          return [columnId, {
+            ...column,
+            taskIds: [...selectedTodos, ...column.taskIds],
+          }]
+        }
+
+        if (column.taskIds.some((taskId) => selectedTodos.includes(taskId))) {
+          return [columnId, {
+            ...column,
+            taskIds: column.taskIds.filter((taskId) => !selectedTodos.includes(taskId)),
+          }];
+        }
+
+        return [columnId, column];
+      })
+    );
+
+    setSelectedTodos([]);
+
+    setTodosData((prevState) => ({
+      ...prevState,
+      tasks: {
+        ...prevState.tasks,
+        ...Object.fromEntries(newTasks.map(task => [task.todo_id, task])),
+      },
+      columns: newColumns,
+    }));
+
     try {
       await axios.patch('/api/todos', {
-          ids: selectedTodos,
-          dateCompleted: currentDate.toString()
-        }, {
-          headers: {
-            Authorization: `Bearer ${loadedTodosData.access_token}`
-          }
-        });
+        ids: selectedTodos,
+        dateCompleted: currentDate.toString()
+      }, {
+        headers: {
+          Authorization: `Bearer ${loadedTodosData.access_token}`
+        }
+      });
 
-      const newTasks = Object.fromEntries(
-        Object.entries(todosData.tasks).map(([taskId, task]) => {
-          if (selectedTodos.includes(taskId)) {
-            return [taskId, {
-              ...task,
-              date_completed: currentDate,
-              groupId: 'column-1'
-            }]
-          }
-
-          return [taskId, task];
-        })
-      );
-
-      const newColumns = Object.fromEntries(
-        Object.entries(todosData.columns).map(([columnId, column]) => {
-          if (column.column_id === 'column-1') {
-            return [columnId, {
-              ...column,
-              taskIds: [...selectedTodos, ...column.taskIds],
-            }]
-          }
-
-          if (column.taskIds.some((taskId) => selectedTodos.includes(taskId))) {
-            return [columnId, {
-              ...column,
-              taskIds: column.taskIds.filter((taskId) => !selectedTodos.includes(taskId)),
-            }];
-          }
-
-          return [columnId, column];
-        })
-      );
-
-      setSelectedTodos([]);
-
-      setTodosData((prevState) => ({
-        ...prevState,
-        tasks: newTasks,
-        columns: newColumns,
-      }));
+      await axios.patch('/api/todos/update-positions', {
+        tasksToUpdate
+      }, {
+        headers: {
+          Authorization: `Bearer ${loadedTodosData.access_token}`
+        }
+      });
 
       toast({
         title: "Success",
@@ -435,7 +452,7 @@ export const TodosPage = () => {
             })}
           </Flex>
         </DragDropContext>
-        <Button mt={10} ml={8} leftIcon={<FaPlus size={20} />} onClick={addNewColumn} >
+        <Button mt={10} ml={8} leftIcon={<FaPlus size={20} />} minW={"auto"} onClick={addNewColumn} >
           Add a new column
         </Button>
       </Flex>
