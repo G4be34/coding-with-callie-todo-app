@@ -1,4 +1,4 @@
-import { Box, Button, Flex, useToast } from "@chakra-ui/react";
+import { Box, Button, Flex, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, useToast } from "@chakra-ui/react";
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import axios from "axios";
 import { useState } from "react";
@@ -48,6 +48,7 @@ export const TodosPage = () => {
   const toast = useToast();
   const [todosData, setTodosData] = useState(loadedTodosData.fetchedTodosData);
   const [selectedTodos, setSelectedTodos] = useState<string[]>([]);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const onDragEnd = async (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -308,6 +309,8 @@ export const TodosPage = () => {
         columns: newColumns,
       }));
 
+      setShowConfirmModal(false);
+
       toast({
         title: "Success",
         status: "success",
@@ -422,12 +425,27 @@ export const TodosPage = () => {
     }
   };
 
+
   return (
     <Flex flex={1} px={5} overflowX={"auto"} direction="column">
+      {showConfirmModal
+        ? <Modal isOpen={showConfirmModal} onClose={() => setShowConfirmModal(false)} isCentered size={"sm"}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                Are you sure you want to delete ({selectedTodos.length}) selected tasks?
+              </ModalHeader>
+              <ModalBody display={"flex"} justifyContent={"space-evenly"} marginBottom={4}>
+                <Button onClick={deleteTodos} colorScheme="red">Yes</Button>
+                <Button onClick={() => setShowConfirmModal(false)} colorScheme="blue">Cancel</Button>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        : null}
       {selectedTodos.length > 0
         ? <Box display={"flex"} justifyContent={"center"} alignItems={"center"} p={4}>
             <Button bg={"green"} color={"white"} onClick={completeTodos} mr={4}>Complete selected Tasks</Button>
-            <Button bg={"red"} color={"white"} onClick={deleteTodos}>Delete selected Tasks</Button>
+            <Button bg={"red"} color={"white"} onClick={() => setShowConfirmModal(true)}>Delete selected Tasks</Button>
           </Box>
         : null}
       <Flex flexDirection="row" alignItems="flex-start">
