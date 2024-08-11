@@ -12,18 +12,21 @@ export class Todo {
   @Column()
   description: string;
 
-  @Column({ nullable: true })
-  date_completed: Date | null;
+  @Column({ nullable: true, type: 'bigint' })
+  date_completed: string | null;
+
+  @Column({ nullable: true, type: 'bigint' })
+  due_date: string | null;
+
+  @Column({ type: 'bigint' })
+  date_added: string;
 
   @Column()
-  due_date: Date;
-
-  @Column()
-  date_added: Date;
+  position: number;
 
   @Column()
   priority: 'Normal' | 'High' | 'Highest';
 
-  @ManyToOne(() => Group, (group) => group.todos)
+  @ManyToOne(() => Group, (group) => group.todos, { onDelete: 'CASCADE' })
   group: Group;
 }

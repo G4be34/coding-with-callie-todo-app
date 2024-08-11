@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { UploaderService } from './uploader/uploader.service';
 
 @Controller('image')
@@ -28,6 +28,16 @@ export class AppController {
       process.env.S3_BUCKET_NAME,
       `profile_image/${data.user_id}.png`,
       data.profile_photo_in_base64,
+    );
+
+    return 'ok';
+  }
+
+  @Delete('/s3_delete/:user_id')
+  async s3Delete(@Param('user_id') userId: number) {
+    await this.uploader.deleteFileFromS3(
+      process.env.S3_BUCKET_NAME,
+      `profile_image/${userId}.png`,
     );
 
     return 'ok';

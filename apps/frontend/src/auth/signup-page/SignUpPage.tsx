@@ -45,7 +45,16 @@ export const SignUpPage = () => {
         font: "",
       };
 
-      await axios.post('/api/users', newUser);
+      const user = await axios.post('/api/users', newUser);
+
+      const completeColumn = {
+        column_id: 'column-1',
+        title: 'Completed',
+        position: 0,
+        userId: user.data.id,
+      };
+
+      await axios.post('/api/groups', completeColumn);
 
       setLoading(false);
       navigate('/login');
@@ -69,7 +78,7 @@ export const SignUpPage = () => {
         position: 'bottom'
       })
     }
-  }
+  };
 
   const sendVerificationEmail = async (username: string, email: string) => {
     try {
@@ -120,14 +129,14 @@ export const SignUpPage = () => {
       })
     }
 
-  }
+  };
 
   const handleBackButton = () => {
     setCompleteSignup(false);
     setCodeMatch(true)
     setCode("");
     setEmailCode("");
-  }
+  };
 
   return (
     <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} bgColor={"gray.300"} pos={"relative"}>

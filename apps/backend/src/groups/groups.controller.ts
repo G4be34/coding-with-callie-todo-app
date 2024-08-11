@@ -18,6 +18,7 @@ export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
   @Post()
+  @Public()
   create(@Body() createGroupDto: CreateGroupDto) {
     return this.groupsService.create(createGroupDto);
   }
@@ -30,7 +31,7 @@ export class GroupsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.groupsService.findOne(+id);
+    return this.groupsService.findOne(id);
   }
 
   @Patch(':id')
@@ -42,6 +43,6 @@ export class GroupsController {
   @Delete(':id')
   @Public()
   remove(@Param('id') id: string) {
-    return this.groupsService.remove(+id);
+    return this.groupsService.remove(id);
   }
 }

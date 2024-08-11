@@ -2,12 +2,10 @@ import { Button, Editable, EditableInput, EditablePreview, Flex, Heading, Image,
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
 import { EditableControls } from "./EditableControls";
 import { NewPasswordModal } from "./NewPasswordModal";
 
-export const ProfileModal = ({ setShowModal, showModal }) => {
-  const { user, token, setUser, logoutUser } = useAuth();
+export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, logoutUser }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const [currentTab, setCurrentTab] = useState("Profile");
@@ -40,7 +38,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
     }
     reader.readAsDataURL(e.target.files[0]);
     setShowSubmitButton(true);
-  }
+  };
 
   const handleSubmit = (base64: string) => {
     const params = {
@@ -53,7 +51,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
         Authorization: `Bearer ${token}`
       }
     });
-  }
+  };
 
   const saveEdit = async (newItem: string) => {
     try {
@@ -81,16 +79,24 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
       }
       console.log(error);
     }
-  }
+  };
 
   const deleteProfile = async () => {
     try {
       setLoading(true);
+
+      await axios.delete(`/api/image/s3_delete/${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
       await axios.delete(`/api/users/${user._id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
+
       setShowConfirm(false);
       setShowModal(false);
       logoutUser();
@@ -105,12 +111,10 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
         position: 'top'
       })
     } catch (error) {
-      if (loading) {
-        setLoading(false);
-      }
-      console.log(error);
+      setLoading(false);
+      console.log('Error deleting profile: ', error);
     }
-  }
+  };
 
   const sendVerificationEmail = async () => {
     try {
@@ -145,7 +149,7 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
         position: 'bottom'
       })
     }
-  }
+  };
 
   const submitNewPassword = async () => {
     try {
@@ -195,13 +199,12 @@ export const ProfileModal = ({ setShowModal, showModal }) => {
         position: 'bottom'
       })
     }
-  }
+  };
 
 
   return (
     <>
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} isCentered size={"2xl"}>
-
         {showConfirm ?
           <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} isCentered size={"sm"}>
             <ModalOverlay />

@@ -13,6 +13,7 @@ export class GroupsService {
     private readonly groupRepository: Repository<Group>,
     private readonly usersService: UsersService,
   ) {}
+
   async create(createGroupDto: CreateGroupDto) {
     const group = await this.groupRepository.create(createGroupDto);
     const user = await this.usersService.findOne(createGroupDto.userId);
@@ -24,6 +25,7 @@ export class GroupsService {
     const groups = await this.groupRepository.find({
       where: { user: { id: userId } },
       order: { position: 'ASC' },
+      relations: { todos: true },
     });
 
     const initialData = {
@@ -33,20 +35,30 @@ export class GroupsService {
     };
 
     groups.forEach((group) => {
-      initialData.columns[group.id] = {
+      group.todos.sort((a, b) => a.position - b.position);
+
+      initialData.columns[group.column_id] = {
         id: group.id,
+        column_id: group.column_id,
         title: group.title,
-        taskIds: group.todos.map((todo) => todo.id),
+        taskIds: group.todos.map((todo) => todo.todo_id),
       };
 
-      initialData.columnOrder.push(group.id);
+      group.todos.forEach((todo) => {
+        initialData.tasks[todo.todo_id] = {
+          ...todo,
+          groupId: group.column_id,
+        };
+      });
+
+      initialData.columnOrder.push(group.column_id);
     });
 
     return initialData;
   }
 
-  findOne(id: number) {
-    return this.groupRepository.findOne({ where: { id } });
+  findOne(id: string) {
+    return this.groupRepository.findOne({ where: { column_id: id } });
   }
 
   async update(id: number, updateGroupDto: UpdateGroupDto) {
@@ -56,7 +68,7 @@ export class GroupsService {
     return this.groupRepository.save(group);
   }
 
-  remove(id: number) {
-    return this.groupRepository.delete({ id });
+  remove(id: string) {
+    return this.groupRepository.delete({ column_id: id });
   }
 }

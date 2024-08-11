@@ -22,9 +22,9 @@ export class Group {
   @Column()
   position: number;
 
-  @OneToMany(() => Todo, (todo) => todo.group, { eager: true })
+  @OneToMany(() => Todo, (todo) => todo.group, { eager: true, cascade: true })
   todos: Todo[];
 
-  @ManyToOne(() => User, (user) => user.groups)
+  @ManyToOne(() => User, (user) => user.groups, { onDelete: 'CASCADE' })
   user: User;
 }

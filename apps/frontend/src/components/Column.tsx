@@ -1,34 +1,61 @@
 import { Button, Editable, EditableInput, EditablePreview, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react";
+import { Droppable } from "@hello-pangea/dnd";
 import axios from "axios";
 import { useState } from "react";
-import { Droppable } from "react-beautiful-dnd";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { FaMinusCircle, FaPlus } from "react-icons/fa";
+import { useLoaderData } from "react-router-dom";
 import { v4 as uuid } from "uuid";
-import { useAuth } from "../context/AuthProvider";
-import { useTodos } from "../context/TodosProvider";
 import { TaskItem } from "./TaskItem";
 
 
+type InitialDataType = {
+  tasks: {
+    [key: string]: Task
+  };
+  columns: {
+    [key: string]: ColumnData
+  };
+  columnOrder: string[];
+};
+
 type Task = {
-  id: string;
-  content: string;
-  date_added: number;
-  date_completed: number | null;
+  todo_id: string;
+  id: string | number | undefined;
+  description: string;
+  date_added: number | string;
+  date_completed: number | string | null;
   priority: string;
-  due_date: number | null;
+  due_date: number | string;
+  position: number;
+  groupId: string;
 };
 
 type ColumnData = {
   id: string;
+  column_id: string;
   title: string;
   taskIds: string[];
 };
 
-export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] }) => {
-  const { setTodosData, todosData } = useTodos();
-  const { token, user } = useAuth();
+type ColumnProps = {
+  column: ColumnData;
+  tasks: Task[];
+  setTodosData: React.Dispatch<React.SetStateAction<InitialDataType>>;
+  todosData: InitialDataType;
+  setSelectedTodos: React.Dispatch<React.SetStateAction<string[]>>
+};
+
+type LoadedTodosDataType = {
+  fetchedTodosData: InitialDataType
+  access_token: string
+  userId: string
+};
+
+
+export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodos }: ColumnProps) => {
+  const fetchedTodosData = useLoaderData() as LoadedTodosDataType;
   const toast = useToast();
   const [showDelete, setShowDelete] = useState(true);
   const [addTodo, setAddTodo] = useState(false);
@@ -50,26 +77,25 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
 
     const taskIdsToDelete = todosData.columns[columnId].taskIds;
     const updatedColumnOrder = todosData.columnOrder.filter(columnIdToDelete => columnIdToDelete !== columnId);
-
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: Object.fromEntries(Object.entries(prevState.tasks).filter(([taskId, _]) => !taskIdsToDelete.includes(taskId))),
-      columns: Object.fromEntries(Object.entries(prevState.columns).filter(([columnIdToDelete, _]) => columnIdToDelete !== columnId)),
-      columnOrder: updatedColumnOrder,
-    }));
-
-    toast({
-      title: `Column ${column.title} has been deleted`,
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
-
     try {
-      await axios.delete(`/api/groups/${columnId}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`/api/groups/${columnId}`, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
+
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: Object.fromEntries(Object.entries(prevState.tasks).filter(([taskId]) => !taskIdsToDelete.includes(taskId))),
+        columns: Object.fromEntries(Object.entries(prevState.columns).filter(([columnIdToDelete]) => columnIdToDelete !== columnId)),
+        columnOrder: updatedColumnOrder,
+      }));
+
+      toast({
+        title: `Column ${column.title} has been deleted`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
     } catch (error) {
-      console.error(error);
+      console.error("Failed to delete column", error);
       toast({
         title: "Failed to delete column",
         status: "error",
@@ -80,108 +106,233 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
     }
   };
 
-  const addNewTodo = () => {
+  const addNewTodo = async () => {
     if (newTodo.trim() === "") return;
 
-    const newTaskId = uuid();
     const currentDate = new Date();
+    try {
+      let newTask: Task = {
+        todo_id: uuid(),
+        description: newTodo.trim(),
+        date_added: (currentDate.getTime()).toString(),
+        date_completed: null,
+        priority,
+        position: 0,
+        due_date: (dueDate.getTime()).toString(),
+        groupId: column.column_id,
+        id: undefined
+      };
 
-    const newTask: Task = {
-      id: newTaskId,
-      content: newTodo.trim(),
-      date_added: currentDate.getTime(),
-      date_completed: null,
-      priority,
-      due_date: dueDate.getTime(),
-    };
+      let tasksToUpdate: { todo_id: string; position: number }[] = [];
 
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: {
-        ...prevState.tasks,
-        [newTaskId]: newTask,
-      },
-      columns: {
-        ...prevState.columns,
-        [column.id]: {
-          ...prevState.columns[column.id],
-          taskIds: [newTaskId, ...prevState.columns[column.id].taskIds],
+      const updatedTasks = tasks.map((task, index) => {
+        tasksToUpdate = [...tasksToUpdate, { todo_id: task.todo_id, position: index + 1 }];
+
+        return {
+          ...task,
+          position: index + 1
+        }
+      });
+
+      //const taskIdsToUpdate = updatedTasks.map(task => task.todo_id);
+
+      if (updatedTasks.length > 0) {
+        await axios.patch('/api/todos/update-positions', {
+          tasksToUpdate
+        }, {
+          headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
+        });
+      }
+
+      const response = await axios.post('/api/todos', newTask, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
+
+      const newTaskId = response.data.id;
+
+      newTask = {
+        ...newTask,
+        date_added: currentDate.getTime(),
+        due_date: dueDate.getTime(),
+        id: newTaskId
+      };
+
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: {
+          ...prevState.tasks,
+          ...Object.fromEntries(updatedTasks.map(task => [task.todo_id, task])),
+          [newTask.todo_id]: newTask,
         },
-      },
-    }));
+        columns: {
+          ...prevState.columns,
+          [column.column_id]: {
+            ...prevState.columns[column.column_id],
+            taskIds: [newTask.todo_id, ...prevState.columns[column.column_id].taskIds],
+          },
+        },
+      }));
 
-    setNewTodo("");
-    setDueDate(new Date());
-    setPriority("Normal");
-    setAddTodo(false);
-
-    toast({
-      title: "Task added",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+      toast({
+        title: "Task added",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error adding task: ", error);
+      toast({
+        title: "Failed to add task",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } finally {
+      setNewTodo("");
+      setDueDate(new Date());
+      setPriority("Normal");
+      setAddTodo(false);
+    }
   };
 
-  const deleteTodo = (taskIdToDelete: string) => {
-    const updatedTasks = Object.entries(todosData.tasks).filter(([taskId, _]) => taskId !== taskIdToDelete);
-    const updatedColumnTaskIds = todosData.columns[column.id].taskIds.filter((id) => id !== taskIdToDelete);
+  const deleteTodo = async (taskIdToDelete: string) => {
+    const updatedTasks = Object.entries(todosData.tasks).filter(([taskId]) => taskId !== taskIdToDelete);
+    const updatedColumnTaskIds = todosData.columns[column.column_id].taskIds.filter((id) => id !== taskIdToDelete);
 
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: Object.fromEntries(updatedTasks),
-      columns: {
-        ...prevState.columns,
-        [column.id]: {
-          ...prevState.columns[column.id],
-          taskIds: updatedColumnTaskIds,
+    try {
+      await axios.delete(`/api/todos/${taskIdToDelete}`, { headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` } });
+
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: Object.fromEntries(updatedTasks),
+        columns: {
+          ...prevState.columns,
+          [column.column_id]: {
+            ...prevState.columns[column.column_id],
+            taskIds: updatedColumnTaskIds,
+          },
         },
-      },
-    }));
+      }));
 
-    toast({
-      title: "Task deleted",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+      toast({
+        title: "Task deleted",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Failed to delete task: ", error);
+      toast({
+        title: "Failed to delete task",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
   };
 
-  const completeTodo = (taskId: string) => {
-    const currentDate = new Date();
+  const completeTodo = async (taskId: string) => {
+    try {
+      const currentDate = new Date();
 
-    setTodosData(prevState => ({
-      ...prevState,
-      tasks: {
-        ...prevState.tasks,
+      const startTaskIds = Array.from(todosData.columns[column.column_id].taskIds);
+      startTaskIds.splice(startTaskIds.indexOf(taskId), 1);
+
+      const finishTaskIds = todosData.columns['column-1'].taskIds ? todosData.columns['column-1'].taskIds : [];
+      finishTaskIds.splice(0, 0, taskId);
+
+      let startTasksToUpdate: {todo_id: string, position: number}[] = [];
+      let finishTasksToUpdate: {todo_id: string, position: number}[] = [];
+
+      const updatedStartTasks = startTaskIds.map((taskId, index) => {
+        startTasksToUpdate = [...startTasksToUpdate, {
+          todo_id: taskId,
+          position: index
+        }];
+
+        return {
+          ...todosData.tasks[taskId],
+          position: index,
+        }
+      });
+
+      const updatedFinishTasks = finishTaskIds.map((taskId, index) => {
+        finishTasksToUpdate = [...finishTasksToUpdate, {
+          todo_id: taskId,
+          position: index
+        }];
+
+        return {
+          ...todosData.tasks[taskId],
+          position: index,
+        }
+      });
+
+      const newTasks = {
+        ...Object.fromEntries(updatedStartTasks.map(task => [task.todo_id, task])),
+        ...Object.fromEntries(updatedFinishTasks.map(task => [task.todo_id, task])),
         [taskId]: {
-          ...prevState.tasks[taskId],
-          date_completed: currentDate.getTime(),
-        },
-      },
-      columns: {
-        ...prevState.columns,
-        [prevState.columnOrder[0]]: {
-          ...prevState.columns[prevState.columnOrder[0]],
-          taskIds: [taskId, ...prevState.columns[prevState.columnOrder[0]].taskIds],
-        },
-        [column.id]: {
-          ...prevState.columns[column.id],
-          taskIds: prevState.columns[column.id].taskIds.filter(id => id !== taskId),
-        },
-      },
-    }));
+          ...todosData.tasks[taskId],
+          groupId: 'column-1',
+          position: 0,
+          date_completed: currentDate.getTime()
+        }
+      }
 
-    toast({
-      title: "Task completed",
-      description: "Great work!",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "top",
-    });
+      setTodosData(prevState => ({
+        ...prevState,
+        tasks: {
+          ...prevState.tasks,
+          ...newTasks,
+        },
+        columns: {
+          ...prevState.columns,
+          [column.column_id]: {
+            ...prevState.columns[column.column_id],
+            taskIds: startTaskIds,
+          },
+          'column-1': {
+            ...prevState.columns['column-1'],
+            taskIds: finishTaskIds,
+          },
+        },
+      }));
+
+      await axios.patch('api/todos/update-positions', {
+        tasksToUpdate: [...startTasksToUpdate, ...finishTasksToUpdate]
+      }, {
+        headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
+      });
+
+      await axios.patch(`/api/todos/${taskId}`, {
+        date_completed: currentDate.getTime().toString(),
+        groupId: 'column-1',
+      }, {
+        headers: { Authorization: `Bearer ${fetchedTodosData.access_token}` }
+      });
+
+      toast({
+        title: "Task completed",
+        description: "Great work!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error completing task: ", error);
+      toast({
+        title: "Failed to complete task",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
+    }
   };
 
   const sortTasks = (sortValue: string) => {
@@ -191,19 +342,22 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
 
     switch (sortValue) {
       case "Newest":
-        sortedTasks = [...tasks].sort((a, b) => b.date_added - a.date_added);
+        sortedTasks = [...tasks].sort((a, b) => parseInt(b.date_added.toString()) - parseInt(a.date_added.toString()));
         break;
       case "Oldest":
-        sortedTasks = [...tasks].sort((a, b) => a.date_added - b.date_added);
+        sortedTasks = [...tasks].sort((a, b) => parseInt(a.date_added.toString()) - parseInt(b.date_added.toString()));
         break;
       case "Due":
-        sortedTasks = [...tasks].sort((a, b) => (a.due_date || Infinity) - (b.due_date || Infinity));
+        sortedTasks = [...tasks].sort((a, b) => (parseInt(a.due_date.toString())) - (parseInt(b.due_date.toString())));
         break;
       case "Priority":
         sortedTasks = [...tasks].sort((a, b) => {
           const priorityOrder: { [key: string]: number } = { "Normal": 0, "High": 1, "Highest": 2 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
         });
+        break;
+      case "Date Completed":
+        sortedTasks = [...tasks].sort((a, b) => parseInt(b.date_completed!.toString()) - parseInt(a.date_completed!.toString()));
         break;
       default:
         sortedTasks = tasks;
@@ -214,13 +368,37 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
       ...prevState,
       columns: {
         ...prevState.columns,
-        [column.id]: {
-          ...prevState.columns[column.id],
-          taskIds: sortedTasks.map(task => task.id),
+        [column.column_id]: {
+          ...prevState.columns[column.column_id],
+          taskIds: sortedTasks.map(task => task.todo_id),
         },
       },
     }));
-  }
+  };
+
+  const changeTitle = async (newTitle: string) => {
+    try {
+      await axios.patch(`/api/groups/${column.id}`, {title: newTitle});
+
+      toast({
+        title: "Column title updated",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
+    } catch (error) {
+      console.error("Error updating column title:", error);
+      toast({
+        title: "Error updating column title",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      })
+    }
+  };
 
 
   return (
@@ -232,7 +410,7 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
         : <Button
             autoFocus
             size={"xs"}
-            onClick={() => deleteColumn(column.id)}
+            onClick={() => deleteColumn(column.column_id)}
             mb={2}
             onBlur={() => setShowDelete(true)}
             bg={"red.400"}
@@ -248,19 +426,21 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
           <option value="Oldest">Oldest</option>
           <option value="Due">Due Date</option>
           <option value="Priority">Priority</option>
+          {column.column_id === "column-1" ? <option value={"Date Completed"}>Date Completed</option> : null}
         </Select>
-        <Editable defaultValue={column.title} cursor={"pointer"} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"}>
+        <Editable defaultValue={column.title} cursor={"pointer"} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"} onSubmit={changeTitle}>
           <EditablePreview />
           <EditableInput />
         </Editable>
       </Flex>
-      <Droppable droppableId={column.id}>
+      <Droppable droppableId={column.column_id}>
         {(provided, snapshot) => (
           <Flex
             ref={provided.innerRef}
             {...provided.droppableProps}
             bg={snapshot.isDraggingOver ? "gray.200" : "white"}
             flexDir={"column"}
+            minH={"500px"}
             h={"100%"}
             minW={"100%"}
             flex={1}
@@ -323,7 +503,15 @@ export const Column = ({ column, tasks }: { column: ColumnData, tasks: Task[] })
               : null
               }
             {tasks.length > 0 ? tasks.map((task, index) => (
-              <TaskItem key={task.id} task={task} index={index} deleteTodo={deleteTodo} completeTodo={completeTodo} />
+              <TaskItem
+                key={task.id}
+                task={task}
+                index={index}
+                deleteTodo={deleteTodo}
+                completeTodo={completeTodo}
+                setTodosData={setTodosData}
+                setSelectedTodos={setSelectedTodos}
+                />
             )) : <Text my={2} textAlign={"center"}>Empty</Text>}
             {provided.placeholder}
           </Flex>
