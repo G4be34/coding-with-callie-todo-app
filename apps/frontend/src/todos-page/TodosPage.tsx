@@ -348,12 +348,14 @@ export const TodosPage = () => {
       const newTask = {
         ...todosData.tasks[taskId],
         position: index,
-        date_completed: currentDate,
+        date_completed: todosData.tasks[taskId].date_completed ? todosData.tasks[taskId].date_completed : currentDate,
         groupId: 'column-1'
       };
 
       return newTask
     });
+
+
 
     const newColumns = Object.fromEntries(
       Object.entries(todosData.columns).map(([columnId, column]) => {
@@ -456,7 +458,7 @@ export const TodosPage = () => {
               const tasks = column.taskIds.map((taskId: string) => todosData.tasks[taskId]);
 
               return (
-                <Box key={column.id} minW={"300px"} flexShrink={0} minH={"60%"}>
+                <Box key={column.id} minW={"300px"} flexShrink={0} minH={"60%"} maxH={"80%"} overflowY={"auto"}>
                   <Column
                     key={column.id}
                     column={column}
