@@ -402,7 +402,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
 
 
   return (
-    <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"} minH={"100%"} w={"100%"}>
+    <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"} minH={"100%"} maxH={"100%"} w={"100%"} overflowY={"auto"}>
       {showDelete
         ? <Flex mb={2} _hover={{ opacity: 0.5}}>
             <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"}/>
@@ -450,9 +450,10 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             borderTopRightRadius={0}
             p={4}
             overflow={"auto"}
+            maxH={"900px"}
             >
             {column.title !== "Completed"
-              ? <Button w={"100%"} mb={4} onClick={() => setAddTodo(true)}>
+              ? <Button w={"100%"} minH={10} mb={4} onClick={() => setAddTodo(true)}>
                   <FaPlus />
                 </Button>
               : null}
