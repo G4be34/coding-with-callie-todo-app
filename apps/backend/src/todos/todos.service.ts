@@ -26,8 +26,9 @@ export class TodosService {
     return newTodo;
   }
 
-  findAll() {
-    return this.todoRepository.find();
+  async findAll(userId) {
+    const columns = this.groupService.getTodos(userId);
+    return columns;
   }
 
   findOne(id: number) {

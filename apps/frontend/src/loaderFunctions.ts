@@ -36,9 +36,48 @@ export const getTodosData = async () => {
 };
 
 export const getGraphsData = async () => {
-  console.log("Retrieving graphs data");
+  const token = localStorage.getItem('token');
+  const preParsedId = localStorage.getItem('user_id');
+  const userId = parseInt(preParsedId!, 10);
+  const { access_token } = JSON.parse(token!);
+  let pieChartData;
+  let lineChartData;
+  let areaChartData;
+  let scatterChartData;
 
-  return true;
+  const response = await axios.get(`/api/todos?userId=${userId}`, {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    }
+  });
+
+  const barSortedTasks = response.data.sort((a, b) => parseInt(a.date_completed) - parseInt(b.date_completed));
+
+  const getWeekLabel = (timestamp) => {
+    const date = new Date(parseInt(timestamp));
+    const startOfWeek = new Date(date.setDate(date.getDate() - date.getDay()));
+    const month = String(startOfWeek.getMonth() + 1).padStart(2, '0');
+    const day = String(startOfWeek.getDate()).padStart(2, '0');
+    return `${month}/${day}`;
+  };
+
+  const tasksByWeek = barSortedTasks.reduce((acc, task) => {
+    if (task.date_completed) {
+      const weekLabel = getWeekLabel(task.date_completed);
+      if (!acc[weekLabel]) {
+        acc[weekLabel] = 0;
+      }
+      acc[weekLabel]++;
+    }
+    return acc;
+  }, {});
+
+  const barChartData = Object.entries(tasksByWeek).map(([week, completed]) => ({
+    week,
+    completed,
+  }));
+
+  return { barChartData };
 };
 
 export const getCalendarData = async () => {

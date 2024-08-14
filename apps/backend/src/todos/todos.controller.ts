@@ -23,8 +23,8 @@ export class TodosController {
   }
 
   @Get()
-  findAll() {
-    return this.todosService.findAll();
+  findAll(@Query('userId') userId: number) {
+    return this.todosService.findAll(userId);
   }
 
   @Get(':id')
