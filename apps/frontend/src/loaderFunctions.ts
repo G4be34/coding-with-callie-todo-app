@@ -40,10 +40,10 @@ export const getGraphsData = async () => {
   const preParsedId = localStorage.getItem('user_id');
   const userId = parseInt(preParsedId!, 10);
   const { access_token } = JSON.parse(token!);
-  let pieChartData;
   let lineChartData;
   let areaChartData;
   let scatterChartData;
+  const priorityCounts = {};
 
   const response = await axios.get(`/api/todos?userId=${userId}`, {
     headers: {
@@ -51,9 +51,9 @@ export const getGraphsData = async () => {
     }
   });
 
-  const barSortedTasks = response.data.sort((a, b) => parseInt(a.date_completed) - parseInt(b.date_completed));
+  const sortedTasks = response.data.sort((a, b) => parseInt(a.date_completed) - parseInt(b.date_completed));
 
-  const getWeekLabel = (timestamp) => {
+  const getWeekLabel = (timestamp: string) => {
     const date = new Date(parseInt(timestamp));
     const startOfWeek = new Date(date.setDate(date.getDate() - date.getDay()));
     const month = String(startOfWeek.getMonth() + 1).padStart(2, '0');
@@ -61,23 +61,35 @@ export const getGraphsData = async () => {
     return `${month}/${day}`;
   };
 
-  const tasksByWeek = barSortedTasks.reduce((acc, task) => {
+  const tasksByWeek = sortedTasks.reduce((acc, task) => {
+    if (priorityCounts[task.priority]) {
+      priorityCounts[task.priority]++;
+    } else {
+      priorityCounts[task.priority] = 1;
+    }
+
     if (task.date_completed) {
       const weekLabel = getWeekLabel(task.date_completed);
+
       if (!acc[weekLabel]) {
-        acc[weekLabel] = 0;
+        acc[weekLabel] = { completed: 0 };
       }
-      acc[weekLabel]++;
+
+      acc[weekLabel].completed++;
     }
+
     return acc;
   }, {});
 
-  const barChartData = Object.entries(tasksByWeek).map(([week, completed]) => ({
+  const pieChartData = Object.entries(priorityCounts).map(([priority, count]) => ({ name: priority, value: count }));
+
+  const barChartData = Object.entries(tasksByWeek).map(([week, { completed, incomplete }]) => ({
     week,
     completed,
+    incomplete,
   }));
 
-  return { barChartData };
+  return { barChartData, pieChartData };
 };
 
 export const getCalendarData = async () => {
