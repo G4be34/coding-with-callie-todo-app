@@ -1,6 +1,6 @@
 import { Box, Grid } from "@chakra-ui/react";
 import { useLoaderData } from "react-router-dom";
-import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, Rectangle, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, Rectangle, Tooltip, XAxis, YAxis } from "recharts";
 
 
 const COLORS = ['gray', 'red', 'orange', '#FF8042'];
@@ -19,7 +19,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 
 export const GraphsPage = () => {
-  const { barChartData, pieChartData, stackedBarChartData } = useLoaderData();
+  const { barChartData, pieChartData, stackedBarChartData, areaChartData } = useLoaderData();
 
   return (
     <Grid
@@ -80,7 +80,22 @@ export const GraphsPage = () => {
           <Bar dataKey="Highest" fill="red" stackId={"a"} activeBar={<Rectangle fill="gold" stroke="black" />} />
         </BarChart>
       </Box>
-      <Box bg="orange" height="100px" margin={"auto"} width="100px" gridColumn="2" gridRow="2" />
+      <Box margin={"auto"} gridColumn="2" gridRow="2">
+        <AreaChart
+          width={400}
+          height={300}
+          data={areaChartData}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="week" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Area type="monotone" dataKey="Highest" stroke="white" fill="red" stackId={"b"} activeDot={{ r: 8 }} />
+          <Area type="monotone" dataKey="High" stroke="white" fill="orange" stackId={"b"} activeDot={{ r: 8 }} />
+          <Area type="monotone" dataKey="Normal" stroke="white" fill="gray" stackId={"b"} activeDot={{ r: 8 }} />
+        </AreaChart>
+      </Box>
     </Grid>
   )
 }
