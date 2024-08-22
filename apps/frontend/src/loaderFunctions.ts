@@ -40,10 +40,10 @@ export const getGraphsData = async () => {
   const preParsedId = localStorage.getItem('user_id');
   const userId = parseInt(preParsedId!, 10);
   const { access_token } = JSON.parse(token!);
-  let lineChartData;
   let areaChartData;
   let scatterChartData;
   const priorityCounts = {};
+  const stackedBarObj = {};
 
   const response = await axios.get(`/api/todos?userId=${userId}`, {
     headers: {
@@ -78,8 +78,30 @@ export const getGraphsData = async () => {
       acc[weekLabel].completed++;
     }
 
+    const weekLabel = getWeekLabel(task.date_added);
+    if (stackedBarObj[weekLabel]) {
+      if (!stackedBarObj[weekLabel][task.priority]) {
+        stackedBarObj[weekLabel][task.priority] = 1;
+      } else {
+        stackedBarObj[weekLabel][task.priority]++;
+      }
+    } else {
+      stackedBarObj[weekLabel] = { [task.priority]: 1 };
+    }
+
     return acc;
   }, {});
+
+  const unsortedStackedBarChartData = Object.entries(stackedBarObj).map(([week, priorities]) => ({
+    week,
+    ...priorities,
+  }));
+
+  const stackedBarChartData = unsortedStackedBarChartData.sort((a, b) => {
+    const dateA = new Date(a.week);
+    const dateB = new Date(b.week);
+    return dateA.getTime() - dateB.getTime();
+  });
 
   const pieChartData = Object.entries(priorityCounts).map(([priority, count]) => ({ name: priority, value: count }));
 
@@ -89,7 +111,7 @@ export const getGraphsData = async () => {
     incomplete,
   }));
 
-  return { barChartData, pieChartData };
+  return { barChartData, pieChartData, stackedBarChartData };
 };
 
 export const getCalendarData = async () => {

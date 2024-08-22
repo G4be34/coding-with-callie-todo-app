@@ -19,13 +19,12 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 
 export const GraphsPage = () => {
-  const { barChartData, pieChartData } = useLoaderData();
-  console.log("pie chart data: ", pieChartData);
+  const { barChartData, pieChartData, stackedBarChartData } = useLoaderData();
 
   return (
     <Grid
       templateColumns={"repeat(2, 1fr)"}
-      templateRows={"repeat(3, 1fr)"}
+      templateRows={"repeat(2, 1fr)"}
       gap={4}
       alignItems={"center"}
       height={"100vh"}
@@ -65,9 +64,23 @@ export const GraphsPage = () => {
           <Tooltip />
         </PieChart>
       </Box>
-      <Box bg="blue" height="100px" margin={"auto"} width="100px" gridColumn="1" gridRow="2" />
+      <Box margin={"auto"} gridColumn="1" gridRow="2">
+        <BarChart
+          width={400}
+          height={300}
+          data={stackedBarChartData}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="week" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="Normal" fill="gray" stackId={"a"} activeBar={<Rectangle fill="gold" stroke="black" />} />
+          <Bar dataKey="High" fill="orange" stackId={"a"} activeBar={<Rectangle fill="gold" stroke="black" />} />
+          <Bar dataKey="Highest" fill="red" stackId={"a"} activeBar={<Rectangle fill="gold" stroke="black" />} />
+        </BarChart>
+      </Box>
       <Box bg="orange" height="100px" margin={"auto"} width="100px" gridColumn="2" gridRow="2" />
-      <Box bg="purple" height="100px" margin={"auto"} width="100px" gridColumn="1 / 3" gridRow="3" />
     </Grid>
   )
 }
