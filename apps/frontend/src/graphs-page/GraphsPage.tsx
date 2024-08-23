@@ -18,6 +18,22 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 };
 
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="custom-tooltip" style={{ backgroundColor: '#fff', padding: '10px', border: '1px solid #ccc' }}>
+        <p className="label">{`${label}`}</p>
+        <p className="intro">{`Highest: ${payload[0].value}`}</p>
+        <p className="intro">{`High: ${payload[1].value}`}</p>
+        <p className="intro">{`Normal: ${payload[2].value}`}</p>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+
 export const GraphsPage = () => {
   const { barChartData, pieChartData, stackedBarChartData, areaChartData, numOfIncomplete, numOfOverdue } = useLoaderData();
 
@@ -25,22 +41,24 @@ export const GraphsPage = () => {
     <Grid
       height={"100vh"}
       width={"100vw"}
-      templateColumns={"repeat(2, 1fr)"}
-      templateRows={"repeat(2, 1fr)"}
+      templateColumns={["1fr", "1fr", "repeat(2, 1fr)"]}
+      templateRows={["repeat(4, auto)", "repeat(4, auto)", "repeat(2, 1fr)"]}
       gap={4}
       alignItems={"center"}
       justifyItems={"center"}
       position={"relative"}
+      pb={10}
+      overflow={"auto"}
     >
       <Box pos={"absolute"} top={10}>
         <Text fontWeight={"bold"} fontSize={"xl"}>Incomplete Tasks: {numOfIncomplete}</Text>
         <Text fontWeight={"bold"} fontSize={"xl"}>Overdue Tasks: {numOfOverdue}</Text>
       </Box>
-      <Box gridColumn="1" gridRow="1">
+      <Box gridColumn="1" gridRow={[1, 1, 1]}>
         <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Completed Tasks</Text>
         <BarChart
-          width={400}
-          height={300}
+          width={500}
+          height={400}
           data={barChartData}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -51,8 +69,8 @@ export const GraphsPage = () => {
           <Bar dataKey="completed" fill="#8884d8" activeBar={<Rectangle fill="gold" stroke="black" />} />
         </BarChart>
       </Box>
-      <Box gridColumn="2" gridRow="1">
-        <PieChart width={400} height={400}>
+      <Box gridColumn={[1, 1, 2]} gridRow={[2, 2, 1]}>
+        <PieChart width={300} height={300}>
           <Pie
             data={pieChartData}
             cx="50%"
@@ -71,11 +89,11 @@ export const GraphsPage = () => {
         </PieChart>
         <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Number of tasks by priority</Text>
       </Box>
-      <Box gridColumn="1" gridRow="2">
+      <Box gridColumn="1" gridRow={[3, 3, 2]} mb={"auto"}>
         <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Tasks created each week</Text>
         <BarChart
-          width={400}
-          height={300}
+          width={500}
+          height={400}
           data={stackedBarChartData}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -88,17 +106,17 @@ export const GraphsPage = () => {
           <Bar dataKey="Highest" fill="red" stackId={"a"} activeBar={<Rectangle fill="gold" stroke="black" />} />
         </BarChart>
       </Box>
-      <Box gridColumn="2" gridRow="2">
+      <Box gridColumn={[1, 1, 2]} gridRow={[4, 4, 2]} mb={"auto"}>
         <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Task average time to complete</Text>
         <AreaChart
-          width={400}
-          height={300}
+          width={500}
+          height={400}
           data={areaChartData}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="week" />
           <YAxis />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />}/>
           <Legend />
           <Area type="monotone" dataKey="Highest" stroke="white" fill="red" stackId={"b"} activeDot={{ r: 8 }} />
           <Area type="monotone" dataKey="High" stroke="white" fill="orange" stackId={"b"} activeDot={{ r: 8 }} />
