@@ -43,6 +43,9 @@ export const getGraphsData = async () => {
   const priorityCounts = {};
   const stackedBarObj = {};
   const areaChartObj = {};
+  const currentDate = new Date().getTime();
+  let numOfIncomplete = 0;
+  let numOfOverdue = 0;
 
   const response = await axios.get(`/api/todos?userId=${userId}`, {
     headers: {
@@ -61,6 +64,14 @@ export const getGraphsData = async () => {
   };
 
   const tasksByWeek = sortedTasks.reduce((acc, task) => {
+    if (!task.date_completed) {
+      numOfIncomplete++;
+    }
+
+    if (task.due_date < currentDate && !task.date_completed) {
+      numOfOverdue++;
+    }
+
     if (priorityCounts[task.priority]) {
       priorityCounts[task.priority]++;
     } else {
@@ -124,9 +135,6 @@ export const getGraphsData = async () => {
     }
   }
 
-  console.log(areaChartObj);
-
-
   const unsortedAreaChartData = Object.entries(areaChartObj).map(([week, priorities]) => ({
     week,
     ...priorities,
@@ -157,7 +165,7 @@ export const getGraphsData = async () => {
     incomplete,
   }));
 
-  return { barChartData, pieChartData, stackedBarChartData, areaChartData };
+  return { barChartData, pieChartData, stackedBarChartData, areaChartData, numOfIncomplete, numOfOverdue };
 };
 
 export const getCalendarData = async () => {

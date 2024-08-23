@@ -1,9 +1,9 @@
-import { Box, Grid } from "@chakra-ui/react";
+import { Box, Grid, Text } from "@chakra-ui/react";
 import { useLoaderData } from "react-router-dom";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, Rectangle, Tooltip, XAxis, YAxis } from "recharts";
 
 
-const COLORS = ['gray', 'red', 'orange', '#FF8042'];
+const COLORS = ['red', 'gray', 'orange', '#FF8042'];
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -19,19 +19,25 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 
 export const GraphsPage = () => {
-  const { barChartData, pieChartData, stackedBarChartData, areaChartData } = useLoaderData();
+  const { barChartData, pieChartData, stackedBarChartData, areaChartData, numOfIncomplete, numOfOverdue } = useLoaderData();
 
   return (
     <Grid
+      height={"100vh"}
+      width={"100vw"}
       templateColumns={"repeat(2, 1fr)"}
       templateRows={"repeat(2, 1fr)"}
       gap={4}
       alignItems={"center"}
-      height={"100vh"}
-      width={"100vw"}
-      overflow={"auto"}
+      justifyItems={"center"}
+      position={"relative"}
     >
-      <Box margin={"auto"} gridColumn="1" gridRow="1">
+      <Box pos={"absolute"} top={10}>
+        <Text fontWeight={"bold"} fontSize={"xl"}>Incomplete Tasks: {numOfIncomplete}</Text>
+        <Text fontWeight={"bold"} fontSize={"xl"}>Overdue Tasks: {numOfOverdue}</Text>
+      </Box>
+      <Box gridColumn="1" gridRow="1">
+        <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Completed Tasks</Text>
         <BarChart
           width={400}
           height={300}
@@ -45,7 +51,7 @@ export const GraphsPage = () => {
           <Bar dataKey="completed" fill="#8884d8" activeBar={<Rectangle fill="gold" stroke="black" />} />
         </BarChart>
       </Box>
-      <Box margin={"auto"} gridColumn="2" gridRow="1">
+      <Box gridColumn="2" gridRow="1">
         <PieChart width={400} height={400}>
           <Pie
             data={pieChartData}
@@ -58,13 +64,15 @@ export const GraphsPage = () => {
             dataKey="value"
           >
             {pieChartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}  />
+              <Cell key={`cell-${index}`} fill={COLORS[index]}  />
             ))}
           </Pie>
           <Tooltip />
         </PieChart>
+        <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Number of tasks by priority</Text>
       </Box>
-      <Box margin={"auto"} gridColumn="1" gridRow="2">
+      <Box gridColumn="1" gridRow="2">
+        <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Tasks created each week</Text>
         <BarChart
           width={400}
           height={300}
@@ -80,7 +88,8 @@ export const GraphsPage = () => {
           <Bar dataKey="Highest" fill="red" stackId={"a"} activeBar={<Rectangle fill="gold" stroke="black" />} />
         </BarChart>
       </Box>
-      <Box margin={"auto"} gridColumn="2" gridRow="2">
+      <Box gridColumn="2" gridRow="2">
+        <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Task average time to complete</Text>
         <AreaChart
           width={400}
           height={300}
