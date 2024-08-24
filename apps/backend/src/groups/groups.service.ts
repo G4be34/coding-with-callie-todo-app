@@ -71,4 +71,18 @@ export class GroupsService {
   remove(id: string) {
     return this.groupRepository.delete({ column_id: id });
   }
+
+  async getTodos(userId: number) {
+    let todos = [];
+    const groups = await this.groupRepository.find({
+      where: { user: { id: userId } },
+      relations: { todos: true },
+    });
+
+    groups.forEach((group) => {
+      todos = [...todos, ...group.todos];
+    });
+
+    return todos;
+  }
 }
