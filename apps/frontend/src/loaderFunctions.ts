@@ -157,7 +157,9 @@ export const getGraphsData = async () => {
     return dateA.getTime() - dateB.getTime();
   });
 
-  const pieChartData = Object.entries(priorityCounts).map(([priority, count]) => ({ name: priority, value: count }));
+  const unsortedPieChartData = Object.entries(priorityCounts).map(([priority, count]) => ({ name: priority, value: count }));
+  const pieChartData = unsortedPieChartData.sort((a, b) => b.name - a.name);
+  console.log("pie chart data", pieChartData);
 
   const barChartData = Object.entries(tasksByWeek).map(([week, { completed, incomplete }]) => ({
     week,
