@@ -1,6 +1,19 @@
 import axios from "axios";
 import { redirect } from "react-router-dom";
 
+
+type TaskType = {
+  todo_id: string
+  id: string | number | undefined
+  description: string
+  date_added: number | string
+  date_completed: number | string | null
+  priority: string
+  due_date: number
+  groupId: string
+  position: number
+};
+
 export const authenticateUser = async ({ request }: { request: Request }) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -40,9 +53,9 @@ export const getGraphsData = async () => {
   const preParsedId = localStorage.getItem('user_id');
   const userId = parseInt(preParsedId!, 10);
   const { access_token } = JSON.parse(token!);
-  const priorityCounts = {};
-  const stackedBarObj = {};
-  const areaChartObj = {};
+  const priorityCounts: { [key: string]: number } = {};
+  const stackedBarObj: { [key: string]: { [key: string]: number }} = {};
+  const areaChartObj: { [key: string]: { [key: string]: number[] | number }} = {};
   const currentDate = new Date().getTime();
   let numOfIncomplete = 0;
   let numOfOverdue = 0;
@@ -53,7 +66,11 @@ export const getGraphsData = async () => {
     }
   });
 
-  const sortedTasks = response.data.sort((a, b) => parseInt(a.date_completed) - parseInt(b.date_completed));
+  const sortedTasks: TaskType[] = response.data.sort((a: TaskType, b: TaskType) => {
+    const aDate = a.date_completed?.toString() ?? '0';
+    const bDate = b.date_completed?.toString() ?? '0';
+    return parseInt(aDate) - parseInt(bDate);
+  });
 
   const getWeekLabel = (timestamp: string) => {
     const date = new Date(parseInt(timestamp));
@@ -63,7 +80,7 @@ export const getGraphsData = async () => {
     return `${month}/${day}`;
   };
 
-  const tasksByWeek = sortedTasks.reduce((acc, task) => {
+  const tasksByWeek = sortedTasks.reduce((acc: { [key: string]: { completed: number } }, task) => {
     if (!task.date_completed) {
       numOfIncomplete++;
     }
@@ -79,8 +96,8 @@ export const getGraphsData = async () => {
     }
 
     if (task.date_completed) {
-      const weekLabel = getWeekLabel(task.date_completed);
-      const timeToComplete = parseInt(task.date_completed) - parseInt(task.date_added);
+      const weekLabel = getWeekLabel(task.date_completed.toString());
+      const timeToComplete = parseInt(task.date_completed.toString()) - parseInt(task.date_added.toString());
       const hoursToComplete = Math.floor(timeToComplete / (1000 * 60 * 60));
 
       if (!areaChartObj[weekLabel]) {
@@ -91,7 +108,7 @@ export const getGraphsData = async () => {
         };
       }
 
-      areaChartObj[weekLabel][task.priority].push(hoursToComplete);
+      (areaChartObj[weekLabel][task.priority] as number[]).push(hoursToComplete);
 
       if (!acc[weekLabel]) {
         acc[weekLabel] = { completed: 0 };
@@ -100,7 +117,7 @@ export const getGraphsData = async () => {
       acc[weekLabel].completed++;
     }
 
-    const weekLabel = getWeekLabel(task.date_added);
+    const weekLabel = getWeekLabel(task.date_added.toString());
 
     if (stackedBarObj[weekLabel]) {
       if (!stackedBarObj[weekLabel][task.priority]) {
@@ -116,22 +133,22 @@ export const getGraphsData = async () => {
   }, {});
 
   for (const week in areaChartObj) {
-    if (areaChartObj[week].Normal.length > 0) {
+    if (Array.isArray(areaChartObj[week].Normal) && areaChartObj[week].Normal.length > 0) {
       areaChartObj[week].Normal = Math.floor(areaChartObj[week].Normal.reduce((acc, val) => acc + val, 0) / areaChartObj[week].Normal.length);
     } else {
-      areaChartObj[week].Normal = 0; // or handle it as needed
+      areaChartObj[week].Normal = 0;
     }
 
-    if (areaChartObj[week].High.length > 0) {
+    if (Array.isArray(areaChartObj[week].High) && areaChartObj[week].High.length > 0) {
       areaChartObj[week].High = Math.floor(areaChartObj[week].High.reduce((acc, val) => acc + val, 0) / areaChartObj[week].High.length);
     } else {
-      areaChartObj[week].High = 0; // or handle it as needed
+      areaChartObj[week].High = 0;
     }
 
-    if (areaChartObj[week].Highest.length > 0) {
+    if (Array.isArray(areaChartObj[week].Highest) && areaChartObj[week].Highest.length > 0) {
       areaChartObj[week].Highest = Math.floor(areaChartObj[week].Highest.reduce((acc, val) => acc + val, 0) / areaChartObj[week].Highest.length);
     } else {
-      areaChartObj[week].Highest = 0; // or handle it as needed
+      areaChartObj[week].Highest = 0;
     }
   }
 
@@ -157,14 +174,12 @@ export const getGraphsData = async () => {
     return dateA.getTime() - dateB.getTime();
   });
 
-  const unsortedPieChartData = Object.entries(priorityCounts).map(([priority, count]) => ({ name: priority, value: count }));
-  const pieChartData = unsortedPieChartData.sort((a, b) => b.name - a.name);
-  console.log("pie chart data", pieChartData);
+  const unsortedPieChartData: { name: string; value: number }[] = Object.entries(priorityCounts).map(([priority, count]) => ({ name: priority, value: count }));
+  const pieChartData = unsortedPieChartData.sort((a, b) => b.name.localeCompare(a.name));
 
-  const barChartData = Object.entries(tasksByWeek).map(([week, { completed, incomplete }]) => ({
+  const barChartData = Object.entries(tasksByWeek).map(([week, { completed }]) => ({
     week,
     completed,
-    incomplete,
   }));
 
   return { barChartData, pieChartData, stackedBarChartData, areaChartData, numOfIncomplete, numOfOverdue };

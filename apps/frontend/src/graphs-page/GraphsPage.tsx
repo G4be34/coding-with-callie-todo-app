@@ -1,10 +1,47 @@
 import { Box, Grid, Text } from "@chakra-ui/react";
 import { useLoaderData } from "react-router-dom";
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, Rectangle, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, Rectangle, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+
+
+type GraphsDataType = {
+  barChartData: {
+    week: string
+    completed: number
+  }[],
+  areaChartData: {
+    week: string
+    Normal: number
+    High: number
+    Highest: number
+  }[],
+  pieChartData: {
+    name: string
+    value: number
+  }[],
+  stackedBarChartData: {
+    week: string
+    Normal: number
+    High: number
+    Highest: number
+  }[],
+  numOfIncomplete: number,
+  numOfOverdue: number
+};
+
+type CustomizedLabelProps = {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
+  index: number;
+};
 
 
 const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: CustomizedLabelProps) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -17,7 +54,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 };
 
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip" style={{ backgroundColor: '#fff', padding: '10px', border: '1px solid #ccc' }}>
@@ -34,7 +71,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 
 export const GraphsPage = () => {
-  const { barChartData, pieChartData, stackedBarChartData, areaChartData, numOfIncomplete, numOfOverdue } = useLoaderData();
+  const { barChartData, pieChartData, stackedBarChartData, areaChartData, numOfIncomplete, numOfOverdue } = useLoaderData() as GraphsDataType;
 
   return (
     <Box height={"100vh"} width={"100vw"} display="flex" justifyContent="center" alignItems="center" overflowY={"auto"}>
@@ -89,7 +126,7 @@ export const GraphsPage = () => {
           </PieChart>
           <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Number of tasks by priority</Text>
         </Box>
-        <Box gridColumn="1" gridRow={[3, 3, 2]} mb={"auto"}>
+        <Box gridColumn="1" gridRow={[3, 3, 2]} mb={"auto"} pb={[0, 0, "15%"]}>
           <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Tasks created each week</Text>
           <BarChart
             width={500}
@@ -106,7 +143,7 @@ export const GraphsPage = () => {
             <Bar dataKey="Highest" fill="red" stackId={"a"} activeBar={<Rectangle fill="red" stroke="black" />} />
           </BarChart>
         </Box>
-        <Box gridColumn={[1, 1, 2]} gridRow={[4, 4, 2]} pb={["20%", "20%", 0]} mb={"auto"}>
+        <Box gridColumn={[1, 1, 2]} gridRow={[4, 4, 2]} pb={["20%", "20%", "15%"]} mb={"auto"}>
           <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>Task average time to complete</Text>
           <AreaChart
             width={500}
