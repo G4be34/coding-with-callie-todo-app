@@ -57,6 +57,9 @@ export const BarGraph = () => {
           Completed Tasks
         </Text>
         <Select
+          cursor={"pointer"}
+          variant={"filled"}
+          borderRadius={10}
           size={"xs"}
           defaultValue={"bar"}
           maxW={"100px"}
@@ -111,6 +114,9 @@ export const PieGraph = () => {
       {graphType === 'pie'
         ? <>
             <Select
+              cursor={"pointer"}
+              variant={"filled"}
+              borderRadius={10}
               ml={"auto"}
               size={"xs"}
               defaultValue={"pie"}
@@ -147,6 +153,9 @@ export const PieGraph = () => {
                 Number of tasks by priority
               </Text>
               <Select
+                cursor={"pointer"}
+                variant={"filled"}
+                borderRadius={10}
                 size={"xs"}
                 defaultValue={"pie"}
                 maxW={"100px"}
@@ -186,6 +195,9 @@ export const StackedBarGraph = () => {
           Tasks created each week
         </Text>
         <Select
+          cursor={"pointer"}
+          variant={"filled"}
+          borderRadius={10}
           size={"xs"}
           defaultValue={"bar"}
           maxW={"100px"}
@@ -242,6 +254,9 @@ export const AreaGraph = () => {
           Task average time to complete
         </Text>
         <Select
+          cursor={"pointer"}
+          variant={"filled"}
+          borderRadius={10}
           size={"xs"}
           defaultValue={"bar"}
           maxW={"100px"}
