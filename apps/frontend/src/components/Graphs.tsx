@@ -175,7 +175,18 @@ export const PieGraph = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" fill="#8884d8" activeBar={<Rectangle fill="gold" stroke="black" />} />
+              <Bar dataKey="value" activeBar={<Rectangle fill="gold" stroke="black" />}>
+                {pieChartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={
+                      entry.name === 'Highest' ? 'red' :
+                      entry.name === 'High' ? 'orange' :
+                      entry.name === 'Normal' ? 'gray' : '#8884d8'
+                    }
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </>
       }
