@@ -27,6 +27,11 @@ export class TodosController {
     return this.todosService.findAll(userId);
   }
 
+  @Get('calendar-todos/:id')
+  getCalendarTodos(@Param('id', ParseIntPipe) id: number) {
+    return this.todosService.getCalendarTodos(id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.todosService.findOne(id);
