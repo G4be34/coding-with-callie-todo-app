@@ -106,7 +106,12 @@ export class TodosService {
       const day = String(date.getDate()).padStart(2, '0');
       const formattedDate = `${year}-${month}-${day}`;
 
-      return { title: todo.description, date: formattedDate, id: todo.todo_id };
+      return {
+        title: todo.description,
+        date: formattedDate,
+        id: todo.todo_id,
+        priority: todo.priority,
+      };
     });
 
     return calendarData;

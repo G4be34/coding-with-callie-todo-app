@@ -4,3 +4,18 @@
   flex: 1;
   display: flex; /* Flex to adapt to the parent */
 }
+
+.highest-priority {
+  background-color: red !important;
+  color: white !important;
+}
+
+.high-priority {
+  background-color: orange !important;
+  color: white !important;
+}
+
+.normal-priority {
+  background-color: gray !important;
+  color: white !important;
+}

@@ -56,6 +56,17 @@ export const CalendarPage = () => {
         events={calendarData}
         editable
         eventDrop={updateDueDate}
+        eventClick={(info) => console.log(info)}
+        eventClassNames={(arg) => {
+          if (arg.event.extendedProps.priority === 'Highest') {
+            return 'highest-priority';
+          } else if (arg.event.extendedProps.priority === 'High') {
+            return 'high-priority';
+          } else if (arg.event.extendedProps.priority === 'Normal') {
+            return 'normal-priority';
+          }
+          return '';
+        }}
       />
     </Flex>
   )
