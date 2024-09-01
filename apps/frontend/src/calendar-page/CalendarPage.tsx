@@ -1,8 +1,9 @@
-import { Flex, useToast } from '@chakra-ui/react';
+import { Flex, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, useToast } from '@chakra-ui/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import axios from 'axios';
+import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import './calendarpage.css';
 
@@ -10,6 +11,8 @@ import './calendarpage.css';
 type CalendarDataType = {
   title: string;
   date: string;
+  description: string;
+  priority: string;
 };
 
 type LoaderDataType = {
@@ -20,6 +23,8 @@ type LoaderDataType = {
 export const CalendarPage = () => {
   const { calendarData, access_token } = useLoaderData() as LoaderDataType;
   const toast = useToast();
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarDataType | null>(null);
 
   const updateDueDate = async (info) => {
     const newDate = new Date(info.event.start).getTime();
@@ -47,8 +52,31 @@ export const CalendarPage = () => {
     }
   };
 
+  const handleEventClick = (info) => {
+    const { title, extendedProps } = info.event;
+    const { description, priority } = extendedProps;
+
+    setSelectedEvent({ title, description, priority, date: info.event.date });
+    setShowTaskModal(true);
+  };
+
+
   return (
     <Flex flex={1} p={5}>
+      {showTaskModal
+        ? <Modal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} isCentered size={"md"}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                {selectedEvent?.title}
+              </ModalHeader>
+              <ModalBody>
+                {selectedEvent?.priority}
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        : null
+      }
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -56,7 +84,7 @@ export const CalendarPage = () => {
         events={calendarData}
         editable
         eventDrop={updateDueDate}
-        eventClick={(info) => console.log(info)}
+        eventClick={handleEventClick}
         eventClassNames={(arg) => {
           if (arg.event.extendedProps.priority === 'Highest') {
             return 'highest-priority';
