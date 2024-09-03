@@ -1,10 +1,3 @@
-.fc {
-  width: 100% !important; /* Ensure FullCalendar takes full width */
-  max-width: 100% !important; /* Prevent any max-width restrictions */
-  flex: 1;
-  display: flex; /* Flex to adapt to the parent */
-}
-
 .highest-priority {
   background-color: red !important;
   color: white !important;

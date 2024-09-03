@@ -22,7 +22,6 @@ type LoaderDataType = {
 
 export const CalendarPage = () => {
   const { calendarData, access_token } = useLoaderData() as LoaderDataType;
-  console.log(calendarData);
   const calendarRef = useRef<FullCalendar | null>(null);
   const toast = useToast();
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -157,7 +156,7 @@ export const CalendarPage = () => {
 
 
   return (
-    <Flex flex={1} p={5} flexDir={"column"}>
+    <Flex p={5} flexDir={"column"} w={"100%"}>
       {showTaskModal
         ? <Modal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} isCentered size={"lg"}>
             <ModalOverlay />
@@ -229,6 +228,7 @@ export const CalendarPage = () => {
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         handleWindowResize
+        height={"100%"}
         events={stateCalendarData}
         editable
         ref={calendarRef}
