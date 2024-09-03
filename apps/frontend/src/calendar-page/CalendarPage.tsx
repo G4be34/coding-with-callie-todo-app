@@ -22,10 +22,33 @@ type LoaderDataType = {
 
 export const CalendarPage = () => {
   const { calendarData, access_token } = useLoaderData() as LoaderDataType;
+  console.log(calendarData);
+  const calendarRef = useRef<FullCalendar | null>(null);
   const toast = useToast();
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarDataType | null>(null);
-  const calendarRef = useRef<FullCalendar | null>(null);
+  const [filterType, setFilterType] = useState('All');
+  const [stateCalendarData, setStateCalendarData] = useState(calendarData);
+
+
+  const filterCalendarData = (priority: string) => {
+    if (priority === 'All') {
+      setFilterType('All');
+      setStateCalendarData(calendarData);
+    } else if (priority === 'Highest') {
+      setFilterType('Highest');
+      setStateCalendarData(calendarData.filter((task) => task.priority === 'Highest'));
+    } else if (priority === 'High') {
+      setFilterType('High');
+      setStateCalendarData(calendarData.filter((task) => task.priority === 'High'));
+    } else if (priority === 'Normal') {
+      setFilterType('Normal');
+      setStateCalendarData(calendarData.filter((task) => task.priority === 'Normal'));
+    }
+
+    const calendarApi = calendarRef.current?.getApi();
+    calendarApi?.refetchEvents();
+  };
 
   const updateDueDate = async (info) => {
     const newDate = new Date(info.event.start).getTime();
@@ -134,7 +157,7 @@ export const CalendarPage = () => {
 
 
   return (
-    <Flex flex={1} p={5}>
+    <Flex flex={1} p={5} flexDir={"column"}>
       {showTaskModal
         ? <Modal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} isCentered size={"lg"}>
             <ModalOverlay />
@@ -144,12 +167,12 @@ export const CalendarPage = () => {
                   <Text pt={1} fontWeight={"bold"}>Description: </Text>
                   <Editable
                     textAlign="left"
+                    h={120}
                     cursor={"pointer"}
                     w={"100%"}
                     onSubmit={changeDescription}
                     defaultValue={selectedEvent?.title}
                     pl={4}
-                    startWithEditView={false}
                   >
                     <EditablePreview />
                     <EditableTextarea />
@@ -181,12 +204,34 @@ export const CalendarPage = () => {
           </Modal>
         : null
       }
+      <Flex justifyContent={"flex-end"} w={"100%"} mb={5} alignItems={"center"}>
+        <Text fontWeight={"bold"} fontSize={"lg"} mr={4}>Filter by priority:</Text>
+        <Select
+          cursor={"pointer"}
+          w={120}
+          borderRadius={10}
+          bg={filterType === 'Highest' ? 'red' : filterType === 'High' ? 'orange' : 'gray'}
+          color={filterType === 'High' ? 'black' : 'white'}
+          _focus={{ backgroundColor: filterType === 'Highest' ? 'red' : filterType === 'High' ? 'orange' : 'gray' }}
+          size={"s"}
+          textIndent={"0.5em"}
+          variant={"filled"}
+          defaultValue={"All"}
+          onChange={(e) => filterCalendarData(e.target.value)}
+        >
+          <option value="All">All</option>
+          <option value="Highest">Highest</option>
+          <option value="High">High</option>
+          <option value="Normal">Normal</option>
+        </Select>
+      </Flex>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         handleWindowResize
-        events={calendarData}
+        events={stateCalendarData}
         editable
+        ref={calendarRef}
         eventDrop={updateDueDate}
         eventClick={handleEventClick}
         eventClassNames={(arg) => {
