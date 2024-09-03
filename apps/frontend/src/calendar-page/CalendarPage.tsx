@@ -1,4 +1,4 @@
-import { Editable, EditableInput, EditablePreview, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Select, Text, useToast } from '@chakra-ui/react';
+import { Editable, EditablePreview, EditableTextarea, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Select, Text, useToast } from '@chakra-ui/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
@@ -64,6 +64,7 @@ export const CalendarPage = () => {
   };
 
   const changeDescription = async (description: string) => {
+    if (description === selectedEvent?.title) return;
     try {
       await axios.patch(`/api/todos/${selectedEvent?.id}`, { description }, { headers: { Authorization: `Bearer ${access_token}` } });
 
@@ -98,40 +99,77 @@ export const CalendarPage = () => {
   };
 
   const changePriority = async (priority: string) => {
+    try {
+      await axios.patch(`/api/todos/${selectedEvent?.id}`, { priority }, { headers: { Authorization: `Bearer ${access_token}` } });
 
+      setSelectedEvent((prev) => prev ? { ...prev, priority } : prev);
+
+      const calendarApi = calendarRef.current?.getApi();
+      if (selectedEvent) {
+        const calendarEvent = calendarApi?.getEventById(selectedEvent.id);
+        if (calendarEvent) {
+          calendarEvent.setExtendedProp('priority', priority);
+        }
+      }
+
+      toast({
+        title: "Priority has been updated",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error changing priority:", error);
+      toast({
+        title: "Error changing priority",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
   };
 
 
   return (
     <Flex flex={1} p={5}>
       {showTaskModal
-        ? <Modal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} isCentered size={"md"}>
+        ? <Modal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} isCentered size={"lg"}>
             <ModalOverlay />
             <ModalContent>
               <ModalBody>
-                <Flex>
-                  <Text>Description: </Text>
+                <Flex m={5}>
+                  <Text pt={1} fontWeight={"bold"}>Description: </Text>
                   <Editable
-                    textAlign="center"
+                    textAlign="left"
                     cursor={"pointer"}
                     w={"100%"}
                     onSubmit={changeDescription}
                     defaultValue={selectedEvent?.title}
+                    pl={4}
+                    startWithEditView={false}
                   >
                     <EditablePreview />
-                    <EditableInput />
+                    <EditableTextarea />
                   </Editable>
                 </Flex>
-                <Flex>
-                  <Text>Priority: </Text>
+                <Flex w={"100%"} m={5}>
+                  <Text fontWeight={"bold"}>Priority: </Text>
                   <Select
                     cursor={"pointer"}
-                    size={"sm"}
-                    defaultValue={selectedEvent?.priority}
+                    w={120}
+                    mx={"auto"}
+                    borderRadius={10}
                     bg={selectedEvent?.priority === 'Highest' ? 'red' : selectedEvent?.priority === 'High' ? 'orange' : 'gray'}
                     color={selectedEvent?.priority === 'High' ? 'black' : 'white'}
+                    _focus={{ backgroundColor: selectedEvent?.priority === 'Highest' ? 'red' : selectedEvent?.priority === 'High' ? 'orange' : 'gray' }}
+                    size={"s"}
                     variant={"filled"}
                     onChange={(e) => changePriority(e.target.value)}
+                    defaultValue={selectedEvent?.priority}
+                    textIndent="0.5em"
                   >
                     <option value="Highest">Highest</option>
                     <option value="High">High</option>
