@@ -1,16 +1,17 @@
 import { Editable, EditablePreview, EditableTextarea, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Select, Text, useToast } from '@chakra-ui/react';
+import { EventClickArg, EventDropArg } from '@fullcalendar/core/index.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import axios from 'axios';
 import { useRef, useState } from 'react';
+import { TiDelete } from 'react-icons/ti';
 import { useLoaderData } from 'react-router-dom';
 import './calendarpage.css';
 
 
 type CalendarDataType = {
   title: string;
-  date: string;
   priority: string;
   id: string;
 };
@@ -49,9 +50,20 @@ export const CalendarPage = () => {
     calendarApi?.refetchEvents();
   };
 
-  const updateDueDate = async (info) => {
-    const newDate = new Date(info.event.start).getTime();
+  const updateDueDate = async (info: EventDropArg) => {
+    const date = new Date(info.event.start!);
+    const newDate = date.getTime();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
     const id = info.event.id;
+
+    calendarData.forEach((task) => {
+      if (task.id === id) {
+        task.date = formattedDate;
+      }
+    });
 
     try {
       await axios.patch(`/api/todos/${id}`, { due_date: newDate }, { headers: { Authorization: `Bearer ${access_token}` } });
@@ -62,7 +74,7 @@ export const CalendarPage = () => {
         duration: 3000,
         isClosable: true,
         position: 'top',
-      })
+      });
     } catch (error) {
       console.error("Error updating due date:", error);
       toast({
@@ -71,17 +83,16 @@ export const CalendarPage = () => {
         duration: 3000,
         isClosable: true,
         position: 'top',
-      })
+      });
     }
   };
 
-  const handleEventClick = (info) => {
+  const handleEventClick = (info: EventClickArg) => {
     const { title, extendedProps } = info.event;
     const { priority } = extendedProps;
     const { id } = info.event;
-    const { date } = info.event;
 
-    setSelectedEvent({ title, priority, date, id });
+    setSelectedEvent({ title, priority, id });
     setShowTaskModal(true);
   };
 
@@ -161,7 +172,12 @@ export const CalendarPage = () => {
         ? <Modal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} isCentered size={"lg"}>
             <ModalOverlay />
             <ModalContent>
-              <ModalBody>
+              <ModalBody pos={"relative"}>
+                <TiDelete
+                  style={{ position: "absolute", top: 2, right: 2, cursor: "pointer" }}
+                  size={30}
+                  onClick={() => setShowTaskModal(false)}
+                  />
                 <Flex m={5}>
                   <Text pt={1} fontWeight={"bold"}>Description: </Text>
                   <Editable
