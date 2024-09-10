@@ -197,7 +197,7 @@ export const getCalendarData = async () => {
     }
   });
 
-  const calendarData = response.data;
+  const { calendarData, completedTodos } = response.data;
 
-  return { calendarData, access_token };
+  return { calendarData, access_token, completedTodos };
 };

@@ -99,6 +99,14 @@ export class TodosService {
       return !todo.date_completed;
     });
 
+    const unsortedCompletedTodos = todoIds.filter((todo) => {
+      return todo.date_completed;
+    });
+
+    const completedTodos = unsortedCompletedTodos.sort((a, b) => {
+      return a.position - b.position;
+    });
+
     const calendarData = uncompletedTodos.map((todo) => {
       const date = new Date(parseInt(todo.due_date));
       const year = date.getFullYear();
@@ -114,6 +122,6 @@ export class TodosService {
       };
     });
 
-    return calendarData;
+    return { calendarData, completedTodos };
   }
 }

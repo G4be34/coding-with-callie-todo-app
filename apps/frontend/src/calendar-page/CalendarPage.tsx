@@ -1,4 +1,4 @@
-import { Editable, EditablePreview, EditableTextarea, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Select, Text, useToast } from '@chakra-ui/react';
+import { Button, Editable, EditablePreview, EditableTextarea, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Select, Text, useToast } from '@chakra-ui/react';
 import { EventClickArg, EventDropArg } from '@fullcalendar/core/index.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -16,13 +16,26 @@ type CalendarDataType = {
   id: string;
 };
 
+type TaskType = {
+  todo_id: string;
+  id: string | number | undefined;
+  description: string;
+  date_added: number | string;
+  date_completed: number | string | null;
+  priority: string;
+  due_date: number | string;
+  position: number;
+  groupId: string;
+};
+
 type LoaderDataType = {
   calendarData: CalendarDataType[];
   access_token: string;
+  completedTodos: TaskType[]
 }
 
 export const CalendarPage = () => {
-  const { calendarData, access_token } = useLoaderData() as LoaderDataType;
+  const { calendarData, access_token, completedTodos } = useLoaderData() as LoaderDataType;
   const calendarRef = useRef<FullCalendar | null>(null);
   const toast = useToast();
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -165,6 +178,52 @@ export const CalendarPage = () => {
     }
   };
 
+  const completeTask = async (id: string) => {
+    const currentDate = new Date().getTime();
+
+    const unfinishedTasksToUpdate = completedTodos.map((todo) => ({
+      todo_id: todo.todo_id,
+      position: todo.position + 1,
+    }));
+
+    const tasksToUpdate = [{ todo_id: id, position: 0 }, ...unfinishedTasksToUpdate];
+
+    try {
+      await axios.patch('/api/todos/update-positions', { tasksToUpdate }, { headers: { Authorization: `Bearer ${access_token}` } });
+
+      await axios.patch(`/api/todos/${id}`, {
+        date_completed: currentDate.toString(),
+        groupId: 'column-1'
+      },
+      { headers: { Authorization: `Bearer ${access_token}` } });
+
+      setStateCalendarData((prev) => {
+        return prev.filter((task) => task.id !== id);
+      });
+
+      setShowTaskModal(false);
+      setSelectedEvent(null);
+
+      toast({
+        title: "Task completed",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error completing task:", error);
+      toast({
+        title: "Error completing task",
+        description: "Please try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  };
+
 
   return (
     <Flex p={5} flexDir={"column"} w={"100%"}>
@@ -213,6 +272,18 @@ export const CalendarPage = () => {
                     <option value="High">High</option>
                     <option value="Normal">Normal</option>
                   </Select>
+                </Flex>
+                <Flex justifyContent={"center"} alignItems={"center"} mt={"70px"} mb={5}>
+                  <Button
+                    size={"sm"}
+                    onClick={() => completeTask(selectedEvent!.id)}
+                    bg={"green"}
+                    _hover={{ bg: "green.500" }}
+                    color={"white"}
+                    p={3}
+                  >
+                    Complete Task
+                  </Button>
                 </Flex>
               </ModalBody>
             </ModalContent>
