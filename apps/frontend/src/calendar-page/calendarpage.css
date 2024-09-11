@@ -1,0 +1,14 @@
+.highest-priority {
+  background-color: red !important;
+  color: white !important;
+}
+
+.high-priority {
+  background-color: orange !important;
+  color: white !important;
+}
+
+.normal-priority {
+  background-color: gray !important;
+  color: white !important;
+}

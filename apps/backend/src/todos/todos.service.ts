@@ -91,4 +91,37 @@ export class TodosService {
       return this.todoRepository.delete({ todo_id: id });
     }
   }
+
+  async getCalendarTodos(id: number) {
+    const todoIds = await this.groupService.getTodos(id);
+
+    const uncompletedTodos = todoIds.filter((todo) => {
+      return !todo.date_completed;
+    });
+
+    const unsortedCompletedTodos = todoIds.filter((todo) => {
+      return todo.date_completed;
+    });
+
+    const completedTodos = unsortedCompletedTodos.sort((a, b) => {
+      return a.position - b.position;
+    });
+
+    const calendarData = uncompletedTodos.map((todo) => {
+      const date = new Date(parseInt(todo.due_date));
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+
+      return {
+        title: todo.description,
+        date: formattedDate,
+        id: todo.todo_id,
+        priority: todo.priority,
+      };
+    });
+
+    return { calendarData, completedTodos };
+  }
 }

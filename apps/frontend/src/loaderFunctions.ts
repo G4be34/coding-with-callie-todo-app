@@ -186,7 +186,18 @@ export const getGraphsData = async () => {
 };
 
 export const getCalendarData = async () => {
-  console.log("retrieving calendar data");
+  const token = localStorage.getItem('token');
+  const preParsedId = localStorage.getItem('user_id');
+  const userId = parseInt(preParsedId!, 10);
+  const { access_token } = JSON.parse(token!);
 
-  return true;
+  const response = await axios.get(`/api/todos/calendar-todos/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    }
+  });
+
+  const { calendarData, completedTodos } = response.data;
+
+  return { calendarData, access_token, completedTodos };
 };
