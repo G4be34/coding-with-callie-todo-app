@@ -52,7 +52,7 @@ export const BarGraph = () => {
 
   return (
     <>
-      <Flex justifyContent={"flex-end"} ml={"auto"} alignItems={"center"} maxW={"90%"}>
+      <Flex justifyContent={"flex-end"} ml={"auto"} alignItems={"center"} maxW={["90%", "70%"]}>
         <Text flex={1} fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>
           Completed Tasks
         </Text>
