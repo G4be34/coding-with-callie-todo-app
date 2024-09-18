@@ -84,9 +84,9 @@ export const LoginPage = () => {
   }, [password]);
 
   return (
-    <Flex justifyContent={"center"} alignItems={"center"} h={"100vh"} flexDirection={"column"} position={"relative"} bgColor={"gray.300"}>
-      <Heading position={"absolute"} top={{ base: "15%", md: "5%", sm: "2%" }} p={4}>Welcome to CWC Todo App!</Heading>
-      <Flex flexDir={"column"} as="form" border={"1px solid black"} borderRadius={10} p={6} w={"450px"} mb={4} rowGap={8} bgColor={"white"}>
+    <Flex justifyContent={"center"} alignItems={"center"} h={"100vh"} flexDirection={"column"} position={"relative"} bgColor={"gray.300"} overflow={"auto"}>
+      <Heading p={{ sm: 4, md: 6, lg: 8}}>Welcome to CWC Todo App!</Heading>
+      <Flex flexDir={"column"} as="form" border={"1px solid black"} borderRadius={10} p={6} w={{ sm: "300px", md: "375px", lg: "450px" }} mb={4} rowGap={8} bgColor={"white"}>
         <Heading>Login</Heading>
 
         <FormControl isRequired isInvalid={emailError}>
@@ -126,7 +126,7 @@ export const LoginPage = () => {
 
         <Button as={ChakraRouterLink} to="/sign-up">Sign Up</Button>
       </Flex>
-      <Flex>
+      <Flex pb={4}>
         <Text mr={2}>Forgot your password?</Text>
         <Link as={ReactRouterLink} to="/forgot-password" color={"#209CF0"}>Click here</Link>
       </Flex>
