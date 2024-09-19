@@ -129,14 +129,14 @@ export const ForgotPassword = () => {
   }
 
   return (
-    <Flex position={"relative"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} bgColor={"gray.300"} pos={"relative"}>
+    <Flex pos={"relative"} overflow={"auto"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} bgColor={"gray.300"}>
       {loading
         ? <Spinner size={"xl"} pos={"fixed"} top={"50%"} left={"50%"} right={"50%"} bottom={"50%"} zIndex={200} color={"blue.500"} />
         : null
       }
-      <Heading position={"absolute"} top={"15%"}>Forgot your password?</Heading>
+      <Heading mt={8}>Forgot your password?</Heading>
 
-      <Flex flexDir={"column"} as="form" border={"1px solid black"} p={6} w={"450px"} borderRadius={10} rowGap={8} bgColor={"white"} mb={4}>
+      <Flex flexDir={"column"} as="form" border={"1px solid black"} p={6} w={"450px"} borderRadius={10} rowGap={8} bgColor={"white"} mt={8} mb={4}>
         {!successfulEmail && !completeReset ?
           <>
             <FormControl isInvalid={invalidEmail}>
@@ -273,7 +273,7 @@ export const ForgotPassword = () => {
         }
       </Flex>
 
-      {completeReset ? null : <Text>Already have an account? <Link as={ReactRouterLink} to="/" color={"#209CF0"}>Login instead</Link></Text>}
+      {completeReset ? null : <Text mb={5}>Already have an account? <Link as={ReactRouterLink} to="/" color={"#209CF0"}>Login instead</Link></Text>}
     </Flex>
   )
 }

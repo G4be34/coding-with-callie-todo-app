@@ -139,7 +139,7 @@ export const SignUpPage = () => {
   };
 
   return (
-    <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} flex={1} bgColor={"gray.300"} pos={"relative"} overflow={"auto"}>
+    <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100%"} flex={1} bgColor={"gray.300"} pos={"relative"} overflow={"auto"}>
       {loading ? <Spinner position={"fixed"} top={"50%"} left={"50%"} right={"50%"} bottom={"50%"} color="blue.500" size="xl" /> : null}
       <Heading p={{ sm: 4, md: 6, lg: 8}}>Sign up for CWC Todo App</Heading>
       <Flex flexDir={"column"} as="form" border={"1px solid black"} p={6} w={"450px"} borderRadius={10} rowGap={8} bgColor={"white"} mb={4}>
@@ -276,7 +276,7 @@ export const SignUpPage = () => {
       </Flex>
       {!completeSignup
         ? <Text pb={4}>
-            Already have an account? 
+            Already have an account?
             <Link as={ReactRouterLink} to="/" color={"#209CF0"} marginLeft={2}>Login instead</Link>
           </Text>
         : null
