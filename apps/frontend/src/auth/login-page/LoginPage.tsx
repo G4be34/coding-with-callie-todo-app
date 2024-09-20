@@ -85,7 +85,7 @@ export const LoginPage = () => {
 
   return (
     <Flex justifyContent={"center"} alignItems={"center"} h={"100vh"} flexDirection={"column"} position={"relative"} bgColor={"gray.300"} overflow={"auto"}>
-      <Heading p={{ sm: 4, md: 6, lg: 8}}>Welcome to CWC Todo App!</Heading>
+      <Heading m={[4, 6, 8]} fontSize={["2xl", "3xl", "4xl"]}>Welcome to CWC Todo App!</Heading>
       <Flex flexDir={"column"} as="form" border={"1px solid black"} borderRadius={10} p={6} w={{ sm: "300px", md: "375px", lg: "450px" }} mb={4} rowGap={8} bgColor={"white"}>
         <Heading>Login</Heading>
 

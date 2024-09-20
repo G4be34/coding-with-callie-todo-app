@@ -134,9 +134,9 @@ export const ForgotPassword = () => {
         ? <Spinner size={"xl"} pos={"fixed"} top={"50%"} left={"50%"} right={"50%"} bottom={"50%"} zIndex={200} color={"blue.500"} />
         : null
       }
-      <Heading mt={8}>Forgot your password?</Heading>
+      <Heading mt={8} fontSize={["2xl", "3xl", "4xl"]}>Forgot your password?</Heading>
 
-      <Flex flexDir={"column"} as="form" border={"1px solid black"} p={6} w={"450px"} borderRadius={10} rowGap={8} bgColor={"white"} mt={8} mb={4}>
+      <Flex flexDir={"column"} as="form" border={"1px solid black"} p={6} w={{ sm: "300px", md: "375px", lg: "450px" }} borderRadius={10} rowGap={8} bgColor={"white"} mt={8} mb={4}>
         {!successfulEmail && !completeReset ?
           <>
             <FormControl isInvalid={invalidEmail}>
