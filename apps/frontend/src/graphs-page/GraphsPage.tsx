@@ -26,19 +26,17 @@ export const GraphsPage = () => {
         gap={4}
         alignItems={"center"}
         justifyItems={"center"}
-        //pb={[10, 10, 0]}
-        //pt={["10%", "10%", 0]}
       >
-        <Box gridColumn="1" gridRow={[1, 1, 1]} mt={["5%", "5%", 0]}>
+        <Box gridColumn="1" gridRow={[1, 1, 1]} mt={["5%", "5%", 0]} width={["90%", "95%", "95%"]}>
           <BarGraph />
         </Box>
-        <Box gridColumn={[1, 1, 2]} gridRow={[2, 2, 1]}>
+        <Box gridColumn={[1, 1, 2]} gridRow={[2, 2, 1]} width={["90%", "95%", "95%"]}>
           <PieGraph />
         </Box>
-        <Box gridColumn="1" gridRow={[3, 3, 2]} mb={"auto"} >
+        <Box gridColumn="1" gridRow={[3, 3, 2]} mb={"auto"} width={["90%", "95%", "95%"]}>
           <StackedBarGraph />
         </Box>
-        <Box gridColumn={[1, 1, 2]} gridRow={[4, 4, 2]} mb={"auto"}>
+        <Box gridColumn={[1, 1, 2]} gridRow={[4, 4, 2]} mb={"auto"} width={["90%", "95%", "95%"]}>
           <AreaGraph />
         </Box>
       </Grid>

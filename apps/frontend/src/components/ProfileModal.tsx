@@ -272,8 +272,8 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                     onChange={(e) => setUsername(e)}
                     onSubmit={() => saveEdit("username")}
                     >
-                    <EditablePreview w={"300px"} />
-                    <Input as={EditableInput} w={"300px"} mr={12} />
+                    <EditablePreview w={["250px", "275px", "300px"]} />
+                    <Input as={EditableInput} w={["250px", "275px", "300px"]} mr={[8, 10, 12]} />
                     <EditableControls />
                   </Editable>
 
@@ -285,8 +285,8 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                     display={"flex"}
                     onChange={(e) => setEmail(e)}
                     >
-                    <EditablePreview w={"300px"} />
-                    <Input as={EditableInput} w={"300px"} mr={12} />
+                    <EditablePreview w={["250px", "275px", "300px"]} />
+                    <Input as={EditableInput} w={["250px", "275px", "300px"]} mr={[8, 10, 12]} />
                     <EditableControls />
                   </Editable>
 
