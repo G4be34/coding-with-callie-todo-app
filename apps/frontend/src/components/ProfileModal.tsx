@@ -204,7 +204,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
 
   return (
     <>
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} isCentered size={"2xl"}>
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)} isCentered size={["sm", "lg", "2xl"]}>
         {showConfirm ?
           <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} isCentered size={"sm"}>
             <ModalOverlay />
@@ -248,7 +248,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                   <Flex direction="column" alignItems="center" gap={4} mb={6}>
                     <Image
                       borderRadius={"full"}
-                      boxSize={"150px"}
+                      boxSize={["75 px", "100px", "150px"]}
                       src={user.photo}
                       alt="Profile"
                     />

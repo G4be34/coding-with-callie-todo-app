@@ -1,7 +1,7 @@
 import { Flex, Select, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, Rectangle, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, Rectangle, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
 import { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 
 
@@ -71,10 +71,8 @@ export const BarGraph = () => {
       </Flex>
 
       {graphType === 'bar'
-        ? <>
+        ? <ResponsiveContainer width="100%" height={400}>
             <BarChart
-              width={500}
-              height={400}
               data={barChartData}
             >
               <CartesianGrid strokeDasharray="3 3" />
@@ -84,11 +82,9 @@ export const BarGraph = () => {
               <Legend />
               <Bar dataKey="completed" fill="#8884d8" activeBar={<Rectangle fill="gold" stroke="black" />} />
             </BarChart>
-          </>
-        : <>
+          </ResponsiveContainer>
+        : <ResponsiveContainer width="100%" height={400}>
             <LineChart
-              width={500}
-              height={400}
               data={barChartData}
             >
               <CartesianGrid strokeDasharray="3 3" />
@@ -98,7 +94,7 @@ export const BarGraph = () => {
               <Legend />
               <Line type="monotone" dataKey="completed" stroke="#8884d8" activeDot={{ r: 8 }} />
             </LineChart>
-          </>
+          </ResponsiveContainer>
       }
     </>
   )
@@ -126,23 +122,25 @@ export const PieGraph = () => {
               <option value="pie">Pie</option>
               <option value="bar">Bar</option>
             </Select>
-            <PieChart width={300} height={300}>
-              <Pie
-                data={pieChartData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={renderCustomizedLabel}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                <Cell key={"normal"} fill={"gray"} />
-                <Cell key={"highest"} fill={"red"} />
-                <Cell key={"high"} fill={"orange"} />
-              </Pie>
-              <Tooltip />
-            </PieChart>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={pieChartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  <Cell key={"normal"} fill={"gray"} />
+                  <Cell key={"highest"} fill={"red"} />
+                  <Cell key={"high"} fill={"orange"} />
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
             <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>
               Number of tasks by priority
             </Text>
@@ -165,29 +163,29 @@ export const PieGraph = () => {
                 <option value="bar">Bar</option>
               </Select>
             </Flex>
-            <BarChart
-              width={500}
-              height={400}
-              data={pieChartData}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" activeBar={<Rectangle fill="gold" stroke="black" />}>
-                {pieChartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      entry.name === 'Highest' ? 'red' :
-                      entry.name === 'High' ? 'orange' :
-                      entry.name === 'Normal' ? 'gray' : '#8884d8'
-                    }
-                  />
-                ))}
-              </Bar>
-            </BarChart>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart
+                data={pieChartData}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" activeBar={<Rectangle fill="gold" stroke="black" />}>
+                  {pieChartData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={
+                        entry.name === 'Highest' ? 'red' :
+                        entry.name === 'High' ? 'orange' :
+                        entry.name === 'Normal' ? 'gray' : '#8884d8'
+                      }
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </>
       }
     </>
@@ -220,34 +218,34 @@ export const StackedBarGraph = () => {
       </Flex>
 
       {graphType === 'bar'
-        ? <BarChart
-            width={500}
-            height={400}
-            data={stackedBarChartData}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="Normal" fill="gray" stackId={"a"} activeBar={<Rectangle fill="gray" stroke="black" />} />
-            <Bar dataKey="High" fill="orange" stackId={"a"} activeBar={<Rectangle fill="orange" stroke="black" />} />
-            <Bar dataKey="Highest" fill="red" stackId={"a"} activeBar={<Rectangle fill="red" stroke="black" />} />
-          </BarChart>
-        : <AreaChart
-            width={500}
-            height={400}
-            data={stackedBarChartData}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend />
-            <Area type="monotone" dataKey="Highest" stroke="white" fill="red" stackId={"b"} activeDot={{ r: 8 }} />
-            <Area type="monotone" dataKey="High" stroke="white" fill="orange" stackId={"b"} activeDot={{ r: 8 }} />
-            <Area type="monotone" dataKey="Normal" stroke="white" fill="gray" stackId={"b"} activeDot={{ r: 8 }} />
-          </AreaChart>
+        ? <ResponsiveContainer width="100%" height={400}>
+            <BarChart
+              data={stackedBarChartData}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="week" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="Normal" fill="gray" stackId={"a"} activeBar={<Rectangle fill="gray" stroke="black" />} />
+              <Bar dataKey="High" fill="orange" stackId={"a"} activeBar={<Rectangle fill="orange" stroke="black" />} />
+              <Bar dataKey="Highest" fill="red" stackId={"a"} activeBar={<Rectangle fill="red" stroke="black" />} />
+            </BarChart>
+          </ResponsiveContainer>
+        : <ResponsiveContainer width="100%" height={400}>
+            <AreaChart
+              data={stackedBarChartData}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="week" />
+              <YAxis />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+              <Area type="monotone" dataKey="Highest" stroke="white" fill="red" stackId={"b"} activeDot={{ r: 8 }} />
+              <Area type="monotone" dataKey="High" stroke="white" fill="orange" stackId={"b"} activeDot={{ r: 8 }} />
+              <Area type="monotone" dataKey="Normal" stroke="white" fill="gray" stackId={"b"} activeDot={{ r: 8 }} />
+            </AreaChart>
+          </ResponsiveContainer>
       }
     </>
   )
@@ -279,33 +277,33 @@ export const AreaGraph = () => {
       </Flex>
 
       {graphType === 'area'
-        ? <AreaChart
-            width={500}
-            height={400}
-            data={areaChartData}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis />
-            <Tooltip content={<CustomTooltip />}/>
-            <Legend />
-            <Area type="monotone" dataKey="Highest" stroke="white" fill="red" stackId={"b"} activeDot={{ r: 8 }} />
-            <Area type="monotone" dataKey="High" stroke="white" fill="orange" stackId={"b"} activeDot={{ r: 8 }} />
-            <Area type="monotone" dataKey="Normal" stroke="white" fill="gray" stackId={"b"} activeDot={{ r: 8 }} />
-          </AreaChart>
-        : <LineChart
-            width={500}
-            height={400}
-            data={areaChartData}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="Normal" stroke="gray" activeDot={{ r: 8 }} />
-            <Line type="monotone" dataKey="High" stroke="orange" activeDot={{ r: 8 }} />
-            <Line type="monotone" dataKey="Highest" stroke="red" activeDot={{ r: 8 }} />
-          </LineChart>
+        ? <ResponsiveContainer width="100%" height={400}>
+            <AreaChart
+              data={areaChartData}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="week" />
+              <YAxis />
+              <Tooltip content={<CustomTooltip />}/>
+              <Legend />
+              <Area type="monotone" dataKey="Highest" stroke="white" fill="red" stackId={"b"} activeDot={{ r: 8 }} />
+              <Area type="monotone" dataKey="High" stroke="white" fill="orange" stackId={"b"} activeDot={{ r: 8 }} />
+              <Area type="monotone" dataKey="Normal" stroke="white" fill="gray" stackId={"b"} activeDot={{ r: 8 }} />
+            </AreaChart>
+          </ResponsiveContainer>
+        : <ResponsiveContainer width="100%" height={400}>
+            <LineChart
+              data={areaChartData}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="week" />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="Normal" stroke="gray" activeDot={{ r: 8 }} />
+              <Line type="monotone" dataKey="High" stroke="orange" activeDot={{ r: 8 }} />
+              <Line type="monotone" dataKey="Highest" stroke="red" activeDot={{ r: 8 }} />
+            </LineChart>
+          </ResponsiveContainer>
       }
     </>
   )
