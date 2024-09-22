@@ -15,8 +15,8 @@ export const GraphsPage = () => {
   return (
     <Flex flex={1} flexDir={"column"} justifyContent="center" alignItems="center" overflowY={"auto"} pt={4}>
       <Box p={4}>
-        <Text fontWeight={"bold"} fontSize={["s", "s", "xl"]}>Incomplete Tasks: {numOfIncomplete}</Text>
-        <Text fontWeight={"bold"} fontSize={["s", "s", "xl"]}>Overdue Tasks: {numOfOverdue}</Text>
+        <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]}>Incomplete Tasks: {numOfIncomplete}</Text>
+        <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]}>Overdue Tasks: {numOfOverdue}</Text>
       </Box>
       <Grid
         width={"100%"}
