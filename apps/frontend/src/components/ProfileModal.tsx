@@ -204,7 +204,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
 
   return (
     <>
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} isCentered size={"2xl"}>
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)} isCentered size={["sm", "lg", "2xl"]}>
         {showConfirm ?
           <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} isCentered size={"sm"}>
             <ModalOverlay />
@@ -233,9 +233,9 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
             />
           : null}
         <ModalOverlay />
-        <ModalContent display={"flex"} flexDir={"row"} >
+        <ModalContent display={"flex"} flexDir={["column", "row", "row"]} >
         {loading ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} /> : null}
-          <Flex flexDir={"column"} gap={4} justifyContent={"flex-start"} borderRight={"1px solid black"} textDecor={"underline"} pt={5}>
+          <Flex flexDir={"column"} gap={[2, 4, 4]} justifyContent={"flex-start"} borderRight={["none", "1px solid black", "1px solid black"]} textDecor={"underline"} borderBottom={["1px solid black", "none", "none"]} pt={5}>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Profile")}>Profile Settings</Button>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Theme")}>Color Themes</Button>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Font")}>Fonts Styles</Button>
@@ -248,12 +248,12 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                   <Flex direction="column" alignItems="center" gap={4} mb={6}>
                     <Image
                       borderRadius={"full"}
-                      boxSize={"150px"}
+                      boxSize={["100px", "120px", "150px"]}
                       src={user.photo}
                       alt="Profile"
                     />
                     <label htmlFor="fileInput">
-                      <Button as="span" cursor="pointer" colorScheme="blue">
+                      <Button as="span" cursor="pointer" colorScheme="blue" size={["sm", "md", "md"]}>
                         Change Profile Photo
                       </Button>
                       <Input
@@ -264,7 +264,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       />
                     </label>
                   </Flex>
-                  <Heading size={"md"} mb={-2}>Username:</Heading>
+                  <Heading size={["sm", "md", "md"]} mb={-2}>Username:</Heading>
                   <Editable
                     defaultValue={username}
                     isPreviewFocusable={false}
@@ -272,12 +272,12 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                     onChange={(e) => setUsername(e)}
                     onSubmit={() => saveEdit("username")}
                     >
-                    <EditablePreview w={"300px"} />
-                    <Input as={EditableInput} w={"300px"} mr={12} />
+                    <EditablePreview w={["250px", "275px", "300px"]} />
+                    <Input as={EditableInput} w={["250px", "275px", "300px"]} mr={[8, 10, 12]} />
                     <EditableControls />
                   </Editable>
 
-                  <Heading size={"md"} mb={-2}>Email:</Heading>
+                  <Heading size={["sm", "md", "md"]} mb={-2}>Email:</Heading>
                   <Editable
                     onSubmit={() => saveEdit("email")}
                     defaultValue={email}
@@ -285,19 +285,19 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                     display={"flex"}
                     onChange={(e) => setEmail(e)}
                     >
-                    <EditablePreview w={"300px"} />
-                    <Input as={EditableInput} w={"300px"} mr={12} />
+                    <EditablePreview w={["250px", "275px", "300px"]} />
+                    <Input as={EditableInput} w={["250px", "275px", "300px"]} mr={[8, 10, 12]} />
                     <EditableControls />
                   </Editable>
 
-                  <Heading size={"md"} mb={-2}>Password:</Heading>
+                  <Heading size={["sm", "md", "md"]} mb={-2}>Password:</Heading>
                   <Button onClick={sendVerificationEmail}>Change Password</Button>
                 </>
                 : null
               }
               {currentTab === "Theme" ?
                 <>
-                  <Heading size={"md"} mb={-2}>Current Theme:</Heading>
+                  <Heading size={["sm", "md", "md"]} mb={-2}>Current Theme:</Heading>
                   <Editable
                     onSubmit={() => saveEdit("theme")}
                     defaultValue={theme}
@@ -314,7 +314,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
               }
               {currentTab === "Font" ?
                 <>
-                  <Heading size={"md"} mb={-2}>Current Font:</Heading>
+                  <Heading size={["sm", "md", "md"]} mb={-2}>Current Font:</Heading>
                   <Editable
                     onSubmit={() => saveEdit("font")}
                     defaultValue={font}
@@ -330,7 +330,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                 : null
               }
             </ModalBody>
-            <ModalFooter marginTop={12} display={"flex"} justifyContent={"space-between"}>
+            <ModalFooter marginTop={["8, 10, 12"]} display={"flex"} justifyContent={"space-between"}>
               {currentTab === "Profile" ? <Button size={"sm"} colorScheme="red" onClick={() => setShowConfirm(true)}>Delete Account</Button> : null}
               <Button onClick={() => setShowModal(false)} marginLeft={"auto"}>Close</Button>
             </ModalFooter>
