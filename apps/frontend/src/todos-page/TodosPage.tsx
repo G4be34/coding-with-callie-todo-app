@@ -458,7 +458,7 @@ export const TodosPage = () => {
               const tasks = column.taskIds.map((taskId: string) => todosData.tasks[taskId]);
 
               return (
-                <Box key={column.id} minW={["250px", "250px", "300px"]} flexShrink={0} minH={"60%"} maxH={"80%"} overflowY={"auto"}>
+                <Box key={column.id} minW={["250px", "250px", "300px"]} flexShrink={0} minH={"20%"} maxH={"80%"} overflowY={"auto"}>
                   <Column
                     key={column.id}
                     column={column}

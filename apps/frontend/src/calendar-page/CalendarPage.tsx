@@ -115,6 +115,11 @@ export const CalendarPage = () => {
       await axios.patch(`/api/todos/${selectedEvent?.id}`, { description }, { headers: { Authorization: `Bearer ${access_token}` } });
 
       setSelectedEvent((prev) => prev ? { ...prev, title: description } : prev);
+      calendarData.forEach((task) => {
+        if (task.id === selectedEvent?.id) {
+          task.title = description;
+        }
+      });
 
       const calendarApi = calendarRef.current?.getApi();
       if (selectedEvent) {
@@ -146,9 +151,15 @@ export const CalendarPage = () => {
 
   const changePriority = async (priority: string) => {
     try {
+      if (priority === selectedEvent?.priority) return;
       await axios.patch(`/api/todos/${selectedEvent?.id}`, { priority }, { headers: { Authorization: `Bearer ${access_token}` } });
 
       setSelectedEvent((prev) => prev ? { ...prev, priority } : prev);
+      calendarData.forEach((task) => {
+        if (task.id === selectedEvent?.id) {
+          task.priority = priority;
+        }
+      });
 
       const calendarApi = calendarRef.current?.getApi();
       if (selectedEvent) {
@@ -156,6 +167,10 @@ export const CalendarPage = () => {
         if (calendarEvent) {
           calendarEvent.setExtendedProp('priority', priority);
         }
+      }
+
+      if (filterType !== "All") {
+        setStateCalendarData((prev) => prev.filter((task) => task.priority === filterType));
       }
 
       toast({
@@ -244,6 +259,7 @@ export const CalendarPage = () => {
                     h={120}
                     cursor={"pointer"}
                     w={"100%"}
+                    submitOnBlur
                     onSubmit={changeDescription}
                     defaultValue={selectedEvent?.title}
                     pl={4}

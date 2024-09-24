@@ -402,7 +402,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
 
 
   return (
-    <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"} minH={"100%"} maxH={"100%"} w={"100%"} overflowY={"auto"}>
+    <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"} minH={"20%"} maxH={"100%"} w={"100%"} overflowY={"auto"}>
       {showDelete
         ? <Flex mb={2} _hover={{ opacity: 0.5}}>
             <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"}/>
