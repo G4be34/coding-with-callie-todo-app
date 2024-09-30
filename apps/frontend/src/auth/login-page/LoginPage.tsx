@@ -6,7 +6,7 @@ import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 const ChakraRouterLink = chakra(ReactRouterLink);
 
 export const LoginPage = () => {
-  const toast = useToast();
+  const bgImageNum = Math.floor(Math.random() * 3) + 1;
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -84,13 +84,13 @@ export const LoginPage = () => {
   }, [password]);
 
   return (
-    <Flex justifyContent={"center"} alignItems={"center"} h={"100vh"} flexDirection={"column"} position={"relative"} bgColor={"gray.300"} overflow={"auto"}>
-      <Heading p={{ sm: 4, md: 6, lg: 8}}>Welcome to CWC Todo App!</Heading>
-      <Flex flexDir={"column"} as="form" border={"1px solid black"} borderRadius={10} p={6} w={{ sm: "300px", md: "375px", lg: "450px" }} mb={4} rowGap={8} bgColor={"white"}>
-        <Heading>Login</Heading>
+    <Flex justifyContent={"center"} alignItems={"center"} h={"100vh"} flexDirection={"column"} position={"relative"} overflow={"auto"} bgImg={`/${bgImageNum}-GlassMorphismBg.jpg`} bgSize={"cover"} bgPos={"center"}>
+      <Heading p={{ sm: 4, md: 6, lg: 8}} color={"#ffffff"}>Welcome to CWC Todo App!</Heading>
+      <Flex flexDir={"column"} as="form" borderRadius={20} border={"2px solid #d6d6c2"} p={6} w={{ sm: "300px", md: "375px", lg: "450px" }} mb={4} rowGap={8} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"}>
+        <Heading color={"#ffffff"}>Login</Heading>
 
         <FormControl isRequired isInvalid={emailError}>
-          <FormLabel>Email</FormLabel>
+          <FormLabel color={"#ffffff"}>Email</FormLabel>
           <Input
             placeholder="Email"
             type="email"
@@ -101,7 +101,7 @@ export const LoginPage = () => {
         </FormControl>
 
         <FormControl isRequired isInvalid={passwordError}>
-          <FormLabel>Password</FormLabel>
+          <FormLabel color={"#ffffff"}>Password</FormLabel>
           <Input
             placeholder="Password"
             type="password"
@@ -118,16 +118,27 @@ export const LoginPage = () => {
           onClick={handleLogin}
           isDisabled={emailError || passwordError}
           isLoading={loading}
-          >
+          color={"#ffffff"}
+          _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
+          bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
+        >
             Login
         </Button>
 
-        <Text w={"100%"} textAlign={"center"} marginY={-4} >-or-</Text>
+        <Text w={"100%"} textAlign={"center"} marginY={-4} color={"#ffffff"}>-or-</Text>
 
-        <Button as={ChakraRouterLink} to="/sign-up">Sign Up</Button>
+        <Button 
+          as={ChakraRouterLink} 
+          to="/sign-up" 
+          color={"#ffffff"} 
+          _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
+          bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
+        >
+          Sign Up
+        </Button>
       </Flex>
       <Flex pb={4}>
-        <Text mr={2}>Forgot your password?</Text>
+        <Text mr={2} color={"white"}>Forgot your password?</Text>
         <Link as={ReactRouterLink} to="/forgot-password" color={"#209CF0"}>Click here</Link>
       </Flex>
     </Flex>

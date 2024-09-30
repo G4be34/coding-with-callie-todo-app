@@ -6,6 +6,7 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 
 export const SignUpPage = () => {
+  const bgImageNum = Math.floor(Math.random() * 3) + 1;
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -139,14 +140,14 @@ export const SignUpPage = () => {
   };
 
   return (
-    <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} flex={1} bgColor={"gray.300"} pos={"relative"} overflow={"auto"}>
+    <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} flex={1} bgColor={"gray.300"} pos={"relative"} overflow={"auto"} bgImg={`/${bgImageNum}-GlassMorphismBg.jpg`} bgSize={"cover"} bgPos={"center"}>
       {loading ? <Spinner position={"fixed"} top={"50%"} left={"50%"} right={"50%"} bottom={"50%"} color="blue.500" size="xl" /> : null}
-      <Heading p={{ sm: 4, md: 6, lg: 8}}>Sign up for CWC Todo App</Heading>
-      <Flex flexDir={"column"} as="form" border={"1px solid black"} p={6} w={"450px"} borderRadius={10} rowGap={8} bgColor={"white"} mb={4}>
+      <Heading p={{ sm: 4, md: 6, lg: 8}} color={"#ffffff"}>Sign up for CWC Todo App</Heading>
+      <Flex flexDir={"column"} as="form" border={"2px solid #d6d6c2"} p={6} w={"450px"} borderRadius={20} rowGap={8} mb={4} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"}>
         {!completeSignup
           ? <>
               <FormControl isRequired isInvalid={username.length < 3}>
-                <FormLabel>Username</FormLabel>
+                <FormLabel color={"#ffffff"}>Username</FormLabel>
                 <Input
                   type="text"
                   value={username}
@@ -166,7 +167,7 @@ export const SignUpPage = () => {
               </FormControl>
 
               <FormControl isRequired isInvalid={existingUser || invalidEmail}>
-                <FormLabel>Email</FormLabel>
+                <FormLabel color={"#ffffff"}>Email</FormLabel>
                 <Input
                   type="email"
                   value={email}
@@ -178,7 +179,7 @@ export const SignUpPage = () => {
               </FormControl>
 
               <FormControl isRequired isInvalid={password.length < 6 || !passwordSymbolRegex.test(password) || !passwordNumRegex.test(password)}>
-                <FormLabel>Password</FormLabel>
+                <FormLabel color={"#ffffff"}>Password</FormLabel>
                 <InputGroup>
                   <Input
                     type={showPw ? "text" : "password"}
@@ -225,7 +226,7 @@ export const SignUpPage = () => {
               </FormControl>
 
               <FormControl isRequired isInvalid={!pwMatch}>
-                <FormLabel>Confirm password</FormLabel>
+                <FormLabel color={"#ffffff"}>Confirm password</FormLabel>
                 <InputGroup>
                   <Input
                     type={showConfirmPw ? "text" : "password"}
@@ -245,14 +246,17 @@ export const SignUpPage = () => {
               <Button
                 onClick={() => sendVerificationEmail(username, email)}
                 isDisabled={username.length < 3 || password.length < 6}
+                color={"#ffffff"}
+                _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
+                bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
                 >
                   Sign up
               </Button>
             </>
           : <>
               <FormControl isRequired isInvalid={!codeMatch}>
-                <Text mb={6}>Verification email has been sent. Please check your inbox</Text>
-                <FormLabel>Verification Code</FormLabel>
+                <Text mb={6} color={"#ffffff"}>Verification email has been sent. Please check your inbox</Text>
+                <FormLabel color={"#ffffff"}>Verification Code</FormLabel>
                 <Input
                   type="text"
                   placeholder="Verification code"
@@ -262,20 +266,35 @@ export const SignUpPage = () => {
                 {!codeMatch ? <FormErrorMessage>Incorrect verification code</FormErrorMessage> : null}
               </FormControl>
 
-              <Button onClick={createUser} isDisabled={code.length < 6}>Verify Email</Button>
+              <Button 
+                onClick={createUser} 
+                isDisabled={code.length < 6}
+                color={"#ffffff"}
+                _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
+                bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
+              >
+                Verify Email
+              </Button>
 
               <Text textAlign={"center"} mt={-4} mb={-4}>- or -</Text>
 
-              <Button onClick={handleBackButton}>Go back</Button>
+              <Button 
+                onClick={handleBackButton}
+                color={"#ffffff"}
+                _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
+                bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
+              >
+                Go back
+              </Button>
               <Flex>
-                <Text>Didn't recieve the email?</Text>
+                <Text color={"#ffffff"}>Didn't recieve the email?</Text>
                 <Text onClick={() => sendVerificationEmail(username, email)} color={"#209CF0"} marginLeft={2} _hover={{ cursor: "pointer", textDecoration: "underline" }}>Resend it</Text>
               </Flex>
             </>
         }
       </Flex>
       {!completeSignup
-        ? <Text pb={4}>
+        ? <Text pb={4} color={"#ffffff"}>
             Already have an account? 
             <Link as={ReactRouterLink} to="/" color={"#209CF0"} marginLeft={2}>Login instead</Link>
           </Text>
