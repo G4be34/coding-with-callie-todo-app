@@ -247,7 +247,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
           ref={provided.innerRef}
           bg={snapshot.isDragging ? "green.200" : "white"}
           border={"1px solid black"}
-          w={300}
+          w={["250px", "250px", "300px"]}
           size={"sm"}
           mb={2}
           boxShadow={"0px 2px 6px rgba(0, 0, 0, 0.3)"}
@@ -321,7 +321,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                     size={"xs"}
                     variant={"filled"}
                     bg={priority === "Normal" ? "gray" : priority === "High" ? "orange" : priority === "Highest" ? "red" : "gray"}
-                    w={"35%"}
+                    w={["40%", "40%", "35%"]}
                     color={priority === "High" ? "black" : "white"}
                     borderRadius={10}
                     onChange={(e) => changePriority(e.target.value)}
