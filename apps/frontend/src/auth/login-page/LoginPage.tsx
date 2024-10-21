@@ -1,4 +1,4 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Text, chakra, useToast } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Text, chakra } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
@@ -6,12 +6,12 @@ import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 const ChakraRouterLink = chakra(ReactRouterLink);
 
 export const LoginPage = () => {
-  const bgImageNum = Math.floor(Math.random() * 3) + 1;
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [badLogin, setBadLogin] = useState(false);
+  const [bgImageNum, setBgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
   const emailError = email === '';
   const passwordError = password === '' || password.length < 6;
 
@@ -95,6 +95,7 @@ export const LoginPage = () => {
             placeholder="Email"
             type="email"
             value={email}
+            color={"#ffffff"}
             onChange={(e) => setEmail(e.target.value)}
             />
           {emailError ? <FormErrorMessage>Email is required</FormErrorMessage> : null}
@@ -106,6 +107,7 @@ export const LoginPage = () => {
             placeholder="Password"
             type="password"
             value={password}
+            color={"#ffffff"}
             onChange={(e) => setPassword(e.target.value)}
             onKeyUp={handleKeyPress}
             />
@@ -127,10 +129,10 @@ export const LoginPage = () => {
 
         <Text w={"100%"} textAlign={"center"} marginY={-4} color={"#ffffff"}>-or-</Text>
 
-        <Button 
-          as={ChakraRouterLink} 
-          to="/sign-up" 
-          color={"#ffffff"} 
+        <Button
+          as={ChakraRouterLink}
+          to="/sign-up"
+          color={"#ffffff"}
           _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
           bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
         >

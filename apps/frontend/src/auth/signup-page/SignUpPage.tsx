@@ -6,7 +6,6 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 
 export const SignUpPage = () => {
-  const bgImageNum = Math.floor(Math.random() * 3) + 1;
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -24,6 +23,7 @@ export const SignUpPage = () => {
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
+  const [bgImageNum, setBgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
 
   const passwordSymbolRegex = /[^A-Za-z0-9]/;
   const passwordNumRegex = /^(?=.*\d)/;
@@ -140,7 +140,7 @@ export const SignUpPage = () => {
   };
 
   return (
-    <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} flex={1} bgColor={"gray.300"} pos={"relative"} overflow={"auto"} bgImg={`/${bgImageNum}-GlassMorphismBg.jpg`} bgSize={"cover"} bgPos={"center"}>
+    <Flex flexDir={"column"} justifyContent={"center"} h={"100vh"} alignItems={"center"} flex={1} bgColor={"gray.300"} pos={"relative"} overflow={"auto"} bgImg={`/${bgImageNum}-GlassMorphismBg.jpg`} bgSize={"cover"} bgPos={"center"}>
       {loading ? <Spinner position={"fixed"} top={"50%"} left={"50%"} right={"50%"} bottom={"50%"} color="blue.500" size="xl" /> : null}
       <Heading p={{ sm: 4, md: 6, lg: 8}} color={"#ffffff"}>Sign up for CWC Todo App</Heading>
       <Flex flexDir={"column"} as="form" border={"2px solid #d6d6c2"} p={6} w={"450px"} borderRadius={20} rowGap={8} mb={4} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"}>
@@ -153,6 +153,7 @@ export const SignUpPage = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Username"
+                  color={"#ffffff"}
                   />
                 {username.length < 3
                   ? <FormErrorMessage display={"flex"} alignItems={"center"} gap={2}>
@@ -173,6 +174,7 @@ export const SignUpPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
+                  color={"#ffffff"}
                   />
                 {existingUser ? <FormErrorMessage>Email already exists</FormErrorMessage> : null}
                 {invalidEmail ? <Text mt={2} fontSize={"sm"} color={"red"}>Email must be a valid email address</Text > : null}
@@ -186,6 +188,7 @@ export const SignUpPage = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
+                    color={"#ffffff"}
                     />
                   <InputRightElement>
                     <Button onClick={() => setShowPw(!showPw)} variant={"link"}>
@@ -229,6 +232,7 @@ export const SignUpPage = () => {
                 <FormLabel color={"#ffffff"}>Confirm password</FormLabel>
                 <InputGroup>
                   <Input
+                    color={"#ffffff"}
                     type={showConfirmPw ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -262,12 +266,13 @@ export const SignUpPage = () => {
                   placeholder="Verification code"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
+                  color={"#ffffff"}
                   />
                 {!codeMatch ? <FormErrorMessage>Incorrect verification code</FormErrorMessage> : null}
               </FormControl>
 
-              <Button 
-                onClick={createUser} 
+              <Button
+                onClick={createUser}
                 isDisabled={code.length < 6}
                 color={"#ffffff"}
                 _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
@@ -278,7 +283,7 @@ export const SignUpPage = () => {
 
               <Text textAlign={"center"} mt={-4} mb={-4}>- or -</Text>
 
-              <Button 
+              <Button
                 onClick={handleBackButton}
                 color={"#ffffff"}
                 _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
@@ -295,7 +300,7 @@ export const SignUpPage = () => {
       </Flex>
       {!completeSignup
         ? <Text pb={4} color={"#ffffff"}>
-            Already have an account? 
+            Already have an account?
             <Link as={ReactRouterLink} to="/" color={"#209CF0"} marginLeft={2}>Login instead</Link>
           </Text>
         : null

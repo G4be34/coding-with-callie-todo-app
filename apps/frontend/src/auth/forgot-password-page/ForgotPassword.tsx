@@ -8,7 +8,6 @@ import { Link as ReactRouterLink } from "react-router-dom";
 const ChakraRouterLink = chakra(ReactRouterLink);
 
 export const ForgotPassword = () => {
-  const bgImageNum = Math.floor(Math.random() * 3) + 1;
   const toast = useToast();
 
   const [email, setEmail] = useState('');
@@ -27,6 +26,7 @@ export const ForgotPassword = () => {
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
+  const [bgImageNum, setBgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
 
   const validEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordSymbolRegex = /[^A-Za-z0-9]/;
@@ -147,6 +147,7 @@ export const ForgotPassword = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
+                color={"#ffffff"}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && email.length > 5) {
                     e.preventDefault();
@@ -158,9 +159,9 @@ export const ForgotPassword = () => {
               {invalidEmail ? <FormErrorMessage>Please enter a valid email address</FormErrorMessage> : null}
             </FormControl>
 
-            <Button 
-              onClick={sendCode} 
-              color={"#ffffff"} 
+            <Button
+              onClick={sendCode}
+              color={"#ffffff"}
               _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
               bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
             >
@@ -180,6 +181,7 @@ export const ForgotPassword = () => {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="New password"
+                  color={"#ffffff"}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && code.length > 5) {
                       e.preventDefault();
@@ -231,6 +233,7 @@ export const ForgotPassword = () => {
                 <Input
                   type="password"
                   value={confirmNewPassword}
+                  color={"#ffffff"}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
                   placeholder="Confirm new password"
                   onKeyDown={(e) => {
@@ -255,6 +258,7 @@ export const ForgotPassword = () => {
               <Input
                 type="text"
                 value={code}
+                color={"#ffffff"}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="Verification code"
                 onKeyDown={(e) => {
@@ -267,7 +271,7 @@ export const ForgotPassword = () => {
               {!codeMatch ? <FormErrorMessage>Code does not match</FormErrorMessage> : null}
             </FormControl>
 
-            <Button 
+            <Button
               onClick={completePwReset}
               color={"#ffffff"}
               _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
@@ -282,8 +286,8 @@ export const ForgotPassword = () => {
         {completeReset ?
           <>
             <Text color={"#ffffff"}>Your password has been reset</Text>
-            <Button 
-              as={ChakraRouterLink} 
+            <Button
+              as={ChakraRouterLink}
               to="/"
               color={"#ffffff"}
               _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
