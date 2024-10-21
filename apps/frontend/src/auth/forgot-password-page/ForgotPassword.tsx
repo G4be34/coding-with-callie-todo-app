@@ -8,6 +8,7 @@ import { Link as ReactRouterLink } from "react-router-dom";
 const ChakraRouterLink = chakra(ReactRouterLink);
 
 export const ForgotPassword = () => {
+  const bgImageNum = Math.floor(Math.random() * 3) + 1;
   const toast = useToast();
 
   const [email, setEmail] = useState('');
@@ -129,18 +130,18 @@ export const ForgotPassword = () => {
   }
 
   return (
-    <Flex pos={"relative"} overflow={"auto"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} bgColor={"gray.300"}>
+    <Flex position={"relative"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} pos={"relative"} bgImg={`/${bgImageNum}-GlassMorphismBg.jpg`} bgSize={"cover"} bgPos={"center"}>
       {loading
         ? <Spinner size={"xl"} pos={"fixed"} top={"50%"} left={"50%"} right={"50%"} bottom={"50%"} zIndex={200} color={"blue.500"} />
         : null
       }
-      <Heading mt={8} fontSize={["2xl", "3xl", "4xl"]}>Forgot your password?</Heading>
+      <Heading position={"absolute"} top={"15%"} color={"#ffffff"}>Forgot your password?</Heading>
 
-      <Flex flexDir={"column"} as="form" border={"1px solid black"} p={6} w={{ sm: "300px", md: "375px", lg: "450px" }} borderRadius={10} rowGap={8} bgColor={"white"} mt={8} mb={4}>
+      <Flex flexDir={"column"} as="form" border={"2px solid #d6d6c2"} p={6} w={"450px"} borderRadius={20} rowGap={8} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} mb={4}>
         {!successfulEmail && !completeReset ?
           <>
             <FormControl isInvalid={invalidEmail}>
-              <FormLabel>We'll send you an email to reset it</FormLabel>
+              <FormLabel color={"#ffffff"}>We'll send you an email to reset it</FormLabel>
               <Input
                 type="text"
                 value={email}
@@ -153,11 +154,18 @@ export const ForgotPassword = () => {
                   }
                 }}
                 />
-              <FormHelperText>Please enter the email address you used to register</FormHelperText>
+              <FormHelperText color={"#ffffff"}>Please enter the email address you used to register</FormHelperText>
               {invalidEmail ? <FormErrorMessage>Please enter a valid email address</FormErrorMessage> : null}
             </FormControl>
 
-            <Button onClick={sendCode}>Send Email</Button>
+            <Button 
+              onClick={sendCode} 
+              color={"#ffffff"} 
+              _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
+              bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
+            >
+              Send Email
+            </Button>
           </>
           : null
         }
@@ -165,7 +173,7 @@ export const ForgotPassword = () => {
         {successfulEmail && !completeReset ?
           <>
             <FormControl isRequired isInvalid={newPassword.length < 6 || !passwordNumRegex.test(newPassword) || !passwordSymbolRegex.test(newPassword)}>
-              <FormLabel> New password</FormLabel>
+              <FormLabel color={"#ffffff"}> New password</FormLabel>
               <InputGroup>
                 <Input
                   type="password"
@@ -218,7 +226,7 @@ export const ForgotPassword = () => {
             </FormControl>
 
             <FormControl isRequired isInvalid={!pwMatch || existingPw}>
-              <FormLabel>Confirm new password</FormLabel>
+              <FormLabel color={"#ffffff"}>Confirm new password</FormLabel>
               <InputGroup>
                 <Input
                   type="password"
@@ -243,7 +251,7 @@ export const ForgotPassword = () => {
             </FormControl>
 
             <FormControl isRequired isInvalid={!codeMatch}>
-              <FormLabel>Verification code</FormLabel>
+              <FormLabel color={"#ffffff"}>Verification code</FormLabel>
               <Input
                 type="text"
                 value={code}
@@ -259,21 +267,36 @@ export const ForgotPassword = () => {
               {!codeMatch ? <FormErrorMessage>Code does not match</FormErrorMessage> : null}
             </FormControl>
 
-            <Button onClick={completePwReset}>Reset Password</Button>
+            <Button 
+              onClick={completePwReset}
+              color={"#ffffff"}
+              _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
+              bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
+            >
+              Reset Password
+            </Button>
           </>
          : null
         }
 
         {completeReset ?
           <>
-            <Text>Your password has been reset</Text>
-            <Button as={ChakraRouterLink} to="/">Login</Button>
+            <Text color={"#ffffff"}>Your password has been reset</Text>
+            <Button 
+              as={ChakraRouterLink} 
+              to="/"
+              color={"#ffffff"}
+              _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
+              bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
+            >
+              Login
+            </Button>
           </>
           : null
         }
       </Flex>
 
-      {completeReset ? null : <Text mb={5}>Already have an account? <Link as={ReactRouterLink} to="/" color={"#209CF0"}>Login instead</Link></Text>}
+      {completeReset ? null : <Text color={"#ffffff"}>Already have an account? <Link as={ReactRouterLink} to="/" color={"#209CF0"}>Login instead</Link></Text>}
     </Flex>
   )
 }
