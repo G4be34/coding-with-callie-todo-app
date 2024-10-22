@@ -1,6 +1,7 @@
-import { Button, Editable, EditableInput, EditablePreview, Flex, Heading, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useToast } from "@chakra-ui/react";
+import { Box, Button, Editable, EditableInput, EditablePreview, Flex, Heading, Image, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
+import { IoMdCheckmarkCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { EditableControls } from "./EditableControls";
 import { NewPasswordModal } from "./NewPasswordModal";
@@ -24,6 +25,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
   const [loading, setLoading] = useState(false);
   const [showSubmitButton, setShowSubmitButton] = useState(false);
   const [file, setFile] = useState<string | null>(null);
+  const [bgImage, setBgImage] = useState<string>("1-GlassMorphismBg.jpg");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
@@ -201,6 +203,33 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
     }
   };
 
+  const changeBgImage = async (e: React.MouseEvent<HTMLImageElement>) => {
+    try {
+      console.log("Changed background image: ", e.currentTarget.id);
+
+      setBgImage(e.currentTarget.id);
+
+      toast({
+        title: 'Background Image Updated',
+        description: "Your background image has been updated.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      });
+    } catch (error) {
+      console.log("Error changing background image: ", error);
+      toast({
+        title: 'Error',
+        description: "Error changing background image",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      });
+    }
+  };
+
 
   return (
     <>
@@ -233,7 +262,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
             />
           : null}
         <ModalOverlay />
-        <ModalContent display={"flex"} flexDir={["column", "row", "row"]} >
+        <ModalContent display={"flex"} flexDir={["column", "row", "row"]} bgColor={"#f9f9f9"}>
         {loading ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} /> : null}
           <Flex flexDir={"column"} gap={[2, 4, 4]} justifyContent={"flex-start"} borderRight={["none", "1px solid black", "1px solid black"]} textDecor={"underline"} borderBottom={["1px solid black", "none", "none"]} pt={5}>
             <Button variant={"ghost"} onClick={() => setCurrentTab("Profile")}>Profile Settings</Button>
@@ -309,6 +338,69 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                     <Input as={EditableInput} w={"300px"} mr={12} />
                     <EditableControls />
                   </Editable>
+                  <Heading size={["sm", "md", "md"]}>Background Photo:</Heading>
+                  <Flex justifyContent={"space-evenly"} w={"100%"}>
+                    <Box pos={"relative"}>
+                      <Image
+                        id="1-GlassMorphismBg.jpg"
+                        cursor={"pointer"}
+                        src="1-GlassMorphismBg.jpg"
+                        alt="GlassMorphismBg-1"
+                        borderRadius={10}
+                        boxSize={["50px", "80px", "100px"]}
+                        transition="box-shadow 0.2s ease-in-out"
+                        _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2), -10px -10px 10px white" }}
+                        onClick={changeBgImage}
+                      />
+                      {bgImage === "1-GlassMorphismBg.jpg"
+                        ? <IoMdCheckmarkCircle
+                            color={"green"}
+                            size={30}
+                            style={{ position: "absolute", top: "0", left: "0", transform: "translate(-50%, -50%)" }}
+                          />
+                        : null}
+                    </Box>
+                    <Box pos={"relative"}>
+                      <Image
+                        id="2-GlassMorphismBg.jpg"
+                        cursor={"pointer"}
+                        src="2-GlassMorphismBg.jpg"
+                        alt="GlassMorphismBg-2"
+                        borderRadius={10}
+                        boxSize={["50px", "80px", "100px"]}
+                        transition="box-shadow 0.2s ease-in-out"
+                        _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2), -10px -10px 10px white" }}
+                        onClick={changeBgImage}
+                      />
+                      {bgImage === "2-GlassMorphismBg.jpg"
+                        ? <IoMdCheckmarkCircle
+                            color={"green"}
+                            size={30}
+                            style={{ position: "absolute", top: "0", left: "0", transform: "translate(-50%, -50%)" }}
+                          />
+                        : null}
+                    </Box>
+                    <Box pos={"relative"}>
+                      <Image
+                        id="3-GlassMorphismBg.jpg"
+                        cursor={"pointer"}
+                        src="3-GlassMorphismBg.jpg"
+                        alt="GlassMorphismBg-3"
+                        borderRadius={10}
+                        boxSize={["50px", "80px", "100px"]}
+                        transition="box-shadow 0.2s ease-in-out"
+                        _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2), -10px -10px 10px white" }}
+                        onClick={changeBgImage}
+                      />
+                      {bgImage === "3-GlassMorphismBg.jpg"
+                        ? <IoMdCheckmarkCircle
+                            color={"green"}
+                            size={30}
+                            style={{ position: "absolute", top: "0", left: "0", transform: "translate(-50%, -50%)" }}
+                          />
+                        : null}
+                    </Box>
+                  </Flex>
                 </>
                 : null
               }
