@@ -2,6 +2,7 @@ import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input,
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import "./LoginPage.css";
 
 const ChakraRouterLink = chakra(ReactRouterLink);
 
@@ -89,28 +90,32 @@ export const LoginPage = () => {
       <Flex flexDir={"column"} as="form" borderRadius={20} border={"2px solid #d6d6c2"} p={6} w={{ sm: "300px", md: "375px", lg: "450px" }} mb={4} rowGap={8} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"}>
         <Heading color={"#ffffff"}>Login</Heading>
 
-        <FormControl isRequired isInvalid={emailError}>
-          <FormLabel color={"#ffffff"}>Email</FormLabel>
+        <FormControl isRequired isInvalid={emailError} pos={"relative"}>
           <Input
-            placeholder="Email"
             type="email"
             value={email}
             color={"#ffffff"}
+            focusBorderColor="none"
+            errorBorderColor="none"
+            className="floating-input"
             onChange={(e) => setEmail(e.target.value)}
             />
+          <FormLabel color={"#ffffff"} className="floating-label" requiredIndicator={false}>Email</FormLabel>
           {emailError ? <FormErrorMessage>Email is required</FormErrorMessage> : null}
         </FormControl>
 
-        <FormControl isRequired isInvalid={passwordError}>
-          <FormLabel color={"#ffffff"}>Password</FormLabel>
+        <FormControl isRequired isInvalid={passwordError} pos={"relative"}>
           <Input
-            placeholder="Password"
             type="password"
             value={password}
             color={"#ffffff"}
+            focusBorderColor="none"
+            errorBorderColor="none"
+            className="floating-input"
             onChange={(e) => setPassword(e.target.value)}
             onKeyUp={handleKeyPress}
             />
+          <FormLabel color={"#ffffff"} className="floating-label" requiredIndicator={false}>Password</FormLabel>
           {passwordError ? <FormErrorMessage>Password is required</FormErrorMessage> : null}
         </FormControl>
 
