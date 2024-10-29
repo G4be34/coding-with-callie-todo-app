@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import "../login-page/LoginPage.css";
 
 export const SignUpPage = () => {
   const navigate = useNavigate();
@@ -146,15 +147,21 @@ export const SignUpPage = () => {
       <Flex flexDir={"column"} as="form" border={"2px solid #d6d6c2"} p={6} w={"450px"} borderRadius={20} rowGap={8} mb={4} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"}>
         {!completeSignup
           ? <>
-              <FormControl isRequired isInvalid={username.length < 3}>
-                <FormLabel color={"#ffffff"}>Username</FormLabel>
-                <Input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Username"
-                  color={"#ffffff"}
-                  />
+              <FormControl isRequired isInvalid={username.length < 3} pos={"relative"}>
+                <InputGroup>
+                  <Input
+                    type="text"
+                    color={"#ffffff"}
+                    borderColor="#555"
+                    focusBorderColor="#555"
+                    errorBorderColor="#555"
+                    _hover={{ border: "2px solid #444" }}
+                    className="floating-input"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    />
+                  <FormLabel color={"#d9d9d9"} requiredIndicator={false} className="floating-label">Username</FormLabel>
+                </InputGroup>
                 {username.length < 3
                   ? <FormErrorMessage display={"flex"} alignItems={"center"} gap={2}>
                       <IoMdCloseCircleOutline />
@@ -167,29 +174,37 @@ export const SignUpPage = () => {
                 }
               </FormControl>
 
-              <FormControl isRequired isInvalid={existingUser || invalidEmail}>
-                <FormLabel color={"#ffffff"}>Email</FormLabel>
+              <FormControl isRequired isInvalid={existingUser || invalidEmail} pos={"relative"}>
                 <Input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email"
                   color={"#ffffff"}
+                  borderColor="#555"
+                  focusBorderColor="#555"
+                  errorBorderColor="#555"
+                  _hover={{ border: "2px solid #555" }}
+                  className={`floating-input ${email ? "filled" : ""}`}
+                  onChange={(e) => setEmail(e.target.value)}
                   />
+                <FormLabel color={"#d9d9d9"} className="floating-label" requiredIndicator={false}>Email</FormLabel>
                 {existingUser ? <FormErrorMessage>Email already exists</FormErrorMessage> : null}
                 {invalidEmail ? <Text mt={2} fontSize={"sm"} color={"red"}>Email must be a valid email address</Text > : null}
               </FormControl>
 
-              <FormControl isRequired isInvalid={password.length < 6 || !passwordSymbolRegex.test(password) || !passwordNumRegex.test(password)}>
-                <FormLabel color={"#ffffff"}>Password</FormLabel>
+              <FormControl isRequired isInvalid={password.length < 6 || !passwordSymbolRegex.test(password) || !passwordNumRegex.test(password)} pos={"relative"}>
                 <InputGroup>
                   <Input
                     type={showPw ? "text" : "password"}
+                    color={"#ffffff"}
+                    borderColor="#555"
+                    focusBorderColor="#555"
+                    errorBorderColor="#555"
+                    _hover={{ border: "2px solid #555" }}
+                    className="floating-input"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                    color={"#ffffff"}
                     />
+                  <FormLabel color={"#d9d9d9"} requiredIndicator={false} className="floating-label">Password</FormLabel>
                   <InputRightElement>
                     <Button onClick={() => setShowPw(!showPw)} variant={"link"}>
                       <Icon as={showPw ? FaEyeSlash : FaEye} />
@@ -228,16 +243,20 @@ export const SignUpPage = () => {
                 }
               </FormControl>
 
-              <FormControl isRequired isInvalid={!pwMatch}>
-                <FormLabel color={"#ffffff"}>Confirm password</FormLabel>
+              <FormControl isRequired isInvalid={!pwMatch} pos={"relative"}>
                 <InputGroup>
                   <Input
                     color={"#ffffff"}
                     type={showConfirmPw ? "text" : "password"}
+                    borderColor="#555"
+                    focusBorderColor="#555"
+                    errorBorderColor="#555"
+                    _hover={{ border: "2px solid #555" }}
+                    className="floating-input"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm password"
                     />
+                  <FormLabel color={"#d9d9d9"} requiredIndicator={false} className={"floating-label"}>Confirm password</FormLabel>
                   <InputRightElement>
                     <Button onClick={() => setShowConfirmPw(!showConfirmPw)} variant={"link"}>
                       <Icon as={showConfirmPw ? FaEyeSlash : FaEye} />
@@ -260,14 +279,20 @@ export const SignUpPage = () => {
           : <>
               <FormControl isRequired isInvalid={!codeMatch}>
                 <Text mb={6} color={"#ffffff"}>Verification email has been sent. Please check your inbox</Text>
-                <FormLabel color={"#ffffff"}>Verification Code</FormLabel>
-                <Input
-                  type="text"
-                  placeholder="Verification code"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  color={"#ffffff"}
-                  />
+                <InputGroup pos={"relative"}>
+                  <Input
+                    type="text"
+                    color={"#ffffff"}
+                    borderColor="#555"
+                    focusBorderColor="#555"
+                    errorBorderColor="#555"
+                    _hover={{ border: "2px solid #555" }}
+                    className="floating-input"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    />
+                  <FormLabel color={"#d9d9d9"} requiredIndicator={false} className={"floating-label"}>Verification Code</FormLabel>
+                </InputGroup>
                 {!codeMatch ? <FormErrorMessage>Incorrect verification code</FormErrorMessage> : null}
               </FormControl>
 
@@ -281,7 +306,7 @@ export const SignUpPage = () => {
                 Verify Email
               </Button>
 
-              <Text textAlign={"center"} mt={-4} mb={-4}>- or -</Text>
+              <Text textAlign={"center"} mt={-4} mb={-4} color={"#ffffff"}>- or -</Text>
 
               <Button
                 onClick={handleBackButton}

@@ -1,4 +1,4 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Text, chakra } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, Link, Text, chakra } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
@@ -91,31 +91,40 @@ export const LoginPage = () => {
         <Heading color={"#ffffff"}>Login</Heading>
 
         <FormControl isRequired isInvalid={emailError} pos={"relative"}>
-          <Input
-            type="email"
-            value={email}
-            color={"#ffffff"}
-            focusBorderColor="none"
-            errorBorderColor="none"
-            className="floating-input"
-            onChange={(e) => setEmail(e.target.value)}
-            />
-          <FormLabel color={"#ffffff"} className="floating-label" requiredIndicator={false}>Email</FormLabel>
+          <InputGroup>
+            <Input
+              type="email"
+              value={email}
+              color={"#ffffff"}
+              borderColor="#555"
+              focusBorderColor="#555"
+              errorBorderColor="#555"
+              _hover={{ border: "2px solid #555" }}
+              className={`floating-input ${email ? 'filled' : ''}`}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyUp={handleKeyPress}
+              />
+            <FormLabel color={"#d9d9d9"} className="floating-label" requiredIndicator={false}>Email</FormLabel>
+          </InputGroup>
           {emailError ? <FormErrorMessage>Email is required</FormErrorMessage> : null}
         </FormControl>
 
         <FormControl isRequired isInvalid={passwordError} pos={"relative"}>
-          <Input
-            type="password"
-            value={password}
-            color={"#ffffff"}
-            focusBorderColor="none"
-            errorBorderColor="none"
-            className="floating-input"
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyUp={handleKeyPress}
-            />
-          <FormLabel color={"#ffffff"} className="floating-label" requiredIndicator={false}>Password</FormLabel>
+          <InputGroup>
+            <Input
+              type="password"
+              value={password}
+              color={"#ffffff"}
+              borderColor="#555"
+              focusBorderColor="#555"
+              errorBorderColor="#555"
+              _hover={{ border: "2px solid #555" }}
+              className="floating-input"
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyUp={handleKeyPress}
+              />
+            <FormLabel color={"#d9d9d9"} className="floating-label" requiredIndicator={false}>Password</FormLabel>
+          </InputGroup>
           {passwordError ? <FormErrorMessage>Password is required</FormErrorMessage> : null}
         </FormControl>
 
