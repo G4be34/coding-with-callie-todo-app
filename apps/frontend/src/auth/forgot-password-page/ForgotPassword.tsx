@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { Link as ReactRouterLink } from "react-router-dom";
+import "../login-page/LoginPage.css";
 
 const ChakraRouterLink = chakra(ReactRouterLink);
 
@@ -140,21 +141,28 @@ export const ForgotPassword = () => {
       <Flex flexDir={"column"} as="form" border={"2px solid #d6d6c2"} p={6} w={"450px"} borderRadius={20} rowGap={8} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} mb={4}>
         {!successfulEmail && !completeReset ?
           <>
-            <FormControl isInvalid={invalidEmail}>
+            <FormControl isInvalid={invalidEmail} isRequired>
               <FormLabel color={"#ffffff"}>We'll send you an email to reset it</FormLabel>
-              <Input
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                color={"#ffffff"}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && email.length > 5) {
-                    e.preventDefault();
-                    sendCode();
-                  }
-                }}
-                />
+              <InputGroup pos={"relative"}>
+                <Input
+                  type="email"
+                  value={email}
+                  color={"#ffffff"}
+                  borderColor="#555"
+                  focusBorderColor="#555"
+                  errorBorderColor="#555"
+                  _hover={{ border: "2px solid #555" }}
+                  className={`floating-input ${email ? "filled" : ""}`}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && email.length > 5) {
+                      e.preventDefault();
+                      sendCode();
+                    }
+                  }}
+                  />
+                <FormLabel color={"#d9d9d9"} className="floating-label" requiredIndicator={false}>Email</FormLabel>
+              </InputGroup>
               <FormHelperText color={"#ffffff"}>Please enter the email address you used to register</FormHelperText>
               {invalidEmail ? <FormErrorMessage>Please enter a valid email address</FormErrorMessage> : null}
             </FormControl>
