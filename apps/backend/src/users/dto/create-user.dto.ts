@@ -28,4 +28,7 @@ export class CreateUserDto {
 
   @IsString()
   font: string;
+
+  @IsString()
+  background: string;
 }

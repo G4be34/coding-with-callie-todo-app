@@ -25,7 +25,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
   const [loading, setLoading] = useState(false);
   const [showSubmitButton, setShowSubmitButton] = useState(false);
   const [file, setFile] = useState<string | null>(null);
-  const [bgImage, setBgImage] = useState<string>("1-GlassMorphismBg.jpg");
+  const [bgImage, setBgImage] = useState<string>(user.background);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
@@ -205,9 +205,23 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
 
   const changeBgImage = async (e: React.MouseEvent<HTMLImageElement>) => {
     try {
-      console.log("Changed background image: ", e.currentTarget.id);
+      setLoading(true);
 
-      setBgImage(e.currentTarget.id);
+      const newBackground = e.currentTarget.id;
+
+      const newUserInfo = await axios.patch(`/api/users/${user._id}`, {
+        background: newBackground
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setUser({ ...user, ...newUserInfo.data});
+
+      setBgImage(newBackground);
+
+      setLoading(false);
 
       toast({
         title: 'Background Image Updated',

@@ -3,7 +3,7 @@ import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import axios from "axios";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useOutletContext } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { Column } from "../components/Column";
 
@@ -45,6 +45,7 @@ type LoadedTodosDataType = {
 
 export const TodosPage = () => {
   const loadedTodosData = useLoaderData() as LoadedTodosDataType;
+  const { user } = useOutletContext();
   const toast = useToast();
   const [todosData, setTodosData] = useState(loadedTodosData.fetchedTodosData);
   const [selectedTodos, setSelectedTodos] = useState<string[]>([]);
@@ -429,7 +430,7 @@ export const TodosPage = () => {
 
 
   return (
-    <Flex flex={1} px={5} overflowX={"auto"} direction="column">
+    <Flex flex={1} px={5} overflowX={"auto"} direction="column" bgImg={`url(../../public/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
       {showConfirmModal
         ? <Modal isOpen={showConfirmModal} onClose={() => setShowConfirmModal(false)} isCentered size={"sm"}>
             <ModalOverlay />

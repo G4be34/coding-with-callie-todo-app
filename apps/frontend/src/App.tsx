@@ -61,6 +61,7 @@ function Layout() {
   const [showOptions, setShowOptions] = useState(false);
   const [user, setUser] = useState({});
 
+
   const logoutUser = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user_id');
@@ -126,7 +127,7 @@ function Layout() {
       <Flex flex={1} overflow={"hidden"}>
         {navigation.state === "loading"
           ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} />
-          : <Outlet />}
+          : <Outlet context={{ user }} />}
       </Flex>
       <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={4} borderTop={"1px solid black"}>
         © 2024 CWC Todo App. All rights reserved.

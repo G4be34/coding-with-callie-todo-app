@@ -45,6 +45,7 @@ export const SignUpPage = () => {
         photo: "",
         theme: "",
         font: "",
+        background: "1-GlassMorphismBg.jpg"
       };
 
       const user = await axios.post('/api/users', newUser);
