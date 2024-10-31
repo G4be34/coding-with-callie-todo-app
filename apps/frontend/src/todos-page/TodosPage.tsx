@@ -45,7 +45,7 @@ type LoadedTodosDataType = {
 
 export const TodosPage = () => {
   const loadedTodosData = useLoaderData() as LoadedTodosDataType;
-  const { user } = useOutletContext();
+  const { user } = useOutletContext() as { user: { background: string }};
   const toast = useToast();
   const [todosData, setTodosData] = useState(loadedTodosData.fetchedTodosData);
   const [selectedTodos, setSelectedTodos] = useState<string[]>([]);

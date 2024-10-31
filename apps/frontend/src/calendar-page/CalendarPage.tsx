@@ -6,7 +6,7 @@ import FullCalendar from '@fullcalendar/react';
 import axios from 'axios';
 import { useRef, useState } from 'react';
 import { TiDelete } from 'react-icons/ti';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useOutletContext } from 'react-router-dom';
 import './calendarpage.css';
 
 
@@ -36,6 +36,7 @@ type LoaderDataType = {
 
 export const CalendarPage = () => {
   const { calendarData, access_token, completedTodos } = useLoaderData() as LoaderDataType;
+  const { user } = useOutletContext() as { user: { background: string }};
   const calendarRef = useRef<FullCalendar | null>(null);
   const toast = useToast();
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -241,7 +242,7 @@ export const CalendarPage = () => {
 
 
   return (
-    <Flex p={5} flexDir={"column"} w={"100%"}>
+    <Flex p={5} flexDir={"column"} w={"100%"} bgImg={`url(../../public/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
       {showTaskModal
         ? <Modal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} isCentered size={"lg"}>
             <ModalOverlay />
