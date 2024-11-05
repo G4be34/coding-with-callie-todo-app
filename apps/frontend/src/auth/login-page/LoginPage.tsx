@@ -1,8 +1,9 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, InputGroup, Link, Text, chakra } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Icon, Input, InputGroup, InputRightElement, Link, Text, chakra } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import "./LoginPage.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ChakraRouterLink = chakra(ReactRouterLink);
 
@@ -12,6 +13,7 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [badLogin, setBadLogin] = useState(false);
+  const [showPw, setShowPw] = useState(false);
   const [bgImageNum, setBgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
   const emailError = email === '';
   const passwordError = password === '' || password.length < 6;
@@ -112,7 +114,7 @@ export const LoginPage = () => {
         <FormControl isRequired isInvalid={passwordError} pos={"relative"}>
           <InputGroup>
             <Input
-              type="password"
+              type={showPw ? "text" : "password"}
               value={password}
               color={"#ffffff"}
               borderColor="#555"
@@ -124,6 +126,11 @@ export const LoginPage = () => {
               onKeyUp={handleKeyPress}
               />
             <FormLabel color={"#d9d9d9"} className="floating-label" requiredIndicator={false}>Password</FormLabel>
+            <InputRightElement>
+              <Button onClick={() => setShowPw(!showPw)} variant={"link"}>
+                <Icon as={showPw ? FaEyeSlash : FaEye} />
+              </Button>
+            </InputRightElement>
           </InputGroup>
           {passwordError ? <FormErrorMessage>Password is required</FormErrorMessage> : null}
         </FormControl>
