@@ -430,7 +430,7 @@ export const TodosPage = () => {
 
 
   return (
-    <Flex flex={1} px={5} overflowX={"auto"} direction="column" bgImg={`url(../../public/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
+    <Flex flex={1} px={5} overflowX={"auto"} direction="column" bgImg={`url(/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
       {showConfirmModal
         ? <Modal isOpen={showConfirmModal} onClose={() => setShowConfirmModal(false)} isCentered size={"sm"}>
             <ModalOverlay />

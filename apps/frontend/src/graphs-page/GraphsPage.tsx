@@ -14,7 +14,7 @@ export const GraphsPage = () => {
   const { user } = useOutletContext() as { user: { background: string }};
 
   return (
-    <Flex flex={1} flexDir={"column"} justifyContent="center" alignItems="center" overflowY={"auto"} pt={4} bgImg={`url(../../public/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
+    <Flex flex={1} flexDir={"column"} justifyContent="center" alignItems="center" overflowY={"auto"} pt={4} bgImg={`url(/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
       <Box p={4}>
         <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]}>Incomplete Tasks: {numOfIncomplete}</Text>
         <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]}>Overdue Tasks: {numOfOverdue}</Text>

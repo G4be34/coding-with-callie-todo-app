@@ -24,7 +24,7 @@ export class User {
   @Column()
   font: string;
 
-  @Column()
+  @Column({ default: '1-GlassMorphismBg.jpg' })
   background: string;
 
   @OneToMany(() => Group, (group) => group.user, { eager: true, cascade: true })

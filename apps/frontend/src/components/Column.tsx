@@ -405,7 +405,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
     <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"} minH={"20%"} maxH={"100%"} w={"100%"} overflowY={"auto"}>
       {showDelete
         ? <Flex mb={2} _hover={{ opacity: 0.5}}>
-            <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"}/>
+            <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"} color="white"/>
           </Flex>
         : <Button
             autoFocus
@@ -420,7 +420,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
               Delete Column
             </Button>
         }
-      <Flex flexDir={"column"} border={"3px solid black"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
+      <Flex flexDir={"column"} border={"3px solid white"} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
         <Select placeholder="Sort" size={"xs"} borderRadius={10} cursor={"pointer"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
           <option value="Newest">Newest</option>
           <option value="Oldest">Oldest</option>
@@ -428,7 +428,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
           <option value="Priority">Priority</option>
           {column.column_id === "column-1" ? <option value={"Date Completed"}>Date Completed</option> : null}
         </Select>
-        <Editable defaultValue={column.title} cursor={"pointer"} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"} onSubmit={changeTitle}>
+        <Editable defaultValue={column.title} cursor={"pointer"} color={"white"} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"} onSubmit={changeTitle}>
           <EditablePreview />
           <EditableInput />
         </Editable>
@@ -438,13 +438,14 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
           <Flex
             ref={provided.innerRef}
             {...provided.droppableProps}
-            bg={snapshot.isDraggingOver ? "gray.200" : "white"}
+            bg={snapshot.isDraggingOver ? "rgba(255, 255, 255, 0.02)" : "rgba(255, 255, 255, 0.05)"}
+            backdropFilter={"blur(10px)"}
             flexDir={"column"}
             minH={"500px"}
             h={"100%"}
             minW={"100%"}
             flex={1}
-            border={"3px solid black"}
+            border={"3px solid white"}
             borderRadius={10}
             borderTopLeftRadius={0}
             borderTopRightRadius={0}

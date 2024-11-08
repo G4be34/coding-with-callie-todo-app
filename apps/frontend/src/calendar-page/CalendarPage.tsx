@@ -242,7 +242,7 @@ export const CalendarPage = () => {
 
 
   return (
-    <Flex p={5} flexDir={"column"} w={"100%"} bgImg={`url(../../public/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
+    <Flex p={5} flexDir={"column"} w={"100%"} bgImg={`url(/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
       {showTaskModal
         ? <Modal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} isCentered size={"lg"}>
             <ModalOverlay />
