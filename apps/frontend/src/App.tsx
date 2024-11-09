@@ -129,7 +129,7 @@ function Layout() {
           ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} />
           : <Outlet context={{ user }} />}
       </Flex>
-      <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={4} borderTop={"1px solid black"}>
+      <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={2} borderTop={"1px solid black"}>
         © 2024 CWC Todo App. All rights reserved.
       </Flex>
     </Flex>

@@ -1,4 +1,4 @@
-import { Button, Editable, EditableInput, EditablePreview, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react";
+import { Box, Button, Editable, EditableInput, EditablePreview, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react";
 import { Droppable } from "@hello-pangea/dnd";
 import axios from "axios";
 import { useState } from "react";
@@ -436,10 +436,10 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
       <Droppable droppableId={column.column_id}>
         {(provided, snapshot) => (
           <Flex
+            pos={"relative"}
             ref={provided.innerRef}
             {...provided.droppableProps}
             bg={snapshot.isDraggingOver ? "rgba(255, 255, 255, 0.02)" : "rgba(255, 255, 255, 0.05)"}
-            backdropFilter={"blur(10px)"}
             flexDir={"column"}
             minH={"500px"}
             h={"100%"}
@@ -450,12 +450,29 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             borderTopLeftRadius={0}
             borderTopRightRadius={0}
             p={4}
-            overflow={"auto"}
+            overflowY={"auto"}
             maxH={"900px"}
+            sx={{
+              /* Custom scrollbar styles */
+              '::-webkit-scrollbar': {
+                width: '8px',
+              },
+              '::-webkit-scrollbar-track': {
+                background: 'rgba(255, 255, 255, 0.05)',
+              },
+              '::-webkit-scrollbar-thumb': {
+                backgroundColor: '#888',
+                borderRadius: '10px',
+              },
+              '::-webkit-scrollbar-thumb:hover': {
+                backgroundColor: '#555',
+              },
+            }}
             >
+            <Box pos={"absolute"} top={0} left={0} right={0} bottom={0} bg={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10}></Box>
             {column.title !== "Completed"
-              ? <Button w={"100%"} minH={10} mb={4} onClick={() => setAddTodo(true)}>
-                  <FaPlus />
+              ? <Button w={"100%"} minH={10} mb={4} bgColor={"green.400"} onClick={() => setAddTodo(true)}>
+                  <FaPlus color="white" />
                 </Button>
               : null}
             {addTodo
@@ -475,7 +492,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                     <Spacer />
                     <Flex flexDir={"column"} ml={2}>
                       <Text fontSize={"sm"}>Priority:</Text>
-                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"}>
+                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"} color={"white"}>
                         <option value="Normal">Normal</option>
                         <option value="High">High</option>
                         <option value="Highest">Highest</option>
@@ -484,6 +501,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                   </Flex>
                   <Textarea
                     w={"100%"}
+                    color={"white"}
                     resize={"none" }
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
@@ -514,7 +532,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                 setTodosData={setTodosData}
                 setSelectedTodos={setSelectedTodos}
                 />
-            )) : <Text my={2} textAlign={"center"}>Empty</Text>}
+            )) : <Text my={2} textAlign={"center"} color={"white"}>Empty</Text>}
             {provided.placeholder}
           </Flex>
         )}
