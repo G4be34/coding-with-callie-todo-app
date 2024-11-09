@@ -18,7 +18,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
   const [code, setCode] = useState('');
   const [emailCode, setEmailCode] = useState('');
   const [codeMatch, setCodeMatch] = useState(true);
-  const [theme, setTheme] = useState(user.theme);
+  const [theme, setTheme] = useState('default');
   const [font, setFont] = useState(user.font);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showPwModal, setShowPwModal] = useState(false);
@@ -244,6 +244,40 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
     }
   };
 
+  const changeTheme = async (newTheme: string) => {
+    if (newTheme === theme) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      console.log("New theme is: ", newTheme);
+      setTheme(newTheme);
+
+      setLoading(false);
+
+      toast({
+        title: 'Theme Updated',
+        description: "Theme has been updated.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
+    } catch (error) {
+      console.log("Error changing theme: ", error);
+      toast({
+        title: 'Error',
+        description: "Error changing theme",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      })
+    }
+  };
+
 
   return (
     <>
@@ -340,18 +374,17 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
               }
               {currentTab === "Theme" ?
                 <>
-                  <Heading size={["sm", "md", "md"]} mb={-2}>Current Theme:</Heading>
-                  <Editable
-                    onSubmit={() => saveEdit("theme")}
-                    defaultValue={theme}
-                    isPreviewFocusable={false}
-                    display={"flex"}
-                    onChange={(e) => setTheme(e)}
-                    >
-                    <EditablePreview w={"300px"} />
-                    <Input as={EditableInput} w={"300px"} mr={12} />
-                    <EditableControls />
-                  </Editable>
+                  <Heading size={["sm", "md", "md"]} mb={-2}>Theme:</Heading>
+                  <Flex justifyContent={"space-evenly"} w={"100%"}>
+                    <Button variant={theme === "default" ? "solid" : "link"} onClick={() => changeTheme("default")}>Default</Button>
+                    <Button variant={theme === "light" ? "solid" : "link"} onClick={() => changeTheme("light")}>Light</Button>
+                    <Button variant={theme === "dark" ? "solid" : "link"} onClick={() => changeTheme("dark")}>Dark</Button>
+                    <Button variant={theme === "rainbow" ? "solid" : "link"} onClick={() => changeTheme("rainbow")}>Rainbow</Button>
+                  </Flex>
+                  <Flex justifyContent={"center"} gap={[4, 4, 6]}>
+                    <Button variant={theme === "purple" ? "solid" : "link"} onClick={() => changeTheme("purple")}>Purple</Button>
+                    <Button variant={theme === "red" ? "solid" : "link"} onClick={() => changeTheme("red")}>Red</Button>
+                  </Flex>
                   <Heading size={["sm", "md", "md"]}>Background Photo:</Heading>
                   <Flex justifyContent={"space-evenly"} w={"100%"}>
                     <Box pos={"relative"}>
