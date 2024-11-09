@@ -18,7 +18,7 @@ export class User {
   @Column()
   photo: string;
 
-  @Column()
+  @Column({ default: 'default' })
   theme: string;
 
   @Column()

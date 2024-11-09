@@ -18,7 +18,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
   const [code, setCode] = useState('');
   const [emailCode, setEmailCode] = useState('');
   const [codeMatch, setCodeMatch] = useState(true);
-  const [theme, setTheme] = useState('default');
+  const [theme, setTheme] = useState(user.theme);
   const [font, setFont] = useState(user.font);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showPwModal, setShowPwModal] = useState(false);
@@ -252,7 +252,17 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
     try {
       setLoading(true);
 
-      console.log("New theme is: ", newTheme);
+      const newUserInfo = await axios.patch(`/api/users/${user._id}`, {
+        theme: newTheme
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      setUser({ ...user, ...newUserInfo.data});
+
       setTheme(newTheme);
 
       setLoading(false);
@@ -385,7 +395,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                     <Button variant={theme === "purple" ? "solid" : "link"} onClick={() => changeTheme("purple")}>Purple</Button>
                     <Button variant={theme === "red" ? "solid" : "link"} onClick={() => changeTheme("red")}>Red</Button>
                   </Flex>
-                  <Heading size={["sm", "md", "md"]}>Background Photo:</Heading>
+                  <Heading size={["sm", "md", "md"]} mt={6}>Background Photo:</Heading>
                   <Flex justifyContent={"space-evenly"} w={"100%"}>
                     <Box pos={"relative"}>
                       <Image
