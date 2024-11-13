@@ -21,9 +21,6 @@ export class CreateUserDto {
   password: string;
 
   @IsString()
-  photo: string;
-
-  @IsString()
   theme: string;
 
   @IsString()

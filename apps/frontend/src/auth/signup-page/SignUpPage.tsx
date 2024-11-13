@@ -42,7 +42,6 @@ export const SignUpPage = () => {
         email,
         password,
         username,
-        photo: "",
         theme: "",
         font: "",
         background: "1-GlassMorphismBg.jpg"

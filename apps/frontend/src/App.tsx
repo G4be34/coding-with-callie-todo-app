@@ -9,9 +9,13 @@ import { SignUpPage } from './auth/signup-page/SignUpPage';
 import { CalendarPage } from './calendar-page/CalendarPage';
 import { Header } from './components/Header';
 import { ProfileModal } from './components/ProfileModal';
+import { ThemeProvider } from './context/ThemeContext';
 import { GraphsPage } from './graphs-page/GraphsPage';
 import { authenticateUser, getCalendarData, getGraphsData, getTodosData } from './loaderFunctions';
 import { TodosPage } from './todos-page/TodosPage';
+
+
+type ThemeType = 'default' | 'light' | 'dark' | 'rainbow' | 'purple' | 'red';
 
 
 function App() {
@@ -60,6 +64,7 @@ function Layout() {
   const [showModal, setShowModal] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [user, setUser] = useState({});
+  const [userTheme, setUserTheme] = useState<ThemeType | null>(null);
 
 
   const logoutUser = () => {
@@ -95,6 +100,7 @@ function Layout() {
         const photoBase64 = `data:image/png;base64,${photo}`;
 
         setUser({_id: userId, ...userResponse.data, photo: photoBase64});
+        setUserTheme(userResponse.data.theme);
 
         toast({
           title: `Welcome ${userResponse.data.username}!`,
@@ -120,19 +126,26 @@ function Layout() {
   }, [token]);
 
 
+  if (!userTheme) {
+    return <Spinner color="blue.500" size="xl" />;
+  }
+
+
   return (
-    <Flex flexDirection={"column"} minH={"100vh"} maxH={"100vh"} justifyContent={"space-between"}>
-      {showModal && <ProfileModal setShowModal={setShowModal} showModal={showModal} user={user} setUser={setUser} token={access_token} logoutUser={logoutUser} />}
-      <Header setShowModal={setShowModal} setShowOptions={setShowOptions} showOptions={showOptions} logoutUser={logoutUser} user={user} />
-      <Flex flex={1} overflow={"hidden"}>
-        {navigation.state === "loading"
-          ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} />
-          : <Outlet context={{ user }} />}
+    <ThemeProvider initialTheme={userTheme}>
+      <Flex flexDirection={"column"} minH={"100vh"} maxH={"100vh"} justifyContent={"space-between"}>
+        {showModal && <ProfileModal setShowModal={setShowModal} showModal={showModal} user={user} setUser={setUser} token={access_token} logoutUser={logoutUser} />}
+        <Header setShowModal={setShowModal} setShowOptions={setShowOptions} showOptions={showOptions} logoutUser={logoutUser} user={user} />
+        <Flex flex={1} overflow={"hidden"}>
+          {navigation.state === "loading"
+            ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} />
+            : <Outlet context={{ user }} />}
+        </Flex>
+        <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={2} borderTop={"1px solid black"} bgColor={"footerBg"} color={"footerFont"}>
+          © 2024 CWC Todo App. All rights reserved.
+        </Flex>
       </Flex>
-      <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={2} borderTop={"1px solid black"}>
-        © 2024 CWC Todo App. All rights reserved.
-      </Flex>
-    </Flex>
+    </ThemeProvider>
   );
 }
 

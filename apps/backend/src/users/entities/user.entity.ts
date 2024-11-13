@@ -15,9 +15,6 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
-  photo: string;
-
   @Column({ default: 'default' })
   theme: string;
 

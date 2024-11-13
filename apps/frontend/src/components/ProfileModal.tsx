@@ -3,10 +3,15 @@ import axios from "axios";
 import { useState } from "react";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { useThemeContext } from "../context/ThemeContext";
 import { EditableControls } from "./EditableControls";
 import { NewPasswordModal } from "./NewPasswordModal";
 
+
+type ThemeType = 'default' | 'light' | 'dark' | 'rainbow' | 'purple' | 'red';
+
 export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, logoutUser }) => {
+  const { changeTheme } = useThemeContext();
   const navigate = useNavigate();
   const toast = useToast();
   const [currentTab, setCurrentTab] = useState("Profile");
@@ -80,6 +85,14 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         setLoading(false);
       }
       console.log(error);
+      toast({
+        title: 'Error',
+        description: "Error saving edit",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom'
+      });
     }
   };
 
@@ -115,6 +128,14 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
     } catch (error) {
       setLoading(false);
       console.log('Error deleting profile: ', error);
+      toast({
+        title: 'Error',
+        description: "Something went wrong, Please try again",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom'
+      });
     }
   };
 
@@ -204,6 +225,10 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
   };
 
   const changeBgImage = async (e: React.MouseEvent<HTMLImageElement>) => {
+    if (bgImage === e.currentTarget.id) {
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -233,6 +258,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
       });
     } catch (error) {
       console.log("Error changing background image: ", error);
+      setLoading(false);
       toast({
         title: 'Error',
         description: "Error changing background image",
@@ -244,13 +270,15 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
     }
   };
 
-  const changeTheme = async (newTheme: string) => {
+  const changeColorTheme = async (newTheme: ThemeType) => {
     if (newTheme === theme) {
       return;
     }
 
     try {
       setLoading(true);
+
+      changeTheme(newTheme);
 
       const newUserInfo = await axios.patch(`/api/users/${user._id}`, {
         theme: newTheme
@@ -260,6 +288,8 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
           Authorization: `Bearer ${token}`
         }
       });
+
+      console.log("newUserInfo: ", newUserInfo.data);
 
       setUser({ ...user, ...newUserInfo.data});
 
@@ -274,9 +304,10 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         duration: 3000,
         isClosable: true,
         position: 'top'
-      })
+      });
     } catch (error) {
       console.log("Error changing theme: ", error);
+      setLoading(false);
       toast({
         title: 'Error',
         description: "Error changing theme",
@@ -284,7 +315,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         duration: 3000,
         isClosable: true,
         position: 'top'
-      })
+      });
     }
   };
 
@@ -385,15 +416,15 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
               {currentTab === "Theme" ?
                 <>
                   <Heading size={["sm", "md", "md"]} mb={-2}>Theme:</Heading>
-                  <Flex justifyContent={"space-evenly"} w={"100%"}>
-                    <Button variant={theme === "default" ? "solid" : "link"} onClick={() => changeTheme("default")}>Default</Button>
-                    <Button variant={theme === "light" ? "solid" : "link"} onClick={() => changeTheme("light")}>Light</Button>
-                    <Button variant={theme === "dark" ? "solid" : "link"} onClick={() => changeTheme("dark")}>Dark</Button>
-                    <Button variant={theme === "rainbow" ? "solid" : "link"} onClick={() => changeTheme("rainbow")}>Rainbow</Button>
+                  <Flex justifyContent={"space-evenly"} w={"100%"} alignItems={"center"}>
+                    <Button variant={theme === "default" ? "solid" : "link"} onClick={() => changeColorTheme("default")}>Default</Button>
+                    <Button variant={theme === "light" ? "solid" : "link"} onClick={() => changeColorTheme("light")}>Light</Button>
+                    <Button variant={theme === "dark" ? "solid" : "link"} onClick={() => changeColorTheme("dark")}>Dark</Button>
+                    <Button variant={theme === "rainbow" ? "solid" : "link"} onClick={() => changeColorTheme("rainbow")}>Rainbow</Button>
                   </Flex>
-                  <Flex justifyContent={"center"} gap={[4, 4, 6]}>
-                    <Button variant={theme === "purple" ? "solid" : "link"} onClick={() => changeTheme("purple")}>Purple</Button>
-                    <Button variant={theme === "red" ? "solid" : "link"} onClick={() => changeTheme("red")}>Red</Button>
+                  <Flex justifyContent={"center"} gap={[4, 4, 6]} alignItems={"center"}>
+                    <Button variant={theme === "purple" ? "solid" : "link"} onClick={() => changeColorTheme("purple")}>Purple</Button>
+                    <Button variant={theme === "red" ? "solid" : "link"} onClick={() => changeColorTheme("red")}>Red</Button>
                   </Flex>
                   <Heading size={["sm", "md", "md"]} mt={6}>Background Photo:</Heading>
                   <Flex justifyContent={"space-evenly"} w={"100%"}>

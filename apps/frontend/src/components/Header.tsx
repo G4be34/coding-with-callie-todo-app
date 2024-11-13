@@ -28,12 +28,12 @@ export const Header = ({ setShowModal, showOptions, setShowOptions, user, logout
   }
 
   return (
-    <Flex as={"header"} borderBottom={"1px solid black"} p={4} px={[4, 8, 14]} alignItems={"center"}>
+    <Flex as={"header"} borderBottom={"1px solid black"} p={4} px={[4, 8, 14]} alignItems={"center"} bgColor={"headerBg"}>
       <Image src="/logo.jpeg" alt="logo" boxSize="50px" objectFit={"contain"} borderRadius={10}/>
       <Spacer/>
       {links.map((link, idx) => (
         <Link as={ReactRouterLink} to={link.path} key={idx}>
-          <Button ml={[2, 4, 6]} size={["sm", "md", "md"]}>{link.label}</Button>
+          <Button ml={[2, 4, 6]} size={["sm", "md", "md"]} bgColor={"headerBtnBg"}>{link.label}</Button>
         </Link>
       ))}
       <Avatar
