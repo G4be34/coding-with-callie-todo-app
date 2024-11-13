@@ -62,7 +62,6 @@ function Layout() {
   const userId = parseInt(stringId!, 10);
   const { access_token } = JSON.parse(token!);
   const [showModal, setShowModal] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
   const [user, setUser] = useState({});
   const [userTheme, setUserTheme] = useState<ThemeType | null>(null);
 
@@ -135,7 +134,7 @@ function Layout() {
     <ThemeProvider initialTheme={userTheme}>
       <Flex flexDirection={"column"} minH={"100vh"} maxH={"100vh"} justifyContent={"space-between"}>
         {showModal && <ProfileModal setShowModal={setShowModal} showModal={showModal} user={user} setUser={setUser} token={access_token} logoutUser={logoutUser} />}
-        <Header setShowModal={setShowModal} setShowOptions={setShowOptions} showOptions={showOptions} logoutUser={logoutUser} user={user} />
+        <Header setShowModal={setShowModal} logoutUser={logoutUser} user={user} />
         <Flex flex={1} overflow={"hidden"}>
           {navigation.state === "loading"
             ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} />

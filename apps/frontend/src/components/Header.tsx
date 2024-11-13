@@ -1,4 +1,4 @@
-import { Avatar, Button, Flex, Image, Link, Spacer } from "@chakra-ui/react";
+import { Avatar, Button, Flex, Image, Link, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Spacer } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 const links = [
@@ -9,22 +9,14 @@ const links = [
 
 type HeaderPropTypes = {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
-  showOptions: boolean,
-  setShowOptions: React.Dispatch<React.SetStateAction<boolean>>,
   user: any,
   logoutUser: () => void
 }
 
-export const Header = ({ setShowModal, showOptions, setShowOptions, user, logoutUser }: HeaderPropTypes) => {
-
-  const openModal = () => {
-    setShowModal(true);
-    setShowOptions(false);
-  }
+export const Header = ({ setShowModal, user, logoutUser }: HeaderPropTypes) => {
 
   const handleLogout = () => {
     logoutUser();
-    setShowOptions(false);
   }
 
   return (
@@ -36,20 +28,23 @@ export const Header = ({ setShowModal, showOptions, setShowOptions, user, logout
           <Button ml={[2, 4, 6]} size={["sm", "md", "md"]} bgColor={"headerBtnBg"}>{link.label}</Button>
         </Link>
       ))}
-      <Avatar
-        name={user?.username}
-        src={user?.photo}
-        cursor={"pointer"}
-        onClick={() => setShowOptions(!showOptions)}
-        ml={[2, 4, 10]} pos={"relative"} zIndex={200}
-        />
-      {showOptions ?
-        <Flex flexDir={"column"} pos={"absolute"} right={5} top={20} border={"1px solid black"} borderRadius={10} bgColor={"white"} p={4} gap={2} zIndex={100}>
-          <Button onClick={openModal}>Settings</Button>
-          <Button onClick={handleLogout}>Logout</Button>
-        </Flex>
-        : null
-      }
+      <Popover arrowSize={10}>
+        <PopoverTrigger>
+          <Avatar
+            name={user?.username}
+            src={user?.photo}
+            cursor={"pointer"}
+            ml={[2, 4, 10]} pos={"relative"} zIndex={200}
+            />
+        </PopoverTrigger>
+        <PopoverContent w={"200px"}>
+          <PopoverArrow />
+          <PopoverBody display={"flex"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} gap={4} py={4}>
+            <Button onClick={() => setShowModal(true)} w={"70%"}>Settings</Button>
+            <Button onClick={handleLogout} w={"70%"}>Logout</Button>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
     </Flex>
   )
 }
