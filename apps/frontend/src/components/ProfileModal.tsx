@@ -352,8 +352,17 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
           : null}
         <ModalOverlay />
         <ModalContent display={"flex"} flexDir={["column", "row", "row"]} bgColor={"#f9f9f9"}>
-        {loading ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} /> : null}
-          <Flex flexDir={"column"} gap={[2, 4, 4]} justifyContent={"flex-start"} borderRight={["none", "1px solid black", "1px solid black"]} textDecor={"underline"} borderBottom={["1px solid black", "none", "none"]} textDecorationColor={"modalSideFont"} pt={5} bgColor={"modalSideBg"}>
+          {loading ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} /> : null}
+          <Flex
+            flexDir={"column"}
+            gap={[2, 4, 4]}
+            justifyContent={"flex-start"}
+            borderRight={["none", "1px solid black", "1px solid black"]}
+            textDecor={"underline"} borderBottom={["1px solid black", "none", "none"]}
+            textDecorationColor={"modalSideFont"}
+            pt={5}
+            bgColor={"modalSideBg"}
+            >
             <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Profile")} color={"modalSideFont"}>Profile Settings</Button>
             <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Theme")} color={"modalSideFont"}>Color Themes</Button>
             <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Font")} color={"modalSideFont"}>Fonts Styles</Button>
@@ -370,7 +379,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       src={user.photo}
                       alt="Profile"
                       border={"2px solid"}
-                      borderColor={"borderColor"}
+                      borderColor={"profileBorderColor"}
                     />
                     <label htmlFor="fileInput">
                       <Button

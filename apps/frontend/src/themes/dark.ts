@@ -5,7 +5,7 @@ export const darkTheme = {
     primary: '#343A40',
     secondary: '#6C757D',
     third: '#ADB5BD',
-    fourth: '#DEE2E6',
+    fourth: '#f0f2f4',
     fifth: '#212529',
     sixth: '#848d94'
   },
@@ -27,6 +27,9 @@ export const darkTheme = {
         default: "white"
       },
       borderColor: {
+        default: "third"
+      },
+      profileBorderColor: {
         default: "fourth"
       },
       modalSideBg: {

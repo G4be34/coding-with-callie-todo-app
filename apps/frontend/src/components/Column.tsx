@@ -405,7 +405,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
     <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"} minH={"20%"} maxH={"100%"} w={"100%"} overflowY={"auto"}>
       {showDelete
         ? <Flex mb={2} _hover={{ opacity: 0.5}}>
-            <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"} color="btnFontColor"/>
+            <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"} color="white"/>
           </Flex>
         : <Button
             autoFocus

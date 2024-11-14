@@ -30,12 +30,21 @@ export const Header = ({ setShowModal, user, logoutUser }: HeaderPropTypes) => {
       ))}
       <Popover arrowSize={10}>
         <PopoverTrigger>
-          <Avatar
-            name={user?.username}
-            src={user?.photo}
-            cursor={"pointer"}
-            ml={[2, 4, 10]} pos={"relative"} zIndex={200}
-            />
+          <Flex
+            borderRadius={"full"}
+            border={"2px solid"}
+            borderColor={"profileBorderColor"}
+            ml={[2, 4, 10]}
+            pos={"relative"}
+            zIndex={200}
+          >
+            <Avatar
+              name={user?.username}
+              src={user?.photo}
+              cursor={"pointer"}
+
+              />
+          </Flex>
         </PopoverTrigger>
         <PopoverContent w={"200px"} bgColor={"headerBg"}>
           <PopoverArrow bgColor={"headerBg"}/>
