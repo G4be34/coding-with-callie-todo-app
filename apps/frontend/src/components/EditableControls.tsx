@@ -9,12 +9,12 @@ export const EditableControls = () => {
 
   return isEditing ? (
     <ButtonGroup>
-      <IconButton icon={<ImCheckboxChecked />} aria-label="Save" {...getSubmitButtonProps()} />
-      <IconButton icon={<AiFillCloseSquare />} aria-label="Cancel" {...getCancelButtonProps()} />
+      <IconButton icon={<ImCheckboxChecked />} aria-label="Save" {...getSubmitButtonProps()} bgColor={"buttonBg"} color={"btnFontColor"} _hover={{ bgColor: "editBtnsHover"}} />
+      <IconButton icon={<AiFillCloseSquare />} aria-label="Cancel" {...getCancelButtonProps()} bgColor={"buttonBg"} color={"btnFontColor"} _hover={{ bgColor: "editBtnsHover"}} />
     </ButtonGroup>
   ) : (
     <Flex>
-      <IconButton icon={<FaEdit />} aria-label="Edit" {...getEditButtonProps()} />
+      <IconButton icon={<FaEdit />} aria-label="Edit" {...getEditButtonProps()} bgColor={"buttonBg"} color={"btnFontColor"} _hover={{ bgColor: "editBtnsHover"}} />
     </Flex>
   )
 }

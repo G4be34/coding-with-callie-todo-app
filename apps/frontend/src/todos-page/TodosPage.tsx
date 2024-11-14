@@ -473,7 +473,7 @@ export const TodosPage = () => {
             })}
           </Flex>
         </DragDropContext>
-        <Button mt={10} ml={8} leftIcon={<FaPlus size={20} />} minW={"auto"} onClick={addNewColumn} >
+        <Button mt={10} ml={8} leftIcon={<FaPlus size={20} />} minW={"auto"} bgColor={"buttonBg"} color={"btnFontColor"} onClick={addNewColumn} >
           Add a new column
         </Button>
       </Flex>

@@ -353,13 +353,13 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         <ModalOverlay />
         <ModalContent display={"flex"} flexDir={["column", "row", "row"]} bgColor={"#f9f9f9"}>
         {loading ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} /> : null}
-          <Flex flexDir={"column"} gap={[2, 4, 4]} justifyContent={"flex-start"} borderRight={["none", "1px solid black", "1px solid black"]} textDecor={"underline"} borderBottom={["1px solid black", "none", "none"]} pt={5}>
-            <Button variant={"ghost"} onClick={() => setCurrentTab("Profile")}>Profile Settings</Button>
-            <Button variant={"ghost"} onClick={() => setCurrentTab("Theme")}>Color Themes</Button>
-            <Button variant={"ghost"} onClick={() => setCurrentTab("Font")}>Fonts Styles</Button>
+          <Flex flexDir={"column"} gap={[2, 4, 4]} justifyContent={"flex-start"} borderRight={["none", "1px solid black", "1px solid black"]} textDecor={"underline"} borderBottom={["1px solid black", "none", "none"]} textDecorationColor={"modalSideFont"} pt={5} bgColor={"modalSideBg"}>
+            <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Profile")} color={"modalSideFont"}>Profile Settings</Button>
+            <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Theme")} color={"modalSideFont"}>Color Themes</Button>
+            <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Font")} color={"modalSideFont"}>Fonts Styles</Button>
           </Flex>
-          <Flex flexDir={"column"} flex={1}>
-            <ModalHeader textDecoration={"underline"} marginBottom={6}>{currentTab}</ModalHeader>
+          <Flex flexDir={"column"} flex={1} bgColor={"modalMainBg"}>
+            <ModalHeader textDecoration={"underline"} marginBottom={6} color={"modalFontColor"}>{currentTab}</ModalHeader>
             <ModalBody gap={6} display={"flex"} flexDir={"column"} alignItems={"center"}>
               {currentTab === "Profile" ?
                 <>
@@ -369,9 +369,18 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       boxSize={["100px", "120px", "150px"]}
                       src={user.photo}
                       alt="Profile"
+                      border={"2px solid"}
+                      borderColor={"borderColor"}
                     />
                     <label htmlFor="fileInput">
-                      <Button as="span" cursor="pointer" colorScheme="blue" size={["sm", "md", "md"]}>
+                      <Button
+                        as="span"
+                        cursor="pointer"
+                        size={["sm", "md", "md"]}
+                        color={"btnFontColor"}
+                        bgColor={"buttonBg"}
+                        _hover={{ bgColor: "editBtnsHover" }}
+                        >
                         Change Profile Photo
                       </Button>
                       <Input
@@ -382,7 +391,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       />
                     </label>
                   </Flex>
-                  <Heading size={["sm", "md", "md"]} mb={-2}>Username:</Heading>
+                  <Heading size={["sm", "md", "md"]} mb={-2} color={"modalFontColor"}>Username:</Heading>
                   <Editable
                     defaultValue={username}
                     isPreviewFocusable={false}
@@ -390,12 +399,12 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                     onChange={(e) => setUsername(e)}
                     onSubmit={() => saveEdit("username")}
                     >
-                    <EditablePreview w={["250px", "275px", "300px"]} />
+                    <EditablePreview w={["250px", "275px", "300px"]} color={"modalFontColor"} />
                     <Input as={EditableInput} w={["250px", "275px", "300px"]} mr={[8, 10, 12]} />
                     <EditableControls />
                   </Editable>
 
-                  <Heading size={["sm", "md", "md"]} mb={-2}>Email:</Heading>
+                  <Heading size={["sm", "md", "md"]} mb={-2} color={"modalFontColor"}>Email:</Heading>
                   <Editable
                     onSubmit={() => saveEdit("email")}
                     defaultValue={email}
@@ -403,30 +412,78 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                     display={"flex"}
                     onChange={(e) => setEmail(e)}
                     >
-                    <EditablePreview w={["250px", "275px", "300px"]} />
+                    <EditablePreview w={["250px", "275px", "300px"]} color={"modalFontColor"} />
                     <Input as={EditableInput} w={["250px", "275px", "300px"]} mr={[8, 10, 12]} />
                     <EditableControls />
                   </Editable>
 
-                  <Heading size={["sm", "md", "md"]} mb={-2}>Password:</Heading>
-                  <Button onClick={sendVerificationEmail}>Change Password</Button>
+                  <Heading size={["sm", "md", "md"]} mb={-2} color={"modalFontColor"}>Password:</Heading>
+                  <Button onClick={sendVerificationEmail} bgColor={"buttonBg"} color={"btnFontColor"} _hover={{ bgColor: "editBtnsHover"}}>Change Password</Button>
                 </>
                 : null
               }
               {currentTab === "Theme" ?
                 <>
-                  <Heading size={["sm", "md", "md"]} mb={-2}>Theme:</Heading>
+                  <Heading size={["sm", "md", "md"]} mb={-2} color={"modalFontColor"}>Theme:</Heading>
                   <Flex justifyContent={"space-evenly"} w={"100%"} alignItems={"center"}>
-                    <Button variant={theme === "default" ? "solid" : "link"} onClick={() => changeColorTheme("default")}>Default</Button>
-                    <Button variant={theme === "light" ? "solid" : "link"} onClick={() => changeColorTheme("light")}>Light</Button>
-                    <Button variant={theme === "dark" ? "solid" : "link"} onClick={() => changeColorTheme("dark")}>Dark</Button>
-                    <Button variant={theme === "rainbow" ? "solid" : "link"} onClick={() => changeColorTheme("rainbow")}>Rainbow</Button>
+                    <Button
+                      variant={theme === "default" ? "solid" : "ghost"}
+                      bgColor={"#023E8A"}
+                      color={"#DEE2E6"}
+                      onClick={() => changeColorTheme("default")}
+                      _hover={{ bgColor: "#046ffb" }}
+                      >
+                        Default
+                      </Button>
+                    <Button
+                      variant={theme === "light" ? "solid" : "ghost"}
+                      bgColor={"#F5F3F4"}
+                      color={"#161A1D"}
+                      onClick={() => changeColorTheme("light")}
+                      _hover={{ bgColor: "#ddd5da" }}
+                      >
+                        Light
+                      </Button>
+                    <Button
+                      variant={theme === "dark" ? "solid" : "ghost"}
+                      bgColor={"#6C757D"}
+                      color={"#DEE2E6"}
+                      onClick={() => changeColorTheme("dark")}
+                      _hover={{ bgColor: "#848d94" }}
+                      >
+                        Dark
+                      </Button>
+                    <Button
+                      variant={theme === "rainbow" ? "solid" : "ghost"}
+                      bgColor={"#FFCA3A"}
+                      color={"#161A1D"}
+                      onClick={() => changeColorTheme("rainbow")}
+                      _hover={{ bgColor: "#ffdd80" }}
+                      >
+                        Rainbow
+                      </Button>
                   </Flex>
                   <Flex justifyContent={"center"} gap={[4, 4, 6]} alignItems={"center"}>
-                    <Button variant={theme === "purple" ? "solid" : "link"} onClick={() => changeColorTheme("purple")}>Purple</Button>
-                    <Button variant={theme === "red" ? "solid" : "link"} onClick={() => changeColorTheme("red")}>Red</Button>
+                    <Button
+                      variant={theme === "purple" ? "solid" : "ghost"}
+                      bgColor={"#973AA8"}
+                      color={"#DEE2E6"}
+                      onClick={() => changeColorTheme("purple")}
+                      _hover={{ bgColor: "#bc67cb" }}
+                      >
+                        Purple
+                      </Button>
+                    <Button
+                      variant={theme === "red" ? "solid" : "ghost"}
+                      bgColor={"#D00000"}
+                      color={"#DEE2E6"}
+                      onClick={() => changeColorTheme("red")}
+                      _hover={{ bgColor: "#ff6666" }}
+                      >
+                        Red
+                      </Button>
                   </Flex>
-                  <Heading size={["sm", "md", "md"]} mt={6}>Background Photo:</Heading>
+                  <Heading size={["sm", "md", "md"]} mt={6} color={"modalFontColor"}>Background Photo:</Heading>
                   <Flex justifyContent={"space-evenly"} w={"100%"}>
                     <Box pos={"relative"}>
                       <Image
@@ -435,6 +492,8 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                         src="1-GlassMorphismBg.jpg"
                         alt="GlassMorphismBg-1"
                         borderRadius={10}
+                        border={"2px solid"}
+                        borderColor={"borderColor"}
                         boxSize={["50px", "80px", "100px"]}
                         transition="box-shadow 0.2s ease-in-out"
                         _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2), -10px -10px 10px white" }}
@@ -455,14 +514,16 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                         src="2-GlassMorphismBg.jpg"
                         alt="GlassMorphismBg-2"
                         borderRadius={10}
+                        border={"2px solid"}
+                        borderColor={"borderColor"}
                         boxSize={["50px", "80px", "100px"]}
                         transition="box-shadow 0.2s ease-in-out"
-                        _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2), -10px -10px 10px white" }}
+                        _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2)"}}
                         onClick={changeBgImage}
                       />
                       {bgImage === "2-GlassMorphismBg.jpg"
                         ? <IoMdCheckmarkCircle
-                            color={"green"}
+                            color={"#0ef04a"}
                             size={30}
                             style={{ position: "absolute", top: "0", left: "0", transform: "translate(-50%, -50%)" }}
                           />
@@ -475,6 +536,8 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                         src="3-GlassMorphismBg.jpg"
                         alt="GlassMorphismBg-3"
                         borderRadius={10}
+                        border={"2px solid"}
+                        borderColor={"borderColor"}
                         boxSize={["50px", "80px", "100px"]}
                         transition="box-shadow 0.2s ease-in-out"
                         _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2), -10px -10px 10px white" }}
@@ -494,7 +557,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
               }
               {currentTab === "Font" ?
                 <>
-                  <Heading size={["sm", "md", "md"]} mb={-2}>Current Font:</Heading>
+                  <Heading size={["sm", "md", "md"]} mb={-2} color={"modalFontColor"}>Current Font:</Heading>
                   <Editable
                     onSubmit={() => saveEdit("font")}
                     defaultValue={font}

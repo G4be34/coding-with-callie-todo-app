@@ -405,7 +405,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
     <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"} minH={"20%"} maxH={"100%"} w={"100%"} overflowY={"auto"}>
       {showDelete
         ? <Flex mb={2} _hover={{ opacity: 0.5}}>
-            <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"} color="white"/>
+            <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"} color="btnFontColor"/>
           </Flex>
         : <Button
             autoFocus
@@ -420,7 +420,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
               Delete Column
             </Button>
         }
-      <Flex flexDir={"column"} border={"3px solid white"} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
+      <Flex flexDir={"column"} border={"3px solid"} borderColor={"borderColor"} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
         <Select placeholder="Sort" size={"xs"} borderRadius={10} cursor={"pointer"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
           <option value="Newest">Newest</option>
           <option value="Oldest">Oldest</option>
@@ -445,7 +445,8 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             h={"100%"}
             minW={"100%"}
             flex={1}
-            border={"3px solid white"}
+            border={"3px solid"}
+            borderColor={"borderColor"}
             borderRadius={10}
             borderTopLeftRadius={0}
             borderTopRightRadius={0}
@@ -471,7 +472,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             >
             <Box pos={"absolute"} top={0} left={0} right={0} bottom={0} bg={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10}></Box>
             {column.title !== "Completed"
-              ? <Button w={"100%"} minH={10} mb={4} bgColor={"green.400"} onClick={() => setAddTodo(true)}>
+              ? <Button w={"100%"} minH={10} mb={4} bgColor={"buttonBg"} onClick={() => setAddTodo(true)}>
                   <FaPlus color="white" />
                 </Button>
               : null}

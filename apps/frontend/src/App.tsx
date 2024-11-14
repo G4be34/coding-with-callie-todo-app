@@ -126,7 +126,7 @@ function Layout() {
 
 
   if (!userTheme) {
-    return <Spinner color="blue.500" size="xl" />;
+    return <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"}/>;
   }
 
 
