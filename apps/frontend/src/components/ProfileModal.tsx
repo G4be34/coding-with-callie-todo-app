@@ -505,7 +505,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                         borderColor={"borderColor"}
                         boxSize={["50px", "80px", "100px"]}
                         transition="box-shadow 0.2s ease-in-out"
-                        _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2), -10px -10px 10px white" }}
+                        _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2)" }}
                         onClick={changeBgImage}
                       />
                       {bgImage === "1-GlassMorphismBg.jpg"
@@ -549,7 +549,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                         borderColor={"borderColor"}
                         boxSize={["50px", "80px", "100px"]}
                         transition="box-shadow 0.2s ease-in-out"
-                        _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2), -10px -10px 10px white" }}
+                        _hover={{ boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2)" }}
                         onClick={changeBgImage}
                       />
                       {bgImage === "3-GlassMorphismBg.jpg"

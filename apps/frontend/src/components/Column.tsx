@@ -421,7 +421,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             </Button>
         }
       <Flex flexDir={"column"} border={"3px solid"} borderColor={"borderColor"} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
-        <Select placeholder="Sort" size={"xs"} borderRadius={10} cursor={"pointer"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
+        <Select placeholder="Sort" size={"xs"} borderRadius={10} bgColor={"buttonBg"} color={"white"} cursor={"pointer"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
           <option value="Newest">Newest</option>
           <option value="Oldest">Oldest</option>
           <option value="Due">Due Date</option>
@@ -472,7 +472,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             >
             <Box pos={"absolute"} top={0} left={0} right={0} bottom={0} bg={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10}></Box>
             {column.title !== "Completed"
-              ? <Button w={"100%"} minH={10} mb={4} bgColor={"buttonBg"} onClick={() => setAddTodo(true)}>
+              ? <Button w={"100%"} minH={10} mb={4} bgColor={"buttonBg"} _hover={{ bgColor: "hoverColor" }} onClick={() => setAddTodo(true)}>
                   <FaPlus color="white" />
                 </Button>
               : null}
@@ -480,7 +480,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
               ? <Flex w={"100%"} flexDir={"column"} mb={4}>
                   <Flex mb={2} alignItems={"center"}>
                     <Flex flexDir={"column"} zIndex={100}>
-                      <Text fontSize={"sm"}>Due Date:</Text>
+                      <Text fontSize={"sm"} color={"todoFontColor"}>Due Date:</Text>
                       <DatePicker
                         openToDate={new Date()}
                         onChange={(date: Date) => setDueDate(date)}
@@ -492,8 +492,8 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                     </Flex>
                     <Spacer />
                     <Flex flexDir={"column"} ml={2}>
-                      <Text fontSize={"sm"}>Priority:</Text>
-                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"} color={"white"}>
+                      <Text fontSize={"sm"} color={"todoFontColor"} zIndex={100}>Priority:</Text>
+                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"} color={"borderColor"}>
                         <option value="Normal">Normal</option>
                         <option value="High">High</option>
                         <option value="Highest">Highest</option>
@@ -513,6 +513,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                     onChange={(e) => setNewTodo(e.target.value)}
                     h={150}
                     mb={4}
+                    borderColor={"borderColor"}
                     value={newTodo}
                     />
                   <Flex w={"100%"}>

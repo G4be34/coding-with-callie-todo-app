@@ -7,7 +7,8 @@ export const darkTheme = {
     third: '#ADB5BD',
     fourth: '#f0f2f4',
     fifth: '#212529',
-    sixth: '#848d94'
+    sixth: '#a0a7ac',
+    seventh: '#848d94',
   },
   semanticTokens: {
     colors: {
@@ -29,6 +30,9 @@ export const darkTheme = {
       borderColor: {
         default: "third"
       },
+      avatarBorderColor: {
+        default: "secondary"
+      },
       profileBorderColor: {
         default: "fourth"
       },
@@ -45,9 +49,24 @@ export const darkTheme = {
         default: "primary"
       },
       hoverColor: {
-        default: "fourth"
+        default: "sixth"
       },
       editBtnsHover: {
+        default: "seventh"
+      },
+      todoFontColor: {
+        default: "fourth"
+      },
+      todoHeader: {
+        default: "primary"
+      },
+      todoBody: {
+        default: "secondary"
+      },
+      taskItemHeaderIcons: {
+        default: "fourth"
+      },
+      dragBg: {
         default: "sixth"
       }
     }

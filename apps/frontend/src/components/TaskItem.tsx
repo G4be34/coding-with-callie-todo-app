@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react"
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Select, Spacer, Text, Textarea, useToast, useToken } from "@chakra-ui/react"
 import { Draggable } from "@hello-pangea/dnd"
 import axios from "axios"
 import { useState } from "react"
@@ -53,6 +53,7 @@ const options: Intl.DateTimeFormatOptions = {
 
 export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, setSelectedTodos }) => {
   const fetchedTodosData = useLoaderData() as LoadedTodosDataType;
+  const [iconColor] = useToken("colors", ["taskItemHeaderIcons"]);
   const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [editDueDate, setEditDueDate] = useState(false);
@@ -245,7 +246,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          bg={snapshot.isDragging ? "green.200" : "white"}
+          bg={snapshot.isDragging ? "dragBg" : "todoBody"}
           border={"1px solid black"}
           w={["250px", "250px", "300px"]}
           size={"sm"}
@@ -254,11 +255,11 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
           pos={"relative"}
           borderRadius={10}
           >
-          <Box borderBottom={"1px solid black"} p={1} display={"flex"} flexDir={"row"} justifyContent={"space-between"} alignItems={"center"}>
+          <Box borderBottom={"1px solid black"} borderTopRadius={9} bgColor={"todoHeader"} p={1} display={"flex"} flexDir={"row"} justifyContent={"space-between"} alignItems={"center"}>
             {checked
-              ? <MdCheckBox onClick={selectTodo} size={20} cursor={"pointer"} color={"green"} />
-              : <MdCheckBoxOutlineBlank onClick={selectTodo} size={20} cursor={"pointer"} />}
-            <RxHamburgerMenu size={20} />
+              ? <MdCheckBox onClick={selectTodo} size={20} cursor={"pointer"} color={iconColor} />
+              : <MdCheckBoxOutlineBlank onClick={selectTodo} size={20} cursor={"pointer"} color={iconColor} />}
+            <RxHamburgerMenu size={20} color={iconColor} />
             {isDeleting
               ? <Button
                   autoFocus
@@ -269,7 +270,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                   >
                     Delete Task?
                   </Button>
-              : <TiDelete size={30} cursor={"pointer"} onClick={() => setIsDeleting(true)} />
+              : <TiDelete size={30} cursor={"pointer"} onClick={() => setIsDeleting(true)} color={iconColor} />
               }
           </Box>
           <CardHeader flexDir={"column"} cursor={"pointer"}>
@@ -283,8 +284,8 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                   showIcon
                   />
               : <>
-                  <Text fontWeight={"bold"} fontSize={"sm"}>Due</Text>
-                  <Text onClick={openDatePicker} fontSize={"sm"}>{new Date(parseInt(dueDate)).toLocaleDateString('en-US', options)}</Text>
+                  <Text fontWeight={"bold"} fontSize={"sm"} color={"todoFontColor"}>Due</Text>
+                  <Text color={"todoFontColor"} onClick={openDatePicker} fontSize={"sm"}>{new Date(parseInt(dueDate)).toLocaleDateString('en-US', options)}</Text>
                 </>
               }
           </CardHeader>
@@ -298,10 +299,12 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                   autoFocus
                   resize={"none"}
                   width={"100%"}
+                  color={"todoFontColor"}
                   />
               : <Text
                   onClick={openDescriptionEditor}
                   _hover={{ cursor: "pointer" }}
+                  color={"todoFontColor"}
                   >
                     {task.description}
                   </Text>
@@ -310,8 +313,8 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
           <CardFooter>
             {task.date_completed
               ? <Flex flexDir={"column"}>
-                  <Text fontWeight={"bold"} fontSize={"sm"}>Completed </Text>
-                  <Text fontSize={"sm"}>{new Date(parseInt(task.date_completed)).toLocaleDateString('en-US', options)}</Text>
+                  <Text fontWeight={"bold"} fontSize={"sm"} color={"todoFontColor"}>Completed </Text>
+                  <Text fontSize={"sm"} color={"todoFontColor"}>{new Date(parseInt(task.date_completed)).toLocaleDateString('en-US', options)}</Text>
                 </Flex>
               : <Flex w={"100%"} alignItems={"center"}>
                   <Button size={"xs"} onClick={() => completeTodo(task.todo_id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Complete</Button>
