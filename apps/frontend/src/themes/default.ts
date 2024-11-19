@@ -13,14 +13,59 @@ export const defaultTheme = {
       headerBg: {
         default: "primary"
       },
-      headerBtnBg: {
+      buttonBg: {
         default: "secondary"
+      },
+      btnFontColor: {
+        default: "fourth"
       },
       footerBg: {
         default: "primary"
       },
       footerFont: {
         default: "white"
+      },
+      borderColor: {
+        default: "third"
+      },
+      avatarBorderColor: {
+        default: "secondary"
+      },
+      profileBorderColor: {
+        default: "fourth"
+      },
+      modalSideBg: {
+        default: "primary"
+      },
+      modalSideFont: {
+        default: "fourth"
+      },
+      modalMainBg: {
+        default: "third"
+      },
+      modalFontColor: {
+        default: "primary"
+      },
+      hoverColor: {
+        default: "sixth"
+      },
+      editBtnsHover: {
+        default: "seventh"
+      },
+      todoFontColor: {
+        default: "fourth"
+      },
+      todoHeader: {
+        default: "primary"
+      },
+      todoBody: {
+        default: "secondary"
+      },
+      taskItemHeaderIcons: {
+        default: "fourth"
+      },
+      dragBg: {
+        default: "sixth"
       }
     }
   }

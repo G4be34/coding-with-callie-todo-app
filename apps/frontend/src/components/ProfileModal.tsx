@@ -351,14 +351,18 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
             />
           : null}
         <ModalOverlay />
-        <ModalContent display={"flex"} flexDir={["column", "row", "row"]} bgColor={"#f9f9f9"}>
+        <ModalContent display={"flex"} flexDir={["column", "row", "row"]} bgColor={"transparent"}>
           {loading ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} /> : null}
           <Flex
             flexDir={"column"}
             gap={[2, 4, 4]}
+            borderTopLeftRadius={"lg"}
+            borderBottomLeftRadius={["none", "lg", "lg"]}
+            borderTopRightRadius={["lg", "none", "none"]}
             justifyContent={"flex-start"}
             borderRight={["none", "1px solid black", "1px solid black"]}
-            textDecor={"underline"} borderBottom={["1px solid black", "none", "none"]}
+            textDecor={"underline"}
+            borderBottom={["1px solid black", "none", "none"]}
             textDecorationColor={"modalSideFont"}
             pt={5}
             bgColor={"modalSideBg"}
@@ -367,7 +371,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
             <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Theme")} color={"modalSideFont"}>Color Themes</Button>
             <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Font")} color={"modalSideFont"}>Fonts Styles</Button>
           </Flex>
-          <Flex flexDir={"column"} flex={1} bgColor={"modalMainBg"}>
+          <Flex flexDir={"column"} flex={1} bgColor={"modalMainBg"} borderBottomLeftRadius={["lg", "none", "none"]} borderTopRightRadius={["none", "lg", "lg"]} borderBottomRightRadius={"lg"}>
             <ModalHeader textDecoration={"underline"} marginBottom={6} color={"modalFontColor"}>{currentTab}</ModalHeader>
             <ModalBody gap={6} display={"flex"} flexDir={"column"} alignItems={"center"}>
               {currentTab === "Profile" ?
