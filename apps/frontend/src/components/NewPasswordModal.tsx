@@ -13,17 +13,19 @@ export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPas
   return (
     <Modal isOpen={showPwModal} onClose={() => setShowPwModal(false)} isCentered>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>A verification code has been sent to your email</ModalHeader>
+      <ModalContent borderRadius={"lg"} bgColor={"modalMainBg"}>
+        <ModalHeader color={"modalFontColor"}>A verification code has been sent to your email</ModalHeader>
         <ModalBody display={"flex"} flexDir={"column"} gap={4}>
           <FormControl isRequired isInvalid={password.length < 6 || !passwordSymbolRegex.test(password) || !passwordNumRegex.test(password)}>
-            <FormLabel>Enter New Password</FormLabel>
+            <FormLabel color={"modalFontColor"}>Enter New Password</FormLabel>
             <InputGroup>
               <Input
-                type={"password"}
+                type={showPw ? "text" : "password"}
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
                 placeholder="New Password"
+                color={"modalFontColor"}
+                borderColor={"borderColor"}
                 />
               <InputRightElement>
                 <Button onClick={() => setShowPw(!showPw)} variant={"link"}>
@@ -63,13 +65,15 @@ export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPas
             }
           </FormControl>
           <FormControl isRequired isInvalid={!pwMatch}>
-            <FormLabel>Confirm New Password</FormLabel>
+            <FormLabel color={"modalFontColor"}>Confirm New Password</FormLabel>
             <InputGroup>
               <Input
-                type={"password"}
+                type={showConfirmPw ? "text" : "password"}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 value={confirmPassword}
                 placeholder="Confirm Password"
+                color={"modalFontColor"}
+                borderColor={"borderColor"}
                 />
               <InputRightElement>
                 <Button onClick={() => setShowConfirmPw(!showConfirmPw)} variant={"link"}>
@@ -80,12 +84,14 @@ export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPas
             {!pwMatch ? <FormErrorMessage>Passwords do not match</FormErrorMessage> : null}
           </FormControl>
           <FormControl isRequired isInvalid={!codeMatch}>
-            <FormLabel>Enter Verification Code</FormLabel>
+            <FormLabel color={"modalFontColor"}>Enter Verification Code</FormLabel>
             <Input
               type={"text"}
               onChange={(e) => setCode(e.target.value)}
               value={code}
               placeholder="Verification Code"
+              color={"modalFontColor"}
+              borderColor={"borderColor"}
               />
             {!codeMatch ? <FormErrorMessage>Incorrect verification code</FormErrorMessage> : null}
           </FormControl>

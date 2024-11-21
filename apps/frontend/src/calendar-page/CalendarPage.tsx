@@ -308,7 +308,7 @@ export const CalendarPage = () => {
         : null
       }
       <Flex justifyContent={"flex-end"} w={"100%"} mb={5} alignItems={"center"}>
-        <Text fontWeight={"bold"} fontSize={"lg"} mr={4}>Filter by priority:</Text>
+        <Text fontWeight={"bold"} fontSize={"lg"} mr={4} color={"#FFFFFF"}>Filter by priority:</Text>
         <Select
           cursor={"pointer"}
           w={120}
@@ -328,27 +328,29 @@ export const CalendarPage = () => {
           <option value="Normal">Normal</option>
         </Select>
       </Flex>
-      <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        handleWindowResize
-        height={"100%"}
-        events={stateCalendarData}
-        editable
-        ref={calendarRef}
-        eventDrop={updateDueDate}
-        eventClick={handleEventClick}
-        eventClassNames={(arg) => {
-          if (arg.event.extendedProps.priority === 'Highest') {
-            return 'highest-priority';
-          } else if (arg.event.extendedProps.priority === 'High') {
-            return 'high-priority';
-          } else if (arg.event.extendedProps.priority === 'Normal') {
-            return 'normal-priority';
-          }
-          return '';
-        }}
-      />
+
+        <FullCalendar
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          handleWindowResize
+          height={"100%"}
+          events={stateCalendarData}
+          editable
+          ref={calendarRef}
+          eventDrop={updateDueDate}
+          eventClick={handleEventClick}
+          eventClassNames={(arg) => {
+            if (arg.event.extendedProps.priority === 'Highest') {
+              return 'highest-priority';
+            } else if (arg.event.extendedProps.priority === 'High') {
+              return 'high-priority';
+            } else if (arg.event.extendedProps.priority === 'Normal') {
+              return 'normal-priority';
+            }
+            return '';
+          }}
+        />
+
     </Flex>
   )
 }

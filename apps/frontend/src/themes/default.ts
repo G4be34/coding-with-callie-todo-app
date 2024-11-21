@@ -3,10 +3,12 @@ export const defaultTheme = {
   id: 'default',
   colors: {
     primary: '#023E8A',
-    secondary: '#0077B6',
+    secondary: '#006399',
     third: '#0096C7',
     fourth: '#00B4D8',
     fifth: '#48CAE4',
+    sixth: '#0077B6',
+    seventh: '#0086b3',
   },
   semanticTokens: {
     colors: {
@@ -14,10 +16,10 @@ export const defaultTheme = {
         default: "primary"
       },
       buttonBg: {
-        default: "secondary"
+        default: "third"
       },
       btnFontColor: {
-        default: "fourth"
+        default: "black"
       },
       footerBg: {
         default: "primary"
@@ -41,19 +43,19 @@ export const defaultTheme = {
         default: "fourth"
       },
       modalMainBg: {
-        default: "third"
+        default: "secondary"
       },
       modalFontColor: {
-        default: "primary"
+        default: "black"
       },
       hoverColor: {
-        default: "sixth"
+        default: "secondary"
       },
       editBtnsHover: {
         default: "seventh"
       },
       todoFontColor: {
-        default: "fourth"
+        default: "white"
       },
       todoHeader: {
         default: "primary"

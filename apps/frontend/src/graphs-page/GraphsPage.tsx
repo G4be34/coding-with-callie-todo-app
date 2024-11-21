@@ -16,8 +16,8 @@ export const GraphsPage = () => {
   return (
     <Flex flex={1} flexDir={"column"} justifyContent="center" alignItems="center" overflowY={"auto"} pt={4} bgImg={`url(/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
       <Box p={4}>
-        <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]}>Incomplete Tasks: {numOfIncomplete}</Text>
-        <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]}>Overdue Tasks: {numOfOverdue}</Text>
+        <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]} color={"white"}>Incomplete Tasks: {numOfIncomplete}</Text>
+        <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]} color={"white"}>Overdue Tasks: {numOfOverdue}</Text>
       </Box>
       <Grid
         width={"100%"}

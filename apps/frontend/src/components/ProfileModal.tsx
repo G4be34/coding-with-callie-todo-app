@@ -326,11 +326,11 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         {showConfirm ?
           <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} isCentered size={"sm"}>
             <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Are you sure you want to delete your profile?</ModalHeader>
+            <ModalContent bgColor={"modalMainBg"}>
+              <ModalHeader color={"modalFontColor"}>Are you sure you want to delete your profile?</ModalHeader>
               <ModalBody display={"flex"} justifyContent={"space-evenly"} marginBottom={4}>
                 <Button onClick={deleteProfile} colorScheme={"red"}>Yes</Button>
-                <Button onClick={() => setShowConfirm(false)} colorScheme="blue">No</Button>
+                <Button onClick={() => setShowConfirm(false)}>No</Button>
               </ModalBody>
             </ModalContent>
           </Modal>
