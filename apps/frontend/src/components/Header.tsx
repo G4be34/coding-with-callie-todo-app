@@ -24,8 +24,8 @@ export const Header = ({ setShowModal, user, logoutUser }: HeaderPropTypes) => {
       <Image src="/logo.jpeg" alt="logo" boxSize="50px" objectFit={"contain"} borderRadius={10}/>
       <Spacer/>
       {links.map((link, idx) => (
-        <Link as={ReactRouterLink} to={link.path} key={idx}>
-          <Button ml={[2, 4, 6]} size={["sm", "md", "md"]} bgColor={"buttonBg"} _hover={{ bgColor: "hoverColor" }} color={"btnFontColor"}>{link.label}</Button>
+        <Link as={ReactRouterLink} to={link.path} key={idx} ml={[2, 4, 6]} tabIndex={-1}>
+          <Button size={["sm", "md", "md"]} bgColor={"buttonBg"} _hover={{ bgColor: "hoverColor" }} color={"btnFontColor"}>{link.label}</Button>
         </Link>
       ))}
       <Popover arrowSize={10}>

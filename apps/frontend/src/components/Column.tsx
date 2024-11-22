@@ -421,7 +421,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             </Button>
         }
       <Flex flexDir={"column"} border={"3px solid"} borderColor={"borderColor"} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
-        <Select placeholder="Sort" size={"xs"} borderRadius={10} bgColor={"buttonBg"} color={"white"} cursor={"pointer"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
+        <Select placeholder="Sort" size={"xs"} borderRadius={10} bgColor={"buttonBg"} color={"btnFontColor"} cursor={"pointer"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
           <option value="Newest">Newest</option>
           <option value="Oldest">Oldest</option>
           <option value="Due">Due Date</option>
@@ -493,7 +493,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                     <Spacer />
                     <Flex flexDir={"column"} ml={2}>
                       <Text fontSize={"sm"} color={"todoFontColor"} zIndex={100}>Priority:</Text>
-                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"} color={"borderColor"}>
+                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"}>
                         <option value="Normal">Normal</option>
                         <option value="High">High</option>
                         <option value="Highest">Highest</option>

@@ -38,8 +38,9 @@
 
 /* Change the hover effect for navigation arrows */
 .fc-prev-button:hover, .fc-next-button:hover {
-  color: #8884d8 !important; /* Change the arrow color on hover */
+  color: gray !important; /* Change the arrow color on hover */
   cursor: pointer;
+  border-color: gray !important;
 }
 
 .fc-toolbar {

@@ -2,6 +2,7 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { createContext, ReactNode, useContext, useState } from 'react';
 import { darkTheme } from "../themes/dark";
 import { defaultTheme } from '../themes/default';
+import { lightTheme } from "../themes/light";
 
 
 interface ThemeContextType {
@@ -14,7 +15,8 @@ type ThemeType = 'default' | 'light' | 'dark' | 'rainbow' | 'purple' | 'red';
 
 const themes = {
   default: defaultTheme,
-  dark: darkTheme
+  dark: darkTheme,
+  light: lightTheme
 };
 
 const getMergedTheme = (themeName: keyof typeof themes) => {

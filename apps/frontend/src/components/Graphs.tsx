@@ -63,7 +63,7 @@ export const BarGraph = () => {
           size={"xs"}
           defaultValue={"bar"}
           maxW={"100px"}
-          color={"white"}
+          color={"btnFontColor"}
           bgColor={"buttonBg"}
           onChange={(e) => setGraphType(e.target.value)}
           >
@@ -119,7 +119,7 @@ export const PieGraph = () => {
               size={"xs"}
               defaultValue={"pie"}
               maxW={"100px"}
-              color={"white"}
+              color={"btnFontColor"}
               bgColor={"buttonBg"}
               onChange={(e) => setGraphType(e.target.value)}
               >
@@ -161,7 +161,7 @@ export const PieGraph = () => {
                 size={"xs"}
                 defaultValue={"pie"}
                 maxW={"100px"}
-                color={"white"}
+                color={"btnFontColor"}
                 bgColor={"buttonBg"}
                 onChange={(e) => setGraphType(e.target.value)}
                 >
@@ -215,7 +215,7 @@ export const StackedBarGraph = () => {
           size={"xs"}
           defaultValue={"bar"}
           maxW={"100px"}
-          color={"white"}
+          color={"btnFontColor"}
           bgColor={"buttonBg"}
           onChange={(e) => setGraphType(e.target.value)}
           >
@@ -276,7 +276,7 @@ export const AreaGraph = () => {
           size={"xs"}
           defaultValue={"bar"}
           maxW={"100px"}
-          color={"white"}
+          color={"btnFontColor"}
           bgColor={"buttonBg"}
           onChange={(e) => setGraphType(e.target.value)}
           >

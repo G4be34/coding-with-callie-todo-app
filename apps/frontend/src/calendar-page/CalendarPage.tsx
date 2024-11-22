@@ -1,4 +1,4 @@
-import { Button, Editable, EditablePreview, EditableTextarea, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Select, Text, useToast } from '@chakra-ui/react';
+import { Button, Editable, EditablePreview, EditableTextarea, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Select, Text, useToast, useToken } from '@chakra-ui/react';
 import { EventClickArg, EventDropArg } from '@fullcalendar/core/index.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -37,6 +37,7 @@ type LoaderDataType = {
 export const CalendarPage = () => {
   const { calendarData, access_token, completedTodos } = useLoaderData() as LoaderDataType;
   const { user } = useOutletContext() as { user: { background: string }};
+  const [iconColor] = useToken("colors", ["taskItemHeaderIcons"]);
   const calendarRef = useRef<FullCalendar | null>(null);
   const toast = useToast();
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -246,15 +247,16 @@ export const CalendarPage = () => {
       {showTaskModal
         ? <Modal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} isCentered size={"lg"}>
             <ModalOverlay />
-            <ModalContent>
-              <ModalBody pos={"relative"}>
+            <ModalContent bgColor={"todoHeader"}>
+              <ModalBody pos={"relative"} >
                 <TiDelete
                   style={{ position: "absolute", top: 2, right: 2, cursor: "pointer" }}
                   size={30}
                   onClick={() => setShowTaskModal(false)}
+                  color={iconColor}
                   />
                 <Flex m={5}>
-                  <Text pt={1} fontWeight={"bold"}>Description: </Text>
+                  <Text pt={1} fontWeight={"bold"} color={"todoFontColor"}>Description: </Text>
                   <Editable
                     textAlign="left"
                     h={120}
@@ -265,12 +267,12 @@ export const CalendarPage = () => {
                     defaultValue={selectedEvent?.title}
                     pl={4}
                   >
-                    <EditablePreview />
-                    <EditableTextarea />
+                    <EditablePreview color={"todoFontColor"} />
+                    <EditableTextarea color={"todoFontColor"} />
                   </Editable>
                 </Flex>
                 <Flex w={"100%"} m={5}>
-                  <Text fontWeight={"bold"}>Priority: </Text>
+                  <Text fontWeight={"bold"} color={"todoFontColor"}>Priority: </Text>
                   <Select
                     cursor={"pointer"}
                     w={120}
