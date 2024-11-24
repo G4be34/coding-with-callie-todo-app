@@ -4,6 +4,7 @@ import { darkTheme } from "../themes/dark";
 import { defaultTheme } from '../themes/default';
 import { lightTheme } from "../themes/light";
 import { purpleTheme } from "../themes/purple";
+import { rainbowTheme } from "../themes/rainbow";
 import { redTheme } from "../themes/red";
 
 
@@ -20,7 +21,8 @@ const themes = {
   dark: darkTheme,
   light: lightTheme,
   purple: purpleTheme,
-  red: redTheme
+  red: redTheme,
+  rainbow: rainbowTheme
 };
 
 const getMergedTheme = (themeName: keyof typeof themes) => {
