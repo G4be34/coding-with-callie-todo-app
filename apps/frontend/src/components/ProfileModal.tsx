@@ -413,7 +413,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                     onSubmit={() => saveEdit("username")}
                     >
                     <EditablePreview w={["250px", "275px", "300px"]} color={"modalFontColor"} />
-                    <Input as={EditableInput} w={["250px", "275px", "300px"]} mr={[8, 10, 12]} />
+                    <Input as={EditableInput} w={["250px", "275px", "300px"]} mr={[8, 10, 12]} color={"modalFontColor"} />
                     <EditableControls />
                   </Editable>
 
@@ -426,7 +426,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                     onChange={(e) => setEmail(e)}
                     >
                     <EditablePreview w={["250px", "275px", "300px"]} color={"modalFontColor"} />
-                    <Input as={EditableInput} w={["250px", "275px", "300px"]} mr={[8, 10, 12]} />
+                    <Input as={EditableInput} w={["250px", "275px", "300px"]} mr={[8, 10, 12]} color={"modalFontColor"} />
                     <EditableControls />
                   </Editable>
 

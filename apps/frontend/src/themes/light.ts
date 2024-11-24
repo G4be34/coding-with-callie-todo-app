@@ -1,6 +1,6 @@
 export const lightTheme = {
-  name: 'Default',
-  id: 'default',
+  name: 'Light',
+  id: 'light',
   colors: {
     primary: '#F5F3F4',
     secondary: '#B1A7A6',

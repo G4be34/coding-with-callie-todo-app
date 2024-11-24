@@ -3,6 +3,8 @@ import { createContext, ReactNode, useContext, useState } from 'react';
 import { darkTheme } from "../themes/dark";
 import { defaultTheme } from '../themes/default';
 import { lightTheme } from "../themes/light";
+import { purpleTheme } from "../themes/purple";
+import { redTheme } from "../themes/red";
 
 
 interface ThemeContextType {
@@ -16,7 +18,9 @@ type ThemeType = 'default' | 'light' | 'dark' | 'rainbow' | 'purple' | 'red';
 const themes = {
   default: defaultTheme,
   dark: darkTheme,
-  light: lightTheme
+  light: lightTheme,
+  purple: purpleTheme,
+  red: redTheme
 };
 
 const getMergedTheme = (themeName: keyof typeof themes) => {
