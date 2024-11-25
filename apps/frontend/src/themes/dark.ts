@@ -28,7 +28,7 @@ export const darkTheme = {
         default: "white"
       },
       borderColor: {
-        default: "third"
+        default: "primary"
       },
       avatarBorderColor: {
         default: "secondary"

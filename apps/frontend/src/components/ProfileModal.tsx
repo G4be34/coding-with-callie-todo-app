@@ -622,9 +622,36 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                 <>
                   <Heading size={["sm", "md", "md"]} mb={-2} color={"modalFontColor"} textAlign={"center"}>Current Font:</Heading>
                   <Flex gap={[4, 4, 6]} alignItems={"center"} justifyContent={"center"}>
-                    <Button variant={font === "playfair" ? "solid" : "ghost"} onClick={() => changeFont("playfair")}>Playfair</Button>
-                    <Button variant={font === "kalam" ? "solid" : "ghost"} onClick={() => changeFont("kalam")}>Kalam</Button>
-                    <Button variant={font === "montserrat" ? "solid" : "ghost"} onClick={() => changeFont("montserrat")}>Montserrat</Button>
+                    <Button
+                      variant={font === "playfair" ? "solid" : "outline"}
+                      borderColor={"buttonBg"}
+                      bgColor={font === "playfair" ? "buttonBg" : "transparent"}
+                      _hover={{ bgColor: "buttonBg" }}
+                      color={"btnFontColor"}
+                      onClick={() => changeFont("playfair")}
+                      >
+                        Playfair
+                    </Button>
+                    <Button
+                      variant={font === "kalam" ? "solid" : "outline"}
+                      borderColor={"buttonBg"}
+                      bgColor={font === "kalam" ? "buttonBg" : "transparent"}
+                      _hover={{ bgColor: "buttonBg" }}
+                      color={"btnFontColor"}
+                      onClick={() => changeFont("kalam")}
+                      >
+                        Kalam
+                    </Button>
+                    <Button
+                      variant={font === "montserrat" ? "solid" : "outline"}
+                      borderColor={"buttonBg"}
+                      bgColor={font === "montserrat" ? "buttonBg" : "transparent"}
+                      _hover={{ bgColor: "buttonBg" }}
+                      color={"btnFontColor"}
+                      onClick={() => changeFont("montserrat")}
+                      >
+                        Montserrat
+                    </Button>
                   </Flex>
                 </>
                 : null
