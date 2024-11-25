@@ -3,15 +3,16 @@ import axios from "axios";
 import { useState } from "react";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { useThemeContext } from "../context/ThemeContext";
+import { useThemeContext } from "../context/useThemeContext";
 import { EditableControls } from "./EditableControls";
 import { NewPasswordModal } from "./NewPasswordModal";
 
 
 type ThemeType = 'default' | 'light' | 'dark' | 'rainbow' | 'purple' | 'red';
+type FontType = 'playfair' | 'kalam' | 'montserrat';
 
 export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, logoutUser }) => {
-  const { changeTheme } = useThemeContext();
+  const { changeTheme, changeFontStyle } = useThemeContext();
   const navigate = useNavigate();
   const toast = useToast();
   const [currentTab, setCurrentTab] = useState("Profile");
@@ -319,6 +320,55 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
     }
   };
 
+  const changeFont = async (newFont: FontType) => {
+    if (newFont === font) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      changeFontStyle(newFont);
+
+      const newUserInfo = await axios.patch(`/api/users/${user._id}`, {
+        font: newFont
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      console.log("newUserInfo: ", newUserInfo.data);
+
+      setUser({ ...user, ...newUserInfo.data});
+
+      setFont(newFont);
+
+      setLoading(false);
+
+      toast({
+        title: 'Font Updated',
+        description: "Font has been updated.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      });
+    } catch (error) {
+      console.log("Error changing font: ", error);
+      setLoading(false);
+      toast({
+        title: 'Error',
+        description: "Error changing font",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      });
+    }
+  };
+
 
   return (
     <>
@@ -570,18 +620,12 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
               }
               {currentTab === "Font" ?
                 <>
-                  <Heading size={["sm", "md", "md"]} mb={-2} color={"modalFontColor"}>Current Font:</Heading>
-                  <Editable
-                    onSubmit={() => saveEdit("font")}
-                    defaultValue={font}
-                    isPreviewFocusable={false}
-                    display={"flex"}
-                    onChange={(e) => setFont(e)}
-                    >
-                    <EditablePreview w={"300px"} />
-                    <Input as={EditableInput} w={"300px"} mr={12} />
-                    <EditableControls />
-                  </Editable>
+                  <Heading size={["sm", "md", "md"]} mb={-2} color={"modalFontColor"} textAlign={"center"}>Current Font:</Heading>
+                  <Flex gap={[4, 4, 6]} alignItems={"center"} justifyContent={"center"}>
+                    <Button variant={font === "playfair" ? "solid" : "ghost"} onClick={() => changeFont("playfair")}>Playfair</Button>
+                    <Button variant={font === "kalam" ? "solid" : "ghost"} onClick={() => changeFont("kalam")}>Kalam</Button>
+                    <Button variant={font === "montserrat" ? "solid" : "ghost"} onClick={() => changeFont("montserrat")}>Montserrat</Button>
+                  </Flex>
                 </>
                 : null
               }

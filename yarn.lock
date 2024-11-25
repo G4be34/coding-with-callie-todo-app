@@ -1538,6 +1538,21 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.4.tgz"
   integrity sha512-dWO2pw8hhi+WrXq1YJy2yCuWoL20PddgGaqTgVe4cOS9Q6qklXCiA1tJEqX6BEwRNSCP84/afac9hd4MS+zEUA==
 
+"@fontsource-variable/montserrat@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/montserrat/-/montserrat-5.1.0.tgz#627c3b570be6389170784563628a27173788474b"
+  integrity sha512-1bloVBKJx/ABBmF+/VzhJZDLzaDNUxw/8Pt5AOgfKL6N3t1fAhwtJBb1gdqU7ABckSNLsKf572A5Inv9YneRug==
+
+"@fontsource-variable/playfair-display@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/playfair-display/-/playfair-display-5.1.0.tgz#2d05d4d26e3c7d56ef1e64ae18eda3ec3c77f2e0"
+  integrity sha512-51UJAHznXiGkchEOT5AYFuIy9N9m1JE7YxcdOtY0H4SKgzK9YYGKpeCXv3dz2e1gAd+BP2TyR0QXNnVjgeCbgw==
+
+"@fontsource/kalam@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/kalam/-/kalam-5.1.0.tgz#8078633aec2832863000e2f7e4a3a489d705912d"
+  integrity sha512-kR9RhDMFMpODN2Wfp+Ksbc2vpRRZiCugGn8FdckO2/qljWm+x7gOygMwlkz+d42p8HJt8iGq9airKncwH+PB/Q==
+
 "@fullcalendar/core@^6.1.15":
   version "6.1.15"
   resolved "https://registry.npmjs.org/@fullcalendar/core/-/core-6.1.15.tgz"
