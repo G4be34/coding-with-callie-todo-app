@@ -80,12 +80,11 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         duration: 3000,
         isClosable: true,
         position: 'top'
-      })
+      });
     } catch (error) {
       if (loading) {
         setLoading(false);
       }
-      console.log(error);
       toast({
         title: 'Error',
         description: "Error saving edit",
@@ -125,10 +124,9 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         duration: 3000,
         isClosable: true,
         position: 'top'
-      })
+      });
     } catch (error) {
       setLoading(false);
-      console.log('Error deleting profile: ', error);
       toast({
         title: 'Error',
         description: "Something went wrong, Please try again",
@@ -158,12 +156,11 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         duration: 3000,
         isClosable: true,
         position: 'top'
-      })
+      });
     } catch (error) {
       if (loading) {
         setLoading(false);
       }
-      console.log(error);
       toast({
         title: 'Error',
         description: "Something went wrong, Please try again",
@@ -171,7 +168,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         duration: 3000,
         isClosable: true,
         position: 'bottom'
-      })
+      });
     }
   };
 
@@ -208,12 +205,11 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         duration: 3000,
         isClosable: true,
         position: 'top'
-      })
+      });
     } catch (error) {
       if (loading) {
         setLoading(false);
       }
-      console.log(error);
       toast({
         title: 'Error',
         description: "Something went wrong, Please try again",
@@ -221,7 +217,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         duration: 3000,
         isClosable: true,
         position: 'bottom'
-      })
+      });
     }
   };
 
@@ -258,7 +254,6 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         position: 'top'
       });
     } catch (error) {
-      console.log("Error changing background image: ", error);
       setLoading(false);
       toast({
         title: 'Error',
@@ -290,8 +285,6 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         }
       });
 
-      console.log("newUserInfo: ", newUserInfo.data);
-
       setUser({ ...user, ...newUserInfo.data});
 
       setTheme(newTheme);
@@ -307,7 +300,6 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         position: 'top'
       });
     } catch (error) {
-      console.log("Error changing theme: ", error);
       setLoading(false);
       toast({
         title: 'Error',
@@ -339,8 +331,6 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         }
       });
 
-      console.log("newUserInfo: ", newUserInfo.data);
-
       setUser({ ...user, ...newUserInfo.data});
 
       setFont(newFont);
@@ -356,7 +346,6 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         position: 'top'
       });
     } catch (error) {
-      console.log("Error changing font: ", error);
       setLoading(false);
       toast({
         title: 'Error',

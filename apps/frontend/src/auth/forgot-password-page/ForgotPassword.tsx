@@ -27,7 +27,7 @@ export const ForgotPassword = () => {
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
-  const [bgImageNum, setBgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
+  const [bgImageNum, __] = useState(Math.floor(Math.random() * 3) + 1);
 
   const validEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordSymbolRegex = /[^A-Za-z0-9]/;
@@ -53,14 +53,13 @@ export const ForgotPassword = () => {
         duration: 3000,
         isClosable: true,
         position: 'top'
-      })
+      });
     } catch (error) {
       setLoading(false);
       if (isAxiosError(error) && error.response && error.response.data.statusCode === 404) {
         setFoundUser(true);
         return;
       }
-      console.log("Error sending code: ", error);
       toast({
         title: 'Error',
         description: "Something went wrong, Please try again",
@@ -68,9 +67,9 @@ export const ForgotPassword = () => {
         duration: 3000,
         isClosable: true,
         position: 'bottom'
-      })
+      });
     }
-  }
+  };
 
   const completePwReset = async () => {
     try {
@@ -92,8 +91,6 @@ export const ForgotPassword = () => {
         password: newPassword
       });
 
-      console.log("existingPw: ", existingPw.data);
-
       if (existingPw.data) {
         setExistingPw(true);
         setLoading(false);
@@ -113,12 +110,11 @@ export const ForgotPassword = () => {
         duration: 3000,
         isClosable: true,
         position: 'top'
-      })
+      });
     } catch (error) {
       if (loading) {
         setLoading(false);
       }
-      console.log("Error sending code: ", error);
       toast({
         title: 'Error',
         description: "Something went wrong, Please try again",
@@ -126,9 +122,9 @@ export const ForgotPassword = () => {
         duration: 3000,
         isClosable: true,
         position: 'bottom'
-      })
+      });
     }
-  }
+  };
 
   return (
     <Flex position={"relative"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} pos={"relative"} bgImg={`/${bgImageNum}-GlassMorphismBg.jpg`} bgSize={"cover"} bgPos={"center"}>

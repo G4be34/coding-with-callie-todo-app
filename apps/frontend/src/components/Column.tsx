@@ -95,7 +95,6 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         position: "top",
       });
     } catch (error) {
-      console.error("Failed to delete column", error);
       toast({
         title: "Failed to delete column",
         status: "error",
@@ -133,8 +132,6 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
           position: index + 1
         }
       });
-
-      //const taskIdsToUpdate = updatedTasks.map(task => task.todo_id);
 
       if (updatedTasks.length > 0) {
         await axios.patch('/api/todos/update-positions', {
@@ -179,7 +176,6 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         position: "top",
       });
     } catch (error) {
-      console.error("Error adding task: ", error);
       toast({
         title: "Failed to add task",
         status: "error",
@@ -222,7 +218,6 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         position: "top",
       });
     } catch (error) {
-      console.error("Failed to delete task: ", error);
       toast({
         title: "Failed to delete task",
         description: "Please try again",
@@ -323,7 +318,6 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         position: "top",
       });
     } catch (error) {
-      console.error("Error completing task: ", error);
       toast({
         title: "Failed to complete task",
         description: "Please try again",
@@ -331,7 +325,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
@@ -386,9 +380,8 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     } catch (error) {
-      console.error("Error updating column title:", error);
       toast({
         title: "Error updating column title",
         description: "Please try again",
@@ -396,7 +389,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 

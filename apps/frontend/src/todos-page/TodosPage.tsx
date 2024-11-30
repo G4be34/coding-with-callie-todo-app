@@ -116,7 +116,6 @@ export const TodosPage = () => {
           }
         });
       } catch (error) {
-        console.error("Error updating todo: ", error);
         toast({
           title: "Error updating todo",
           description: "Please try again",
@@ -216,7 +215,6 @@ export const TodosPage = () => {
         }
       });
     } catch (error) {
-      console.error("Error updating todo: ", error);
       toast({
         title: "Error updating todo",
         description: "Please try again",
@@ -266,7 +264,6 @@ export const TodosPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error('Error adding new column: ', error);
       toast({
         title: "Failed to add new column",
         status: "error",
@@ -319,9 +316,8 @@ export const TodosPage = () => {
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     } catch (error) {
-      console.error("Error deleting todos: ", error);
       toast({
         title: "Error deleting todos",
         description: "Please try again",
@@ -329,7 +325,7 @@ export const TodosPage = () => {
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
@@ -416,7 +412,6 @@ export const TodosPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error("Error completing todos: ", error);
       toast({
         title: "Error completing todos",
         description: "Please try again",

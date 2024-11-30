@@ -35,11 +35,10 @@ export const validateToken = ({ request }: { request: Request }) => {
       sessionStorage.setItem("redirect_after_login", redirectUrl);
       localStorage.removeItem("token");
       localStorage.removeItem("user_id");
-      console.error("Token validation error:", error.message);
       return null;
     }
   } else {
     sessionStorage.setItem("redirect_after_login", new URL(request.url).pathname);
-    throw redirect("/login"); // Handle cases where no token exists
+    throw redirect("/login");
   }
 };

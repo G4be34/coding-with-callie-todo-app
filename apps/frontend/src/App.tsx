@@ -25,10 +25,6 @@ function App() {
     {
       path: "/",
       element: <Layout />,
-      // loader: async ({ request }) => {
-      //   await validateToken({ request });
-      //   return null;
-      // },
       children: [
         {
           index: true,
@@ -88,7 +84,6 @@ function Layout() {
 
   useEffect(() => {
     const getUserData = async () => {
-      console.log("Made it into getuserdata function")
       try {
         const userResponse = await axios.get(`/api/users/${userId}`, {
           headers: {
@@ -116,7 +111,6 @@ function Layout() {
           position: 'top'
         });
       } catch (error) {
-        console.error("Error fetching user data in header: ", error);
         toast({
           title: 'Error',
           description: "Please try again",
@@ -124,9 +118,9 @@ function Layout() {
           duration: 3000,
           isClosable: true,
           position: 'top'
-        })
+        });
       }
-    }
+    };
 
     if (token) {
       getUserData();

@@ -91,7 +91,6 @@ export const CalendarPage = () => {
         position: 'top',
       });
     } catch (error) {
-      console.error("Error updating due date:", error);
       toast({
         title: 'Error updating due date',
         status: 'error',
@@ -139,7 +138,6 @@ export const CalendarPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error("Error changing description:", error);
       toast({
         title: "Error changing description",
         description: "Please try again",
@@ -183,7 +181,6 @@ export const CalendarPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error("Error changing priority:", error);
       toast({
         title: "Error changing priority",
         description: "Please try again",
@@ -229,7 +226,6 @@ export const CalendarPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error("Error completing task:", error);
       toast({
         title: "Error completing task",
         description: "Please try again",

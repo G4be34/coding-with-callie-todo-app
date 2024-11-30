@@ -28,7 +28,6 @@ export const LoginPage = () => {
         if (loading) {
           setLoading(false);
         }
-        console.log(error);
       }
     }
   };
@@ -59,11 +58,9 @@ export const LoginPage = () => {
       localStorage.setItem('user_id', userId);
 
       const redirectUrl = sessionStorage.getItem('redirect_after_login') || '/';
-      console.log("redirectUrl: ", redirectUrl);
       sessionStorage.removeItem('redirect_after_login');
       navigate(redirectUrl, { replace: true });
     } catch (error) {
-      console.log("Problem logging in: ", error);
       setBadLogin(true);
     }
   };
@@ -77,7 +74,6 @@ export const LoginPage = () => {
       if (loading) {
         setLoading(false);
       }
-      console.log(error);
     }
   };
 

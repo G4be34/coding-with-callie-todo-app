@@ -67,10 +67,9 @@ export const SignUpPage = () => {
         duration: 3000,
         isClosable: true,
         position: 'top'
-      })
+      });
     } catch (error) {
       setLoading(false);
-      console.log("Error creating user: ", error);
       toast({
         title: 'Error',
         description: "Something went wrong, Please try again",
@@ -78,7 +77,7 @@ export const SignUpPage = () => {
         duration: 3000,
         isClosable: true,
         position: 'bottom'
-      })
+      });
     }
   };
 
@@ -117,10 +116,9 @@ export const SignUpPage = () => {
         duration: 3000,
         isClosable: true,
         position: 'top'
-      })
+      });
     } catch (error) {
       setLoading(false);
-      console.log(error);
       toast({
         title: 'Error',
         description: "Something went wrong, Please try again",
@@ -128,7 +126,7 @@ export const SignUpPage = () => {
         duration: 3000,
         isClosable: true,
         position: 'bottom'
-      })
+      });
     }
 
   };

@@ -91,7 +91,6 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         position: "top",
       });
     } catch (error) {
-      console.error("Error editing task description:", error);
       toast({
         title: "Error editing task description",
         description: "Please try again",
@@ -99,7 +98,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
@@ -139,7 +138,6 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         position: "top",
       });
     } catch (error) {
-      console.error("Error changing priority:", error);
       toast({
         title: "Error changing priority",
         description: "Please try again",
@@ -147,7 +145,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
@@ -182,7 +180,6 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         position: "top",
       });
     } catch (error) {
-      console.error("Error changing due date:", error);
       toast({
         title: "Error changing due date",
         description: "Please try again",
@@ -190,7 +187,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
@@ -198,11 +195,9 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
     if (!checked) {
       setChecked(true);
       setSelectedTodos(prevState => [...prevState, task.todo_id]);
-      console.log("Selected todo")
     } else {
       setChecked(false);
       setSelectedTodos(prevState => prevState.filter(id => id !== task.todo_id));
-      console.log("Unselected todo")
     }
   };
 
