@@ -11,7 +11,7 @@ import { Header } from './components/Header';
 import { ProfileModal } from './components/ProfileModal';
 import { ThemeProvider } from './context/ThemeContext';
 import { GraphsPage } from './graphs-page/GraphsPage';
-import { authenticateUser, getCalendarData, getGraphsData, getTodosData } from './loaderFunctions';
+import { getCalendarData, getGraphsData, getTodosData } from './loaderFunctions';
 import { TodosPage } from './todos-page/TodosPage';
 
 
@@ -25,7 +25,10 @@ function App() {
     {
       path: "/",
       element: <Layout />,
-      loader: authenticateUser,
+      // loader: async ({ request }) => {
+      //   await validateToken({ request });
+      //   return null;
+      // },
       children: [
         {
           index: true,
@@ -61,7 +64,7 @@ function Layout() {
   const token = localStorage.getItem('token');
   const stringId = localStorage.getItem('user_id');
   const userId = parseInt(stringId!, 10);
-  const { access_token } = JSON.parse(token!);
+  const { access_token } = token !== null ? JSON.parse(token) : {};
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState({});
   const [userTheme, setUserTheme] = useState<ThemeType | null>(null);
@@ -85,6 +88,7 @@ function Layout() {
 
   useEffect(() => {
     const getUserData = async () => {
+      console.log("Made it into getuserdata function")
       try {
         const userResponse = await axios.get(`/api/users/${userId}`, {
           headers: {
@@ -124,7 +128,9 @@ function Layout() {
       }
     }
 
-    getUserData();
+    if (token) {
+      getUserData();
+    }
   }, [token]);
 
 

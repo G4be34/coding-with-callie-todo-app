@@ -659,7 +659,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
             </ModalBody>
             <ModalFooter marginTop={["8, 10, 12"]} display={"flex"} justifyContent={"space-between"}>
               {currentTab === "Profile" ? <Button size={"sm"} colorScheme="red" onClick={() => setShowConfirm(true)}>Delete Account</Button> : null}
-              <Button onClick={() => setShowModal(false)} marginLeft={"auto"}>Close</Button>
+              <Button onClick={() => setShowModal(false)} marginLeft={"auto"} bgColor={"buttonBg"} _hover={{ bgColor: "hoverColor" }} color={"btnFontColor"}>Close</Button>
             </ModalFooter>
           </Flex>
         </ModalContent>

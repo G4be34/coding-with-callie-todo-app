@@ -1,9 +1,9 @@
 import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Icon, Input, InputGroup, InputRightElement, Link, Text, chakra } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import "./LoginPage.css";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ChakraRouterLink = chakra(ReactRouterLink);
 
@@ -59,6 +59,7 @@ export const LoginPage = () => {
       localStorage.setItem('user_id', userId);
 
       const redirectUrl = sessionStorage.getItem('redirect_after_login') || '/';
+      console.log("redirectUrl: ", redirectUrl);
       sessionStorage.removeItem('redirect_after_login');
       navigate(redirectUrl, { replace: true });
     } catch (error) {

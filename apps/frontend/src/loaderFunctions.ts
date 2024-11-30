@@ -1,5 +1,6 @@
 import axios from "axios";
 import { redirect } from "react-router-dom";
+import { validateToken } from "./utils";
 
 
 type TaskType = {
@@ -14,45 +15,59 @@ type TaskType = {
   position: number
 };
 
-export const authenticateUser = async ({ request }: { request: Request }) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    const { access_token, expiration_date } = JSON.parse(token);
-    if (Date.now() < expiration_date) {
-      return { access_token };
-    } else {
-      localStorage.removeItem('token');
-      sessionStorage.setItem('redirect_after_login', new URL(request.url).pathname);
-      return redirect('/login');
+// export const authenticateUser = async ({ request }: { request: Request }) => {
+//   const token = localStorage.getItem('token');
+//   if (token) {
+//     console.log("token exists")
+//     const { access_token, expiration_date } = JSON.parse(token);
+//     if (Date.now() < expiration_date) {
+//       console.log("token is still valid")
+//       return { access_token };
+//     } else {
+//       console.log("token is expired")
+//       localStorage.removeItem('token');
+//       sessionStorage.setItem('redirect_after_login', new URL(request.url).pathname);
+//       return redirect('/login');
+//     }
+//   } else {
+//     console.log("token does not exist")
+//     sessionStorage.setItem('redirect_after_login', new URL(request.url).pathname);
+//     return redirect('/login');
+//   }
+// };
+
+export const getTodosData = async ({ request }: { request: Request }) => {
+  try {
+    const tokenValidation = await validateToken({ request });
+
+    if (tokenValidation === null) {
+      console.log("matched classes")
+      return redirect("/login");
     }
-  } else {
-    sessionStorage.setItem('redirect_after_login', new URL(request.url).pathname);
-    return redirect('/login');
+
+    const { access_token } = tokenValidation;
+    const preParsedId = localStorage.getItem('user_id');
+    const userId = parseInt(preParsedId!, 10);
+
+    const response = await axios.get('/api/groups?user=' + userId, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+
+    const fetchedTodosData = response.data;
+
+    return { access_token, userId, fetchedTodosData };
+  } catch (error) {
+    console.error("Error fetching todos data: ", error);
   }
 };
 
-export const getTodosData = async () => {
-  const token = localStorage.getItem('token');
+export const getGraphsData = async ({ request }: { request: Request }) => {
+  console.log("made it into getGraphsData")
+  const { access_token } = await validateToken({ request });
   const preParsedId = localStorage.getItem('user_id');
   const userId = parseInt(preParsedId!, 10);
-  const { access_token } = JSON.parse(token!);
-
-  const response = await axios.get('/api/groups?user=' + userId, {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-  });
-
-  const fetchedTodosData = response.data;
-
-  return { access_token, userId, fetchedTodosData };
-};
-
-export const getGraphsData = async () => {
-  const token = localStorage.getItem('token');
-  const preParsedId = localStorage.getItem('user_id');
-  const userId = parseInt(preParsedId!, 10);
-  const { access_token } = JSON.parse(token!);
   const priorityCounts: { [key: string]: number } = {};
   const stackedBarObj: { [key: string]: { [key: string]: number }} = {};
   const areaChartObj: { [key: string]: { [key: string]: number[] | number }} = {};
@@ -185,19 +200,32 @@ export const getGraphsData = async () => {
   return { barChartData, pieChartData, stackedBarChartData, areaChartData, numOfIncomplete, numOfOverdue };
 };
 
-export const getCalendarData = async () => {
-  const token = localStorage.getItem('token');
-  const preParsedId = localStorage.getItem('user_id');
-  const userId = parseInt(preParsedId!, 10);
-  const { access_token } = JSON.parse(token!);
+export const getCalendarData = async ({ request }: { request: Request }) => {
+  try {
+    const tokenValidation = await validateToken({ request });
 
-  const response = await axios.get(`/api/todos/calendar-todos/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
+    if (tokenValidation === null) {
+      console.log("matched classes")
+      return redirect("/login");
     }
-  });
 
-  const { calendarData, completedTodos } = response.data;
+    const { access_token } = tokenValidation;
+    console.log("Got past token validation")
+    const preParsedId = localStorage.getItem('user_id');
+    const userId = parseInt(preParsedId!, 10);
 
-  return { calendarData, access_token, completedTodos };
+    const response = await axios.get(`/api/todos/calendar-todos/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      }
+    });
+
+    const { calendarData, completedTodos } = response.data;
+
+    console.log("Got calendar data")
+
+    return { calendarData, access_token, completedTodos };
+  } catch (error) {
+    console.error("Error fetching calendar data: ", error);
+  }
 };
