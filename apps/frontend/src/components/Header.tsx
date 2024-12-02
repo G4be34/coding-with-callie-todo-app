@@ -9,7 +9,7 @@ const links = [
 
 type HeaderPropTypes = {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
-  user: any,
+  user: { username: string, photo: string },
   logoutUser: () => void
 }
 

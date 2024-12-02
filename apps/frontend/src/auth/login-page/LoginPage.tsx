@@ -14,7 +14,7 @@ export const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [badLogin, setBadLogin] = useState(false);
   const [showPw, setShowPw] = useState(false);
-  const [bgImageNum, setBgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
+  const [bgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
   const emailError = email === '';
   const passwordError = password === '' || password.length < 6;
 

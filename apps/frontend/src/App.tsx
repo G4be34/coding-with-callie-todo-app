@@ -18,6 +18,16 @@ import { TodosPage } from './todos-page/TodosPage';
 type ThemeType = 'default' | 'light' | 'dark' | 'rainbow' | 'purple' | 'red';
 type FontType = 'playfair' | 'kalam' | 'montserrat';
 
+type UserType = {
+  username: string;
+  photo: string;
+  email: string;
+  _id: number;
+  theme: ThemeType;
+  font: FontType;
+  background: string;
+};
+
 
 function App() {
 
@@ -62,7 +72,15 @@ function Layout() {
   const userId = parseInt(stringId!, 10);
   const { access_token } = token !== null ? JSON.parse(token) : {};
   const [showModal, setShowModal] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<UserType>({
+    username: '',
+    photo: '',
+    email: '',
+    _id: 0,
+    theme: 'default',
+    font: 'playfair',
+    background: '',
+  });
   const [userTheme, setUserTheme] = useState<ThemeType | null>(null);
   const [userFont, setUserFont] = useState<FontType | null>(null);
 
@@ -70,7 +88,15 @@ function Layout() {
   const logoutUser = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user_id');
-    setUser({});
+    setUser({
+      username: '',
+      photo: '',
+      email: '',
+      _id: 0,
+      theme: 'default',
+      font: 'playfair',
+      background: '',
+    });
     toast({
       title: 'Logged out',
       description: "Successfully logged out",
@@ -78,7 +104,7 @@ function Layout() {
       duration: 3000,
       isClosable: true,
       position: 'top'
-    })
+    });
     navigate('/login');
   };
 
@@ -125,7 +151,7 @@ function Layout() {
     if (token) {
       getUserData();
     }
-  }, [token]);
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   if (!userTheme || !userFont) {

@@ -31,9 +31,9 @@ type Task = {
   id: string | number | undefined;
   description: string;
   date_added: number;
-  date_completed: number | null;
+  date_completed: string | null;
   priority: string;
-  due_date: number;
+  due_date: string;
   groupId: string;
 };
 
@@ -44,6 +44,15 @@ type ColumnData = {
   taskIds: string[];
 };
 
+type TaskItemPropsType = {
+  task: Task;
+  index: number;
+  deleteTodo: (todo_id: string) => void;
+  completeTodo: (todo_id: string) => void;
+  setTodosData: React.Dispatch<React.SetStateAction<InitialDataType>>;
+  setSelectedTodos: React.Dispatch<React.SetStateAction<string[]>>
+}
+
 const options: Intl.DateTimeFormatOptions = {
   weekday: 'long',
   year: 'numeric',
@@ -51,7 +60,7 @@ const options: Intl.DateTimeFormatOptions = {
   day: 'numeric'
 }
 
-export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, setSelectedTodos }) => {
+export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, setSelectedTodos }: TaskItemPropsType) => {
   const fetchedTodosData = useLoaderData() as LoadedTodosDataType;
   const [iconColor] = useToken("colors", ["taskItemHeaderIcons"]);
   const toast = useToast();
@@ -165,7 +174,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
           ...prevState.tasks,
           [task.todo_id]: {
             ...prevState.tasks[task.todo_id],
-            due_date: date.getTime(),
+            due_date: date.getTime().toString(),
           },
         },
       }));

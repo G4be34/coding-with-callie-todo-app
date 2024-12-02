@@ -14,6 +14,7 @@ type CalendarDataType = {
   title: string;
   priority: string;
   id: string;
+  date?: string;
 };
 
 type TaskType = {

@@ -24,7 +24,7 @@ export const SignUpPage = () => {
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
-  const [bgImageNum, setBgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
+  const [bgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
 
   const passwordSymbolRegex = /[^A-Za-z0-9]/;
   const passwordNumRegex = /^(?=.*\d)/;

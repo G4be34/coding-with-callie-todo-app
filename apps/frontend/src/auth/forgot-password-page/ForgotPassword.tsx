@@ -13,7 +13,7 @@ export const ForgotPassword = () => {
 
   const [email, setEmail] = useState('');
   const [userId, setUserId] = useState('');
-  const [foundUser, setFoundUser] = useState(false);
+  const [, setFoundUser] = useState(false);
   const [successfulEmail, setSuccessfulEmail] = useState(false);
   const [completeReset, setCompleteReset] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -27,7 +27,7 @@ export const ForgotPassword = () => {
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
-  const [bgImageNum, __] = useState(Math.floor(Math.random() * 3) + 1);
+  const [bgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
 
   const validEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordSymbolRegex = /[^A-Za-z0-9]/;

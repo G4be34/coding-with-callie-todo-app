@@ -3,7 +3,22 @@ import { useState } from "react";
 import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 
-export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPassword, pwMatch, confirmPassword, setConfirmPassword, codeMatch, code, setCode, submitNewPassword }) => {
+
+type NewPasswordModalPropsType = {
+  showPwModal: boolean;
+  setShowPwModal: (showPwModal: boolean) => void;
+  password: string;
+  setPassword: (password: string) => void;
+  pwMatch: boolean;
+  confirmPassword: string;
+  setConfirmPassword: (confirmPassword: string) => void;
+  codeMatch: boolean;
+  code: string;
+  setCode: (code: string) => void;
+  submitNewPassword: () => void;
+}
+
+export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPassword, pwMatch, confirmPassword, setConfirmPassword, codeMatch, code, setCode, submitNewPassword }: NewPasswordModalPropsType) => {
   const [showPw, setShowPw] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
 

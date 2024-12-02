@@ -11,7 +11,16 @@ import { NewPasswordModal } from "./NewPasswordModal";
 type ThemeType = 'default' | 'light' | 'dark' | 'rainbow' | 'purple' | 'red';
 type FontType = 'playfair' | 'kalam' | 'montserrat';
 
-export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, logoutUser }) => {
+type ProfilePropsType = {
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  showModal: boolean;
+  user: { username: string, photo: string, email: string, _id: number, theme: ThemeType, font: FontType, background: string };
+  token: string;
+  setUser: React.Dispatch<React.SetStateAction<{ username: string, photo: string, email: string, _id: number, theme: ThemeType, font: FontType, background: string }>>;
+  logoutUser: () => void;
+}
+
+export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, logoutUser }: ProfilePropsType) => {
   const { changeTheme, changeFontStyle } = useThemeContext();
   const navigate = useNavigate();
   const toast = useToast();
@@ -29,8 +38,8 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
   const [showConfirm, setShowConfirm] = useState(false);
   const [showPwModal, setShowPwModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showSubmitButton, setShowSubmitButton] = useState(false);
-  const [file, setFile] = useState<string | null>(null);
+  const [, setShowSubmitButton] = useState(false);
+  const [, setFile] = useState<string | null>(null);
   const [bgImage, setBgImage] = useState<string>(user.background);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
