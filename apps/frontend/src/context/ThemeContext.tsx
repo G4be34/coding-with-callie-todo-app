@@ -6,17 +6,15 @@ import { lightTheme } from "../themes/light";
 import { purpleTheme } from "../themes/purple";
 import { rainbowTheme } from "../themes/rainbow";
 import { redTheme } from "../themes/red";
+import { FontType, ThemeType } from "../types";
 
 
 interface ThemeContextType {
   currentTheme: ThemeType;
   changeTheme: (themeName: ThemeType) => void;
-  currentFontStyle: FontStyleType;
-  changeFontStyle: (fontStyle: FontStyleType) => void;
+  currentFontStyle: FontType;
+  changeFontStyle: (fontStyle: FontType) => void;
 }
-
-type ThemeType = 'default' | 'light' | 'dark' | 'rainbow' | 'purple' | 'red';
-type FontStyleType = "playfair" | "kalam" | "montserrat";
 
 
 const themes = {
@@ -54,15 +52,15 @@ const getMergedTheme = (themeName: keyof typeof themes, fontStyle: keyof typeof 
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ThemeProvider: React.FC<{ children: ReactNode, initialTheme: ThemeType, initialFontStyle: FontStyleType }> = ({ children, initialTheme, initialFontStyle }) => {
+export const ThemeProvider: React.FC<{ children: ReactNode, initialTheme: ThemeType, initialFontStyle: FontType }> = ({ children, initialTheme, initialFontStyle }) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeType>(initialTheme);
-  const [currentFontStyle, setCurrentFontStyle] = useState<FontStyleType>(initialFontStyle);
+  const [currentFontStyle, setCurrentFontStyle] = useState<FontType>(initialFontStyle);
 
   const changeTheme = (themeName: ThemeType) => {
     setCurrentTheme(themeName);
   };
 
-  const changeFontStyle = (fontStyle: FontStyleType) => {
+  const changeFontStyle = (fontStyle: FontType) => {
     setCurrentFontStyle(fontStyle);
   };
 

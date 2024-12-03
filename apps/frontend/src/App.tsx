@@ -13,20 +13,8 @@ import { ThemeProvider } from './context/ThemeContext';
 import { GraphsPage } from './graphs-page/GraphsPage';
 import { getCalendarData, getGraphsData, getTodosData } from './loaderFunctions';
 import { TodosPage } from './todos-page/TodosPage';
+import { FontType, ThemeType, UserType } from './types';
 
-
-type ThemeType = 'default' | 'light' | 'dark' | 'rainbow' | 'purple' | 'red';
-type FontType = 'playfair' | 'kalam' | 'montserrat';
-
-type UserType = {
-  username: string;
-  photo: string;
-  email: string;
-  _id: number;
-  theme: ThemeType;
-  font: FontType;
-  background: string;
-};
 
 
 function App() {

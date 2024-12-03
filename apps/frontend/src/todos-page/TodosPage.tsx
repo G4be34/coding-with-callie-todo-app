@@ -6,42 +6,8 @@ import { FaPlus } from "react-icons/fa";
 import { useLoaderData, useOutletContext } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { Column } from "../components/Column";
+import { LoadedTodosDataType } from "../types";
 
-
-type TaskType = {
-  todo_id: string
-  id: string | number | undefined
-  description: string
-  date_added: number | string
-  date_completed: number | string | null
-  priority: string
-  due_date: number | string
-  groupId: string
-  position: number
-};
-
-type ColumnType = {
-  column_id: string
-  id: string
-  title: string
-  taskIds: string[]
-};
-
-type InitialDataType = {
-  tasks: {
-    [key: string]: TaskType
-  };
-  columns: {
-    [key: string]: ColumnType
-  };
-  columnOrder: string[];
-};
-
-type LoadedTodosDataType = {
-  fetchedTodosData: InitialDataType
-  access_token: string
-  userId: string
-};
 
 export const TodosPage = () => {
   const loadedTodosData = useLoaderData() as LoadedTodosDataType;

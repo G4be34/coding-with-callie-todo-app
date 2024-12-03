@@ -8,44 +8,22 @@ import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md"
 import { RxHamburgerMenu } from "react-icons/rx"
 import { TiDelete } from "react-icons/ti"
 import { useLoaderData } from "react-router-dom"
+import { InitialDataType, LoadedTodosDataType, TaskType } from "../types"
 
 
-type LoadedTodosDataType = {
-  fetchedTodosData: InitialDataType
-  access_token: string
-  userId: string
-};
-
-type InitialDataType = {
-  tasks: {
-    [key: string]: Task
-  };
-  columns: {
-    [key: string]: ColumnData
-  };
-  columnOrder: string[];
-};
-
-type Task = {
-  todo_id: string;
-  id: string | number | undefined;
-  description: string;
-  date_added: number;
-  date_completed: string | null;
-  priority: string;
-  due_date: string;
-  groupId: string;
-};
-
-type ColumnData = {
-  id: string;
-  column_id: string;
-  title: string;
-  taskIds: string[];
-};
+// type Task = {
+//   todo_id: string;
+//   id: string | number | undefined;
+//   description: string;
+//   date_added: number;
+//   date_completed: string | null;
+//   priority: string;
+//   due_date: string;
+//   groupId: string;
+// };
 
 type TaskItemPropsType = {
-  task: Task;
+  task: TaskType;
   index: number;
   deleteTodo: (todo_id: string) => void;
   completeTodo: (todo_id: string) => void;
@@ -281,15 +259,15 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
             {editDueDate
               ? <DatePicker
                   onBlur={() => setEditDueDate(false)}
-                  selected={new Date(parseInt(task.due_date))}
-                  openToDate={new Date(parseInt(task.due_date))}
+                  selected={new Date(task.due_date.toString())}
+                  openToDate={new Date(task.due_date.toString())}
                   onChange={(date: Date) => changeDueDate(date)}
                   fixedHeight
                   showIcon
                   />
               : <>
                   <Text fontWeight={"bold"} fontSize={"sm"} color={"todoFontColor"}>Due</Text>
-                  <Text color={"todoFontColor"} onClick={openDatePicker} fontSize={"sm"}>{new Date(parseInt(dueDate)).toLocaleDateString('en-US', options)}</Text>
+                  <Text color={"todoFontColor"} onClick={openDatePicker} fontSize={"sm"}>{new Date(dueDate.toString()).toLocaleDateString('en-US', options)}</Text>
                 </>
               }
           </CardHeader>
@@ -318,7 +296,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
             {task.date_completed
               ? <Flex flexDir={"column"}>
                   <Text fontWeight={"bold"} fontSize={"sm"} color={"todoFontColor"}>Completed </Text>
-                  <Text fontSize={"sm"} color={"todoFontColor"}>{new Date(parseInt(task.date_completed)).toLocaleDateString('en-US', options)}</Text>
+                  <Text fontSize={"sm"} color={"todoFontColor"}>{new Date(task.date_completed.toString()).toLocaleDateString('en-US', options)}</Text>
                 </Flex>
               : <Flex w={"100%"} alignItems={"center"}>
                   <Button size={"xs"} onClick={() => completeTodo(task.todo_id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Complete</Button>

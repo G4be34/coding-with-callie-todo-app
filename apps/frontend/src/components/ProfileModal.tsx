@@ -4,12 +4,10 @@ import { useState } from "react";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { useThemeContext } from "../context/useThemeContext";
+import { FontType, ThemeType } from "../types";
 import { EditableControls } from "./EditableControls";
 import { NewPasswordModal } from "./NewPasswordModal";
 
-
-type ThemeType = 'default' | 'light' | 'dark' | 'rainbow' | 'purple' | 'red';
-type FontType = 'playfair' | 'kalam' | 'montserrat';
 
 type ProfilePropsType = {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,6 +17,7 @@ type ProfilePropsType = {
   setUser: React.Dispatch<React.SetStateAction<{ username: string, photo: string, email: string, _id: number, theme: ThemeType, font: FontType, background: string }>>;
   logoutUser: () => void;
 }
+
 
 export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, logoutUser }: ProfilePropsType) => {
   const { changeTheme, changeFontStyle } = useThemeContext();

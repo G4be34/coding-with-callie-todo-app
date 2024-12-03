@@ -7,50 +7,16 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaMinusCircle, FaPlus } from "react-icons/fa";
 import { useLoaderData } from "react-router-dom";
 import { v4 as uuid } from "uuid";
+import { ColumnData, InitialDataType, LoadedTodosDataType, TaskType } from "../types";
 import { TaskItem } from "./TaskItem";
 
 
-type InitialDataType = {
-  tasks: {
-    [key: string]: Task
-  };
-  columns: {
-    [key: string]: ColumnData
-  };
-  columnOrder: string[];
-};
-
-type Task = {
-  todo_id: string;
-  id: string | number | undefined;
-  description: string;
-  date_added: number | string;
-  date_completed: number | string | null;
-  priority: string;
-  due_date: number | string;
-  position: number;
-  groupId: string;
-};
-
-type ColumnData = {
-  id: string;
-  column_id: string;
-  title: string;
-  taskIds: string[];
-};
-
 type ColumnProps = {
   column: ColumnData;
-  tasks: Task[];
+  tasks: TaskType[];
   setTodosData: React.Dispatch<React.SetStateAction<InitialDataType>>;
   todosData: InitialDataType;
   setSelectedTodos: React.Dispatch<React.SetStateAction<string[]>>
-};
-
-type LoadedTodosDataType = {
-  fetchedTodosData: InitialDataType
-  access_token: string
-  userId: string
 };
 
 
@@ -110,7 +76,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
 
     const currentDate = new Date();
     try {
-      let newTask: Task = {
+      let newTask: TaskType = {
         todo_id: uuid(),
         description: newTodo.trim(),
         date_added: (currentDate.getTime()).toString(),
@@ -332,7 +298,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
   const sortTasks = (sortValue: string) => {
     if (sortValue === "Sort") return;
 
-    let sortedTasks: Task[] = [];
+    let sortedTasks: TaskType[] = [];
 
     switch (sortValue) {
       case "Newest":

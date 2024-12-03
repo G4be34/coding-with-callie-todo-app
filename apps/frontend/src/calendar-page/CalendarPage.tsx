@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useRef, useState } from 'react';
 import { TiDelete } from 'react-icons/ti';
 import { useLoaderData, useOutletContext } from 'react-router-dom';
+import { TaskType } from '../types';
 import './calendarpage.css';
 
 
@@ -15,18 +16,6 @@ type CalendarDataType = {
   priority: string;
   id: string;
   date?: string;
-};
-
-type TaskType = {
-  todo_id: string;
-  id: string | number | undefined;
-  description: string;
-  date_added: number | string;
-  date_completed: number | string | null;
-  priority: string;
-  due_date: number | string;
-  position: number;
-  groupId: string;
 };
 
 type LoaderDataType = {
