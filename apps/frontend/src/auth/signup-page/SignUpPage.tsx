@@ -244,7 +244,7 @@ export const SignUpPage = () => {
                     />
                   <FormLabel color={"#d9d9d9"} requiredIndicator={false} className="floating-label">Password</FormLabel>
                   <InputRightElement>
-                    <Button onClick={() => setShowPw(!showPw)} variant={"link"}>
+                    <Button onClick={() => setShowPw(!showPw)} variant={"link"} aria-label="Toggle password visibility">
                       <Icon as={showPw ? FaEyeSlash : FaEye} />
                     </Button>
                   </InputRightElement>
@@ -297,7 +297,7 @@ export const SignUpPage = () => {
                     />
                   <FormLabel color={"#d9d9d9"} requiredIndicator={false} className={"floating-label"}>Confirm password</FormLabel>
                   <InputRightElement>
-                    <Button onClick={() => setShowConfirmPw(!showConfirmPw)} variant={"link"}>
+                    <Button onClick={() => setShowConfirmPw(!showConfirmPw)} variant={"link"} aria-label="Toggle password visibility">
                       <Icon as={showConfirmPw ? FaEyeSlash : FaEye} />
                     </Button>
                   </InputRightElement>
@@ -309,6 +309,7 @@ export const SignUpPage = () => {
                 onClick={() => sendVerificationEmail(username, email)}
                 isDisabled={username.length < 3 || password.length < 6}
                 color={"#ffffff"}
+                aria-label="Confirm sign up"
                 isLoading={loading}
                 _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
                 bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
@@ -342,6 +343,7 @@ export const SignUpPage = () => {
                 isDisabled={code.length < 6}
                 color={"#ffffff"}
                 isLoading={loading}
+                aria-label="Verify your email"
                 _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
                 bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
               >
@@ -353,6 +355,7 @@ export const SignUpPage = () => {
               <Button
                 onClick={handleBackButton}
                 color={"#ffffff"}
+                aria-label="Return to sign up page"
                 _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
                 bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
               >

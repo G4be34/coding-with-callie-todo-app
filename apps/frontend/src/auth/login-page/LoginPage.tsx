@@ -139,6 +139,7 @@ export const LoginPage = () => {
           isDisabled={emailError || passwordError}
           isLoading={loading}
           color={"#ffffff"}
+          aria-label="Login to your account"
           _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
           bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
         >
@@ -153,6 +154,7 @@ export const LoginPage = () => {
           color={"#ffffff"}
           _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
           bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
+          aria-label="Sign up for an account"
         >
           Sign Up
         </Button>

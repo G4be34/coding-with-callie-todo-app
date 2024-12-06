@@ -407,9 +407,33 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
             pt={5}
             bgColor={"modalSideBg"}
             >
-            <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Profile")} color={"modalSideFont"}>Profile Settings</Button>
-            <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Theme")} color={"modalSideFont"}>Color Themes</Button>
-            <Button variant={"ghost"} _hover={{ bgColor: "hoverColor"}} onClick={() => setCurrentTab("Font")} color={"modalSideFont"}>Fonts Styles</Button>
+            <Button
+              variant={"ghost"}
+              _hover={{ bgColor: "hoverColor"}}
+              onClick={() => setCurrentTab("Profile")}
+              color={"modalSideFont"}
+              aria-label="Go to Profile Settings"
+              >
+                Profile Settings
+              </Button>
+            <Button
+              variant={"ghost"}
+              _hover={{ bgColor: "hoverColor"}}
+              onClick={() => setCurrentTab("Theme")}
+              color={"modalSideFont"}
+              aria-label="Go to Color Themes"
+              >
+                Color Themes
+              </Button>
+            <Button
+              variant={"ghost"}
+              _hover={{ bgColor: "hoverColor"}}
+              onClick={() => setCurrentTab("Font")}
+              color={"modalSideFont"}
+              aria-label="Go to Fonts Styles"
+              >
+                Fonts Styles
+              </Button>
           </Flex>
           <Flex flexDir={"column"} flex={1} bgColor={"modalMainBg"} borderBottomLeftRadius={["lg", "none", "none"]} borderTopRightRadius={["none", "lg", "lg"]} borderBottomRightRadius={"lg"}>
             <ModalHeader textDecoration={"underline"} marginBottom={6} color={"modalFontColor"}>{currentTab}</ModalHeader>
@@ -421,7 +445,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       borderRadius={"full"}
                       boxSize={["100px", "120px", "150px"]}
                       src={user.photo}
-                      alt="Profile"
+                      alt="Profile Photo"
                       border={"2px solid"}
                       borderColor={"profileBorderColor"}
                     />
@@ -433,6 +457,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                         color={"btnFontColor"}
                         bgColor={"buttonBg"}
                         _hover={{ bgColor: "editBtnsHover" }}
+                        aria-label="Upload a new profile photo"
                         >
                         Change Profile Photo
                       </Button>
@@ -471,7 +496,15 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                   </Editable>
 
                   <Heading size={["sm", "md", "md"]} mb={-2} color={"modalFontColor"}>Password:</Heading>
-                  <Button onClick={sendVerificationEmail} bgColor={"buttonBg"} color={"btnFontColor"} _hover={{ bgColor: "editBtnsHover"}}>Change Password</Button>
+                  <Button
+                    onClick={sendVerificationEmail}
+                    bgColor={"buttonBg"}
+                    color={"btnFontColor"}
+                    _hover={{ bgColor: "editBtnsHover"}}
+                    aria-label="Change your password"
+                    >
+                      Change Password
+                    </Button>
                 </>
                 : null
               }
@@ -485,6 +518,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       color={"#DEE2E6"}
                       onClick={() => changeColorTheme("default")}
                       _hover={{ bgColor: "#046ffb" }}
+                      aria-label="Default Theme"
                       >
                         Default
                       </Button>
@@ -494,6 +528,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       color={"#161A1D"}
                       onClick={() => changeColorTheme("light")}
                       _hover={{ bgColor: "#ddd5da" }}
+                      aria-label="Light Theme"
                       >
                         Light
                       </Button>
@@ -503,6 +538,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       color={"#DEE2E6"}
                       onClick={() => changeColorTheme("dark")}
                       _hover={{ bgColor: "#848d94" }}
+                      aria-label="Dark Theme"
                       >
                         Dark
                       </Button>
@@ -512,6 +548,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       color={"#161A1D"}
                       onClick={() => changeColorTheme("rainbow")}
                       _hover={{ bgColor: "#ffdd80" }}
+                      aria-label="Rainbow Theme"
                       >
                         Rainbow
                       </Button>
@@ -523,6 +560,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       color={"#DEE2E6"}
                       onClick={() => changeColorTheme("purple")}
                       _hover={{ bgColor: "#bc67cb" }}
+                      aria-label="Purple Theme"
                       >
                         Purple
                       </Button>
@@ -532,6 +570,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       color={"#DEE2E6"}
                       onClick={() => changeColorTheme("red")}
                       _hover={{ bgColor: "#ff6666" }}
+                      aria-label="Red Theme"
                       >
                         Red
                       </Button>
@@ -619,6 +658,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       _hover={{ bgColor: "buttonBg" }}
                       color={"btnFontColor"}
                       onClick={() => changeFont("playfair")}
+                      aria-label="Switch to Playfair font style"
                       >
                         Playfair
                     </Button>
@@ -629,6 +669,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       _hover={{ bgColor: "buttonBg" }}
                       color={"btnFontColor"}
                       onClick={() => changeFont("kalam")}
+                      aria-label="Switch to Kalam font style"
                       >
                         Kalam
                     </Button>
@@ -639,6 +680,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
                       _hover={{ bgColor: "buttonBg" }}
                       color={"btnFontColor"}
                       onClick={() => changeFont("montserrat")}
+                      aria-label="Switch to Montserrat font style"
                       >
                         Montserrat
                     </Button>
@@ -648,8 +690,8 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
               }
             </ModalBody>
             <ModalFooter marginTop={["8, 10, 12"]} display={"flex"} justifyContent={"space-between"}>
-              {currentTab === "Profile" ? <Button size={"sm"} colorScheme="red" onClick={() => setShowConfirm(true)}>Delete Account</Button> : null}
-              <Button onClick={() => setShowModal(false)} marginLeft={"auto"} bgColor={"buttonBg"} _hover={{ bgColor: "hoverColor" }} color={"btnFontColor"}>Close</Button>
+              {currentTab === "Profile" ? <Button size={"sm"} colorScheme="red" onClick={() => setShowConfirm(true)} aria-label="Delete your account">Delete Account</Button> : null}
+              <Button onClick={() => setShowModal(false)} aria-label="Close Settings" marginLeft={"auto"} bgColor={"buttonBg"} _hover={{ bgColor: "hoverColor" }} color={"btnFontColor"}>Close</Button>
             </ModalFooter>
           </Flex>
         </ModalContent>

@@ -25,7 +25,15 @@ export const Header = ({ setShowModal, user, logoutUser }: HeaderPropTypes) => {
       <Spacer/>
       {links.map((link, idx) => (
         <Link as={ReactRouterLink} to={link.path} key={idx} ml={[2, 4, 6]} tabIndex={-1}>
-          <Button size={["sm", "md", "md"]} bgColor={"buttonBg"} _hover={{ bgColor: "hoverColor" }} color={"btnFontColor"}>{link.label}</Button>
+          <Button
+            size={["sm", "md", "md"]}
+            bgColor={"buttonBg"}
+            _hover={{ bgColor: "hoverColor" }}
+            color={"btnFontColor"}
+            aria-label={`Go to ${link.label} page`}
+            >
+              {link.label}
+            </Button>
         </Link>
       ))}
       <Popover arrowSize={10}>
@@ -48,8 +56,26 @@ export const Header = ({ setShowModal, user, logoutUser }: HeaderPropTypes) => {
         <PopoverContent w={"200px"} bgColor={"headerBg"}>
           <PopoverArrow bgColor={"headerBg"}/>
           <PopoverBody display={"flex"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} gap={4} py={4}>
-            <Button onClick={() => setShowModal(true)} w={"70%"} bgColor={"buttonBg"} color={"btnFontColor"} _hover={{ bgColor: "hoverColor"}}>Settings</Button>
-            <Button onClick={handleLogout} w={"70%"} bgColor={"buttonBg"} color={"btnFontColor"} _hover={{ bgColor: "hoverColor"}}>Logout</Button>
+            <Button
+              onClick={() => setShowModal(true)}
+              w={"70%"}
+              bgColor={"buttonBg"}
+              color={"btnFontColor"}
+              _hover={{ bgColor: "hoverColor"}}
+              aria-label="Open settings"
+              >
+                Settings
+              </Button>
+            <Button
+              onClick={handleLogout}
+              w={"70%"}
+              bgColor={"buttonBg"}
+              color={"btnFontColor"}
+              _hover={{ bgColor: "hoverColor"}}
+              aria-label="Logout"
+              >
+                Logout
+              </Button>
           </PopoverBody>
         </PopoverContent>
       </Popover>

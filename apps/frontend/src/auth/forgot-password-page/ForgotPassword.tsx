@@ -165,6 +165,7 @@ export const ForgotPassword = () => {
               isLoading={loading}
               _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
               bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
+              aria-label="Send the verification email"
             >
               Send Email
             </Button>
@@ -191,7 +192,7 @@ export const ForgotPassword = () => {
                   }}
                   />
                 <InputRightElement>
-                  <Button onClick={() => setShowPw(!showPw)} variant={"link"}>
+                  <Button onClick={() => setShowPw(!showPw)} variant={"link"} aria-label="Toggle password visibility">
                     <Icon as={showPw ? FaEyeSlash : FaEye} />
                   </Button>
                 </InputRightElement>
@@ -245,7 +246,7 @@ export const ForgotPassword = () => {
                   }}
                   />
                 <InputRightElement>
-                    <Button onClick={() => setShowConfirmPw(!showConfirmPw)} variant={"link"}>
+                    <Button onClick={() => setShowConfirmPw(!showConfirmPw)} variant={"link"} aria-label="Toggle password visibility">
                       <Icon as={showConfirmPw ? FaEyeSlash : FaEye} />
                     </Button>
                   </InputRightElement>
@@ -276,6 +277,7 @@ export const ForgotPassword = () => {
               onClick={completePwReset}
               color={"#ffffff"}
               isLoading={loading}
+              aria-label="Confirm password reset"
               _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
               bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
             >
@@ -292,6 +294,7 @@ export const ForgotPassword = () => {
               as={ChakraRouterLink}
               to="/"
               color={"#ffffff"}
+              aria-label="Return to login page"
               _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
               bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
             >
