@@ -18,7 +18,7 @@ export class User {
   @Column({ default: 'default' })
   theme: string;
 
-  @Column()
+  @Column({ default: 'playfair' })
   font: string;
 
   @Column({ default: '1-GlassMorphismBg.jpg' })

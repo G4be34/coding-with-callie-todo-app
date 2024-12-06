@@ -19,6 +19,8 @@ export const getTodosData = async ({ request }: { request: Request }) => {
   try {
     const tokenValidation = await validateToken({ request });
 
+    console.log("This is tokenValidation: ", tokenValidation);
+
     if (tokenValidation === null) {
       return redirect("/login");
     }
@@ -38,6 +40,7 @@ export const getTodosData = async ({ request }: { request: Request }) => {
     return { access_token, userId, fetchedTodosData };
   } catch (error) {
     console.error("Error fetching todos data: ");
+    return redirect("/login");
   }
 };
 
@@ -184,6 +187,7 @@ export const getGraphsData = async ({ request }: { request: Request }) => {
     return { barChartData, pieChartData, stackedBarChartData, areaChartData, numOfIncomplete, numOfOverdue };
   } catch (error) {
     console.error("Error fetching graphs data");
+    return redirect("/login");
   }
 };
 
@@ -210,5 +214,6 @@ export const getCalendarData = async ({ request }: { request: Request }) => {
     return { calendarData, access_token, completedTodos };
   } catch (error) {
     console.error("Error fetching calendar data: ");
+    return redirect("/login");
   }
 };

@@ -99,7 +99,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         status: 'error',
         duration: 3000,
         isClosable: true,
-        position: 'bottom'
+        position: 'top'
       });
     }
   };
@@ -141,7 +141,7 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         status: 'error',
         duration: 3000,
         isClosable: true,
-        position: 'bottom'
+        position: 'top'
       });
     }
   };
@@ -175,23 +175,20 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         status: 'error',
         duration: 3000,
         isClosable: true,
-        position: 'bottom'
+        position: 'top'
       });
     }
   };
 
   const submitNewPassword = async () => {
     try {
-      setLoading(true);
       if (password !== confirmPassword) {
         setPwMatch(false);
-        setLoading(false);
         return;
       }
 
       if (code !== emailCode) {
         setCodeMatch(false);
-        setLoading(false);
         return;
       }
 
@@ -204,7 +201,6 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         }
       });
       setUser({ ...user, ...newUserInfo.data});
-      setLoading(false);
       setShowPwModal(false);
       toast({
         title: 'Password Updated',
@@ -215,16 +211,13 @@ export const ProfileModal = ({ setShowModal, showModal, user, token, setUser, lo
         position: 'top'
       });
     } catch (error) {
-      if (loading) {
-        setLoading(false);
-      }
       toast({
         title: 'Error',
         description: "Something went wrong, Please try again",
         status: 'error',
         duration: 3000,
         isClosable: true,
-        position: 'bottom'
+        position: 'top'
       });
     }
   };

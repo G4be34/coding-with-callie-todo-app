@@ -1,4 +1,4 @@
-import { Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Icon, Input, InputGroup, InputRightElement, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
+import { Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Icon, Input, InputGroup, InputRightElement, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
@@ -19,11 +19,39 @@ type NewPasswordModalPropsType = {
 }
 
 export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPassword, pwMatch, confirmPassword, setConfirmPassword, codeMatch, code, setCode, submitNewPassword }: NewPasswordModalPropsType) => {
+  const toast = useToast();
   const [showPw, setShowPw] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const passwordSymbolRegex = /[^A-Za-z0-9]/;
   const passwordNumRegex = /^(?=.*\d)/;
+
+  const handleSubmitNewPassword = async () => {
+    try {
+      setLoading(true);
+      await submitNewPassword();
+      setLoading(false);
+    } catch (error) {
+      if (loading) {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleKeyPress = async (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && password && confirmPassword && code) {
+      try {
+        setLoading(true);
+        await submitNewPassword();
+        setLoading(false);
+      } catch (error) {
+        if (loading) {
+          setLoading(false);
+        }
+      }
+    }
+  };
 
   return (
     <Modal isOpen={showPwModal} onClose={() => setShowPwModal(false)} isCentered>
@@ -38,6 +66,7 @@ export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPas
                 type={showPw ? "text" : "password"}
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
+                onKeyUp={handleKeyPress}
                 placeholder="New Password"
                 color={"modalFontColor"}
                 borderColor={"borderColor"}
@@ -88,6 +117,7 @@ export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPas
                 value={confirmPassword}
                 placeholder="Confirm Password"
                 color={"modalFontColor"}
+                onKeyUp={handleKeyPress}
                 borderColor={"borderColor"}
                 />
               <InputRightElement>
@@ -106,13 +136,14 @@ export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPas
               value={code}
               placeholder="Verification Code"
               color={"modalFontColor"}
+              onKeyUp={handleKeyPress}
               borderColor={"borderColor"}
               />
             {!codeMatch ? <FormErrorMessage>Incorrect verification code</FormErrorMessage> : null}
           </FormControl>
         </ModalBody>
         <ModalFooter display={"flex"} justifyContent={"space-evenly"}>
-          <Button onClick={submitNewPassword} isDisabled={password.length < 6 || !passwordSymbolRegex.test(password) || !passwordNumRegex.test(password) || confirmPassword.length < 6 || code.length < 6}>Submit</Button>
+          <Button onClick={handleSubmitNewPassword} isDisabled={password.length < 6 || !passwordSymbolRegex.test(password) || !passwordNumRegex.test(password) || confirmPassword.length < 6 || code.length < 6} isLoading={loading}>Submit</Button>
           <Button onClick={() => setShowPwModal(false)}>Close</Button>
         </ModalFooter>
       </ModalContent>

@@ -19,7 +19,7 @@ export const defaultTheme = {
         default: "third"
       },
       btnFontColor: {
-        default: "black"
+        default: "white"
       },
       footerBg: {
         default: "primary"
@@ -40,13 +40,13 @@ export const defaultTheme = {
         default: "primary"
       },
       modalSideFont: {
-        default: "fourth"
+        default: "white"
       },
       modalMainBg: {
         default: "secondary"
       },
       modalFontColor: {
-        default: "black"
+        default: "white"
       },
       hoverColor: {
         default: "secondary"

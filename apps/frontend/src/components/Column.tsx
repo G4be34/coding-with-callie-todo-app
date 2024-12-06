@@ -452,7 +452,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                     <Spacer />
                     <Flex flexDir={"column"} ml={2}>
                       <Text fontSize={"sm"} color={"todoFontColor"} zIndex={100}>Priority:</Text>
-                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"}>
+                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"} color={"btnFontColor"}>
                         <option value="Normal">Normal</option>
                         <option value="High">High</option>
                         <option value="Highest">Highest</option>

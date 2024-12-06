@@ -1,4 +1,4 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Icon, Input, InputGroup, InputRightElement, Link, Spinner, Text, useToast } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Icon, Input, InputGroup, InputRightElement, Link, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -30,6 +30,32 @@ export const SignUpPage = () => {
   const passwordNumRegex = /^(?=.*\d)/;
   const validEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  const handleSignUpKeyPress = async (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && username && email && password && confirmPassword) {
+      try {
+        await sendVerificationEmail(username, email);
+      } catch (error) {
+        if (loading) {
+          setLoading(false);
+        }
+      }
+    }
+  };
+
+  const handleCreateUserKeyPress = async (e: React.KeyboardEvent) => {
+    console.log("reached handleCreateUserKeyPress")
+    if (e.key === 'Enter' && code) {
+      try {
+        console.log("got inside try catch block")
+        await createUser();
+      } catch (error) {
+        if (loading) {
+          setLoading(false);
+        }
+      }
+    }
+  };
+
   const createUser = async () => {
     try {
       setLoading(true);
@@ -38,12 +64,14 @@ export const SignUpPage = () => {
         return;
       }
 
+      console.log("reached create user")
+
       const newUser = {
         email,
         password,
         username,
-        theme: "",
-        font: "",
+        theme: "default",
+        font: "playfair",
         background: "1-GlassMorphismBg.jpg"
       };
 
@@ -76,7 +104,7 @@ export const SignUpPage = () => {
         status: 'error',
         duration: 3000,
         isClosable: true,
-        position: 'bottom'
+        position: 'top'
       });
     }
   };
@@ -125,10 +153,9 @@ export const SignUpPage = () => {
         status: 'error',
         duration: 3000,
         isClosable: true,
-        position: 'bottom'
+        position: 'top'
       });
     }
-
   };
 
   const handleBackButton = () => {
@@ -140,9 +167,19 @@ export const SignUpPage = () => {
 
   return (
     <Flex flexDir={"column"} justifyContent={"center"} h={"100vh"} alignItems={"center"} flex={1} bgColor={"gray.300"} pos={"relative"} overflow={"auto"} bgImg={`/${bgImageNum}-GlassMorphismBg.jpg`} bgSize={"cover"} bgPos={"center"}>
-      {loading ? <Spinner position={"fixed"} top={"50%"} left={"50%"} right={"50%"} bottom={"50%"} color="blue.500" size="xl" /> : null}
       <Heading p={{ sm: 4, md: 6, lg: 8}} color={"#ffffff"}>Sign up for CWC Todo App</Heading>
-      <Flex flexDir={"column"} as="form" border={"2px solid #d6d6c2"} p={6} w={"450px"} borderRadius={20} rowGap={8} mb={4} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"}>
+      <Flex
+        flexDir={"column"}
+        as="form"
+        onSubmit={(e) => e.preventDefault()}
+        border={"2px solid #d6d6c2"}
+        p={6}
+        w={"450px"}
+        borderRadius={20}
+        rowGap={8} mb={4}
+        bgColor={"rgba(255, 255, 255, 0.05)"}
+        backdropFilter={"blur(10px)"}
+        >
         {!completeSignup
           ? <>
               <FormControl isRequired isInvalid={username.length < 3} pos={"relative"}>
@@ -157,6 +194,7 @@ export const SignUpPage = () => {
                     className="floating-input"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    onKeyUp={handleSignUpKeyPress}
                     />
                   <FormLabel color={"#d9d9d9"} requiredIndicator={false} className="floating-label">Username</FormLabel>
                 </InputGroup>
@@ -183,6 +221,7 @@ export const SignUpPage = () => {
                   _hover={{ border: "2px solid #555" }}
                   className={`floating-input ${email ? "filled" : ""}`}
                   onChange={(e) => setEmail(e.target.value)}
+                  onKeyUp={handleSignUpKeyPress}
                   />
                 <FormLabel color={"#d9d9d9"} className="floating-label" requiredIndicator={false}>Email</FormLabel>
                 {existingUser ? <FormErrorMessage>Email already exists</FormErrorMessage> : null}
@@ -201,6 +240,7 @@ export const SignUpPage = () => {
                     className="floating-input"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onKeyUp={handleSignUpKeyPress}
                     />
                   <FormLabel color={"#d9d9d9"} requiredIndicator={false} className="floating-label">Password</FormLabel>
                   <InputRightElement>
@@ -253,6 +293,7 @@ export const SignUpPage = () => {
                     className="floating-input"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    onKeyUp={handleSignUpKeyPress}
                     />
                   <FormLabel color={"#d9d9d9"} requiredIndicator={false} className={"floating-label"}>Confirm password</FormLabel>
                   <InputRightElement>
@@ -268,6 +309,7 @@ export const SignUpPage = () => {
                 onClick={() => sendVerificationEmail(username, email)}
                 isDisabled={username.length < 3 || password.length < 6}
                 color={"#ffffff"}
+                isLoading={loading}
                 _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
                 bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
                 >
@@ -288,6 +330,7 @@ export const SignUpPage = () => {
                     className="floating-input"
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
+                    onKeyUp={handleCreateUserKeyPress}
                     />
                   <FormLabel color={"#d9d9d9"} requiredIndicator={false} className={"floating-label"}>Verification Code</FormLabel>
                 </InputGroup>
@@ -298,6 +341,7 @@ export const SignUpPage = () => {
                 onClick={createUser}
                 isDisabled={code.length < 6}
                 color={"#ffffff"}
+                isLoading={loading}
                 _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
                 bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
               >

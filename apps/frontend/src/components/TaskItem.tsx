@@ -259,15 +259,15 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
             {editDueDate
               ? <DatePicker
                   onBlur={() => setEditDueDate(false)}
-                  selected={new Date(task.due_date.toString())}
-                  openToDate={new Date(task.due_date.toString())}
+                  selected={new Date(Number(task.due_date))}
+                  openToDate={new Date(Number(task.due_date))}
                   onChange={(date: Date) => changeDueDate(date)}
                   fixedHeight
                   showIcon
                   />
               : <>
                   <Text fontWeight={"bold"} fontSize={"sm"} color={"todoFontColor"}>Due</Text>
-                  <Text color={"todoFontColor"} onClick={openDatePicker} fontSize={"sm"}>{new Date(dueDate.toString()).toLocaleDateString('en-US', options)}</Text>
+                  <Text color={"todoFontColor"} onClick={openDatePicker} fontSize={"sm"}>{new Date(Number(dueDate)).toLocaleDateString('en-US', options)}</Text>
                 </>
               }
           </CardHeader>
@@ -296,7 +296,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
             {task.date_completed
               ? <Flex flexDir={"column"}>
                   <Text fontWeight={"bold"} fontSize={"sm"} color={"todoFontColor"}>Completed </Text>
-                  <Text fontSize={"sm"} color={"todoFontColor"}>{new Date(task.date_completed.toString()).toLocaleDateString('en-US', options)}</Text>
+                  <Text fontSize={"sm"} color={"todoFontColor"}>{new Date(Number(task.date_completed)).toLocaleDateString('en-US', options)}</Text>
                 </Flex>
               : <Flex w={"100%"} alignItems={"center"}>
                   <Button size={"xs"} onClick={() => completeTodo(task.todo_id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Complete</Button>

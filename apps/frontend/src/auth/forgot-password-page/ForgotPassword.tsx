@@ -1,4 +1,4 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Icon, Input, InputGroup, InputRightElement, Link, Spinner, Text, chakra, useToast } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Icon, Input, InputGroup, InputRightElement, Link, Text, chakra, useToast } from "@chakra-ui/react";
 import axios, { isAxiosError } from "axios";
 import { useState } from "react";
 import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -66,7 +66,7 @@ export const ForgotPassword = () => {
         status: 'error',
         duration: 3000,
         isClosable: true,
-        position: 'bottom'
+        position: 'top'
       });
     }
   };
@@ -121,17 +121,13 @@ export const ForgotPassword = () => {
         status: 'error',
         duration: 3000,
         isClosable: true,
-        position: 'bottom'
+        position: 'top'
       });
     }
   };
 
   return (
     <Flex position={"relative"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} h={"100vh"} pos={"relative"} bgImg={`/${bgImageNum}-GlassMorphismBg.jpg`} bgSize={"cover"} bgPos={"center"}>
-      {loading
-        ? <Spinner size={"xl"} pos={"fixed"} top={"50%"} left={"50%"} right={"50%"} bottom={"50%"} zIndex={200} color={"blue.500"} />
-        : null
-      }
       <Heading position={"absolute"} top={"15%"} color={"#ffffff"}>Forgot your password?</Heading>
 
       <Flex flexDir={"column"} as="form" border={"2px solid #d6d6c2"} p={6} w={"450px"} borderRadius={20} rowGap={8} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} mb={4}>
@@ -166,6 +162,7 @@ export const ForgotPassword = () => {
             <Button
               onClick={sendCode}
               color={"#ffffff"}
+              isLoading={loading}
               _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
               bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
             >
@@ -181,7 +178,7 @@ export const ForgotPassword = () => {
               <FormLabel color={"#ffffff"}> New password</FormLabel>
               <InputGroup>
                 <Input
-                  type="password"
+                  type={showPw ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="New password"
@@ -235,7 +232,7 @@ export const ForgotPassword = () => {
               <FormLabel color={"#ffffff"}>Confirm new password</FormLabel>
               <InputGroup>
                 <Input
-                  type="password"
+                  type={showConfirmPw ? "text" : "password"}
                   value={confirmNewPassword}
                   color={"#ffffff"}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
@@ -278,6 +275,7 @@ export const ForgotPassword = () => {
             <Button
               onClick={completePwReset}
               color={"#ffffff"}
+              isLoading={loading}
               _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
               bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
             >
