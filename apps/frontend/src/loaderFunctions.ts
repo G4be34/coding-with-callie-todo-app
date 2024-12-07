@@ -19,8 +19,6 @@ export const getTodosData = async ({ request }: { request: Request }) => {
   try {
     const tokenValidation = await validateToken({ request });
 
-    console.log("This is tokenValidation: ", tokenValidation);
-
     if (tokenValidation === null) {
       return redirect("/login");
     }

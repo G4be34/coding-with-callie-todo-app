@@ -374,6 +374,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             onBlur={() => setShowDelete(true)}
             bg={"red.400"}
             color={"white"}
+            aria-label="Delete column"
             _hover={{ bg: "red.500" }}
             >
               Delete Column
@@ -431,7 +432,15 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             >
             <Box pos={"absolute"} top={0} left={0} right={0} bottom={0} bg={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10}></Box>
             {column.title !== "Completed"
-              ? <Button w={"100%"} minH={10} mb={4} bgColor={"buttonBg"} _hover={{ bgColor: "hoverColor" }} onClick={() => setAddTodo(true)}>
+              ? <Button
+                  w={"100%"}
+                  minH={10}
+                  mb={4}
+                  bgColor={"buttonBg"}
+                  _hover={{ bgColor: "hoverColor" }}
+                  aria-label="Add a new todo item"
+                  onClick={() => setAddTodo(true)}
+                  >
                   <FaPlus color="white" />
                 </Button>
               : null}
@@ -476,9 +485,17 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                     value={newTodo}
                     />
                   <Flex w={"100%"}>
-                    <Button size={"xs"} onClick={addNewTodo} bgColor={"green"} _hover={{ bg: "green.500" }} color={"white"}>Add</Button>
+                    <Button
+                      size={"xs"}
+                      onClick={addNewTodo}
+                      bgColor={"green"}
+                      _hover={{ bg: "green.500" }}
+                      color={"white"}
+                      >
+                        Add
+                      </Button>
                     <Spacer />
-                    <Button size={"xs"} onClick={() => setAddTodo(false)}>Cancel</Button>
+                    <Button size={"xs"} aria-label="Cancel" onClick={() => setAddTodo(false)}>Cancel</Button>
                   </Flex>
                 </Flex>
               : null

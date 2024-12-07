@@ -71,7 +71,7 @@ export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPas
                 borderColor={"borderColor"}
                 />
               <InputRightElement>
-                <Button onClick={() => setShowPw(!showPw)} variant={"link"}>
+                <Button onClick={() => setShowPw(!showPw)} aria-label="Toggle password visibility" variant={"link"}>
                   <Icon as={showPw ? FaEyeSlash : FaEye} />
                 </Button>
               </InputRightElement>
@@ -120,7 +120,7 @@ export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPas
                 borderColor={"borderColor"}
                 />
               <InputRightElement>
-                <Button onClick={() => setShowConfirmPw(!showConfirmPw)} variant={"link"}>
+                <Button onClick={() => setShowConfirmPw(!showConfirmPw)} aria-label="Toggle password visibility" variant={"link"}>
                   <Icon as={showConfirmPw ? FaEyeSlash : FaEye} />
                 </Button>
               </InputRightElement>
@@ -142,7 +142,14 @@ export const NewPasswordModal = ({ showPwModal, setShowPwModal, password, setPas
           </FormControl>
         </ModalBody>
         <ModalFooter display={"flex"} justifyContent={"space-evenly"}>
-          <Button onClick={handleSubmitNewPassword} isDisabled={password.length < 6 || !passwordSymbolRegex.test(password) || !passwordNumRegex.test(password) || confirmPassword.length < 6 || code.length < 6} isLoading={loading}>Submit</Button>
+          <Button
+            onClick={handleSubmitNewPassword}
+            isDisabled={password.length < 6 || !passwordSymbolRegex.test(password) || !passwordNumRegex.test(password) || confirmPassword.length < 6 || code.length < 6}
+            isLoading={loading}
+            aria-label="Submit new password"
+            >
+              Submit
+            </Button>
           <Button onClick={() => setShowPwModal(false)}>Close</Button>
         </ModalFooter>
       </ModalContent>

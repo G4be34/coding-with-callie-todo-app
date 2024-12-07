@@ -285,6 +285,7 @@ export const CalendarPage = () => {
                     bg={"green"}
                     _hover={{ bg: "green.500" }}
                     color={"white"}
+                    aria-label='Complete Task'
                     p={3}
                   >
                     Complete Task
@@ -338,7 +339,6 @@ export const CalendarPage = () => {
             return '';
           }}
         />
-
     </Flex>
   )
 }

@@ -26,7 +26,7 @@ export class UploaderService {
 
       return await s3.getSignedUrlPromise('putObject', params);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -50,7 +50,7 @@ export class UploaderService {
 
       return await s3.getSignedUrlPromise('getObject', params);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -82,7 +82,7 @@ export class UploaderService {
 
       return await s3.upload(params).promise();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -103,11 +103,9 @@ export class UploaderService {
         Key: key,
       };
 
-      console.log('Made it through delete function');
-
       return await s3.deleteObject(params).promise();
     } catch (error) {
-      console.log('Error deleting profile picture: ', error);
+      console.error('Error deleting profile picture: ', error);
     }
   }
 }

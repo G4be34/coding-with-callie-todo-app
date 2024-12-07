@@ -249,10 +249,11 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                   bg={"red"} color={"white"} size={"xs"}
                   onClick={() => deleteTodo(task.todo_id)}
                   marginY={1}
+                  aria-label="Confirm task deletion"
                   >
                     Delete Task?
                   </Button>
-              : <TiDelete size={30} cursor={"pointer"} onClick={() => setIsDeleting(true)} color={iconColor} />
+              : <TiDelete size={30} cursor={"pointer"} onClick={() => setIsDeleting(true)} color={iconColor} aria-label="Delete Task" />
               }
           </Box>
           <CardHeader flexDir={"column"} cursor={"pointer"}>
@@ -299,7 +300,16 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                   <Text fontSize={"sm"} color={"todoFontColor"}>{new Date(Number(task.date_completed)).toLocaleDateString('en-US', options)}</Text>
                 </Flex>
               : <Flex w={"100%"} alignItems={"center"}>
-                  <Button size={"xs"} onClick={() => completeTodo(task.todo_id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Complete</Button>
+                  <Button
+                    size={"xs"}
+                    onClick={() => completeTodo(task.todo_id)}
+                    bg={"green"} _hover={{ bg: "green.500" }}
+                    color={"white"}
+                    aria-label="Mark task as complete"
+                    p={3}
+                    >
+                      Complete
+                    </Button>
                   <Spacer />
                   <Select
                     defaultValue={priority}
@@ -319,7 +329,6 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                     <option value={"Highest"}>Highest</option>
                   </Select>
                 </Flex>
-
               }
           </CardFooter>
         </Card>

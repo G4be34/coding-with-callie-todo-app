@@ -43,10 +43,8 @@ export const SignUpPage = () => {
   };
 
   const handleCreateUserKeyPress = async (e: React.KeyboardEvent) => {
-    console.log("reached handleCreateUserKeyPress")
     if (e.key === 'Enter' && code) {
       try {
-        console.log("got inside try catch block")
         await createUser();
       } catch (error) {
         if (loading) {
@@ -63,8 +61,6 @@ export const SignUpPage = () => {
         setCodeMatch(false);
         return;
       }
-
-      console.log("reached create user")
 
       const newUser = {
         email,
