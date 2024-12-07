@@ -1,4 +1,4 @@
-import { Flex, Select, Text } from "@chakra-ui/react";
+import { Box, Flex, Select, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, Rectangle, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
@@ -51,9 +51,9 @@ export const BarGraph = () => {
   const [graphType, setGraphType] = useState('bar');
 
   return (
-    <>
+    <Box bgColor={"rgba(255, 255, 255, 0.2)"} backdropFilter={"blur(10px)"} borderRadius={10} pt={4} pr={4}>
       <Flex justifyContent={"flex-end"} ml={"auto"} alignItems={"center"} maxW={["90%", "70%"]}>
-        <Text flex={1} fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>
+        <Text flex={1} fontWeight={"bold"} fontSize={"xl"} textAlign={"center"} color={"#FFFFFF"}>
           Completed Tasks
         </Text>
         <Select
@@ -63,6 +63,8 @@ export const BarGraph = () => {
           size={"xs"}
           defaultValue={"bar"}
           maxW={"100px"}
+          color={"btnFontColor"}
+          bgColor={"buttonBg"}
           onChange={(e) => setGraphType(e.target.value)}
           >
           <option value="bar">Bar</option>
@@ -75,9 +77,9 @@ export const BarGraph = () => {
             <BarChart
               data={barChartData}
             >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" />
-              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" stroke="#FFFFFF" />
+              <XAxis dataKey="week" stroke="#FFFFFF" />
+              <YAxis stroke="#FFFFFF" />
               <Tooltip />
               <Legend />
               <Bar dataKey="completed" fill="#8884d8" activeBar={<Rectangle fill="gold" stroke="black" />} />
@@ -87,16 +89,16 @@ export const BarGraph = () => {
             <LineChart
               data={barChartData}
             >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" />
-              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" stroke="#FFFFFF" />
+              <XAxis dataKey="week" stroke="#FFFFFF" />
+              <YAxis stroke="#FFFFFF" />
               <Tooltip />
               <Legend />
               <Line type="monotone" dataKey="completed" stroke="#8884d8" activeDot={{ r: 8 }} />
             </LineChart>
           </ResponsiveContainer>
       }
-    </>
+    </Box>
   )
 };
 
@@ -106,7 +108,7 @@ export const PieGraph = () => {
   const [graphType, setGraphType] = useState('pie');
 
   return (
-    <>
+    <Box bgColor={"rgba(255, 255, 255, 0.2)"} backdropFilter={"blur(10px)"} borderRadius={10} pt={4} pr={4}>
       {graphType === 'pie'
         ? <>
             <Select
@@ -117,6 +119,8 @@ export const PieGraph = () => {
               size={"xs"}
               defaultValue={"pie"}
               maxW={"100px"}
+              color={"btnFontColor"}
+              bgColor={"buttonBg"}
               onChange={(e) => setGraphType(e.target.value)}
               >
               <option value="pie">Pie</option>
@@ -141,13 +145,13 @@ export const PieGraph = () => {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-            <Text fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>
+            <Text fontWeight={"bold"} color={"white"} fontSize={"xl"} textAlign={"center"}>
               Number of tasks by priority
             </Text>
           </>
         : <>
             <Flex justifyContent={"flex-end"} ml={"auto"} alignItems={"center"} maxW={"90%"}>
-              <Text flex={1} fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>
+              <Text flex={1} fontWeight={"bold"} color={"white"} fontSize={"xl"} textAlign={"center"}>
                 Number of tasks by priority
               </Text>
               <Select
@@ -157,6 +161,8 @@ export const PieGraph = () => {
                 size={"xs"}
                 defaultValue={"pie"}
                 maxW={"100px"}
+                color={"btnFontColor"}
+                bgColor={"buttonBg"}
                 onChange={(e) => setGraphType(e.target.value)}
                 >
                 <option value="pie">Pie</option>
@@ -167,11 +173,10 @@ export const PieGraph = () => {
               <BarChart
                 data={pieChartData}
               >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="#FFFFFF" />
+                <XAxis dataKey="name" stroke="#FFFFFF" />
+                <YAxis stroke="#FFFFFF" />
                 <Tooltip />
-                <Legend />
                 <Bar dataKey="value" activeBar={<Rectangle fill="gold" stroke="black" />}>
                   {pieChartData.map((entry, index) => (
                     <Cell
@@ -188,7 +193,7 @@ export const PieGraph = () => {
             </ResponsiveContainer>
           </>
       }
-    </>
+    </Box>
   )
 };
 
@@ -198,9 +203,9 @@ export const StackedBarGraph = () => {
   const [graphType, setGraphType] = useState('bar');
 
   return (
-    <>
+    <Box bgColor={"rgba(255, 255, 255, 0.2)"} backdropFilter={"blur(10px)"} borderRadius={10} pt={4} pr={4}>
       <Flex justifyContent={"flex-end"} ml={"auto"} alignItems={"center"} maxW={"90%"}>
-        <Text flex={1} fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>
+        <Text flex={1} fontWeight={"bold"} color={"white"} fontSize={"xl"} textAlign={"center"}>
           Tasks created each week
         </Text>
         <Select
@@ -210,6 +215,8 @@ export const StackedBarGraph = () => {
           size={"xs"}
           defaultValue={"bar"}
           maxW={"100px"}
+          color={"btnFontColor"}
+          bgColor={"buttonBg"}
           onChange={(e) => setGraphType(e.target.value)}
           >
           <option value="bar">Bar</option>
@@ -223,8 +230,8 @@ export const StackedBarGraph = () => {
               data={stackedBarChartData}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" />
-              <YAxis />
+              <XAxis dataKey="week" stroke="#FFFFFF" />
+              <YAxis stroke="#FFFFFF" />
               <Tooltip />
               <Legend />
               <Bar dataKey="Normal" fill="gray" stackId={"a"} activeBar={<Rectangle fill="gray" stroke="black" />} />
@@ -237,8 +244,8 @@ export const StackedBarGraph = () => {
               data={stackedBarChartData}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" />
-              <YAxis />
+              <XAxis dataKey="week" stroke="#FFFFFF" />
+              <YAxis stroke="#FFFFFF" />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Area type="monotone" dataKey="Highest" stroke="white" fill="red" stackId={"b"} activeDot={{ r: 8 }} />
@@ -247,7 +254,7 @@ export const StackedBarGraph = () => {
             </AreaChart>
           </ResponsiveContainer>
       }
-    </>
+    </Box>
   )
 };
 
@@ -257,9 +264,9 @@ export const AreaGraph = () => {
   const [graphType, setGraphType] = useState('area');
 
   return (
-    <>
+    <Box bgColor={"rgba(255, 255, 255, 0.2)"} backdropFilter={"blur(10px)"} borderRadius={10} pt={4} pr={4}>
       <Flex justifyContent={"flex-end"} ml={"auto"} alignItems={"center"} maxW={"90%"}>
-        <Text flex={1} fontWeight={"bold"} fontSize={"xl"} textAlign={"center"}>
+        <Text flex={1} fontWeight={"bold"} color={"white"} fontSize={"xl"} textAlign={"center"}>
           Task average time to complete
         </Text>
         <Select
@@ -269,6 +276,8 @@ export const AreaGraph = () => {
           size={"xs"}
           defaultValue={"bar"}
           maxW={"100px"}
+          color={"btnFontColor"}
+          bgColor={"buttonBg"}
           onChange={(e) => setGraphType(e.target.value)}
           >
           <option value="area">Area</option>
@@ -282,8 +291,8 @@ export const AreaGraph = () => {
               data={areaChartData}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" />
-              <YAxis />
+              <XAxis dataKey="week" stroke="#FFFFFF" />
+              <YAxis stroke="#FFFFFF" />
               <Tooltip content={<CustomTooltip />}/>
               <Legend />
               <Area type="monotone" dataKey="Highest" stroke="white" fill="red" stackId={"b"} activeDot={{ r: 8 }} />
@@ -296,8 +305,8 @@ export const AreaGraph = () => {
               data={areaChartData}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" />
-              <YAxis />
+              <XAxis dataKey="week" stroke="#FFFFFF" />
+              <YAxis stroke="#FFFFFF" />
               <Tooltip />
               <Line type="monotone" dataKey="Normal" stroke="gray" activeDot={{ r: 8 }} />
               <Line type="monotone" dataKey="High" stroke="orange" activeDot={{ r: 8 }} />
@@ -305,6 +314,6 @@ export const AreaGraph = () => {
             </LineChart>
           </ResponsiveContainer>
       }
-    </>
+    </Box>
   )
 };

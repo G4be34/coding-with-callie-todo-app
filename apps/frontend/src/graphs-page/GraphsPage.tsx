@@ -1,5 +1,5 @@
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useOutletContext } from "react-router-dom";
 import { AreaGraph, BarGraph, PieGraph, StackedBarGraph } from "../components/Graphs";
 
 
@@ -11,12 +11,13 @@ type GraphsDataType = {
 
 export const GraphsPage = () => {
   const { numOfIncomplete, numOfOverdue } = useLoaderData() as GraphsDataType;
+  const { user } = useOutletContext() as { user: { background: string }};
 
   return (
-    <Flex flex={1} flexDir={"column"} justifyContent="center" alignItems="center" overflowY={"auto"} pt={4}>
+    <Flex flex={1} flexDir={"column"} justifyContent="center" alignItems="center" overflowY={"auto"} pt={4} bgImg={`url(/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
       <Box p={4}>
-        <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]}>Incomplete Tasks: {numOfIncomplete}</Text>
-        <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]}>Overdue Tasks: {numOfOverdue}</Text>
+        <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]} color={"white"}>Incomplete Tasks: {numOfIncomplete}</Text>
+        <Text fontWeight={"bold"} fontSize={["lg", "lg", "xl"]} color={"white"}>Overdue Tasks: {numOfOverdue}</Text>
       </Box>
       <Grid
         width={"100%"}

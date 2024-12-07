@@ -1,4 +1,4 @@
-import { Button, Editable, EditableInput, EditablePreview, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react";
+import { Box, Button, Editable, EditableInput, EditablePreview, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react";
 import { Droppable } from "@hello-pangea/dnd";
 import axios from "axios";
 import { useState } from "react";
@@ -7,50 +7,16 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaMinusCircle, FaPlus } from "react-icons/fa";
 import { useLoaderData } from "react-router-dom";
 import { v4 as uuid } from "uuid";
+import { ColumnData, InitialDataType, LoadedTodosDataType, TaskType } from "../types";
 import { TaskItem } from "./TaskItem";
 
 
-type InitialDataType = {
-  tasks: {
-    [key: string]: Task
-  };
-  columns: {
-    [key: string]: ColumnData
-  };
-  columnOrder: string[];
-};
-
-type Task = {
-  todo_id: string;
-  id: string | number | undefined;
-  description: string;
-  date_added: number | string;
-  date_completed: number | string | null;
-  priority: string;
-  due_date: number | string;
-  position: number;
-  groupId: string;
-};
-
-type ColumnData = {
-  id: string;
-  column_id: string;
-  title: string;
-  taskIds: string[];
-};
-
 type ColumnProps = {
   column: ColumnData;
-  tasks: Task[];
+  tasks: TaskType[];
   setTodosData: React.Dispatch<React.SetStateAction<InitialDataType>>;
   todosData: InitialDataType;
   setSelectedTodos: React.Dispatch<React.SetStateAction<string[]>>
-};
-
-type LoadedTodosDataType = {
-  fetchedTodosData: InitialDataType
-  access_token: string
-  userId: string
 };
 
 
@@ -95,7 +61,6 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         position: "top",
       });
     } catch (error) {
-      console.error("Failed to delete column", error);
       toast({
         title: "Failed to delete column",
         status: "error",
@@ -111,7 +76,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
 
     const currentDate = new Date();
     try {
-      let newTask: Task = {
+      let newTask: TaskType = {
         todo_id: uuid(),
         description: newTodo.trim(),
         date_added: (currentDate.getTime()).toString(),
@@ -133,8 +98,6 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
           position: index + 1
         }
       });
-
-      //const taskIdsToUpdate = updatedTasks.map(task => task.todo_id);
 
       if (updatedTasks.length > 0) {
         await axios.patch('/api/todos/update-positions', {
@@ -179,7 +142,6 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         position: "top",
       });
     } catch (error) {
-      console.error("Error adding task: ", error);
       toast({
         title: "Failed to add task",
         status: "error",
@@ -222,7 +184,6 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         position: "top",
       });
     } catch (error) {
-      console.error("Failed to delete task: ", error);
       toast({
         title: "Failed to delete task",
         description: "Please try again",
@@ -323,7 +284,6 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         position: "top",
       });
     } catch (error) {
-      console.error("Error completing task: ", error);
       toast({
         title: "Failed to complete task",
         description: "Please try again",
@@ -331,14 +291,14 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
   const sortTasks = (sortValue: string) => {
     if (sortValue === "Sort") return;
 
-    let sortedTasks: Task[] = [];
+    let sortedTasks: TaskType[] = [];
 
     switch (sortValue) {
       case "Newest":
@@ -386,9 +346,8 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     } catch (error) {
-      console.error("Error updating column title:", error);
       toast({
         title: "Error updating column title",
         description: "Please try again",
@@ -396,7 +355,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
@@ -405,7 +364,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
     <Flex flex={1} padding={2} alignItems={"center"} flexDir={"column"} minH={"20%"} maxH={"100%"} w={"100%"} overflowY={"auto"}>
       {showDelete
         ? <Flex mb={2} _hover={{ opacity: 0.5}}>
-            <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"}/>
+            <FaMinusCircle size={24} onClick={() => setShowDelete(false)} cursor={"pointer"} color="white"/>
           </Flex>
         : <Button
             autoFocus
@@ -415,20 +374,21 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
             onBlur={() => setShowDelete(true)}
             bg={"red.400"}
             color={"white"}
+            aria-label="Delete column"
             _hover={{ bg: "red.500" }}
             >
               Delete Column
             </Button>
         }
-      <Flex flexDir={"column"} border={"3px solid black"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
-        <Select placeholder="Sort" size={"xs"} borderRadius={10} cursor={"pointer"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
+      <Flex flexDir={"column"} border={"3px solid"} borderColor={"borderColor"} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10} borderBottomLeftRadius={0} borderBottomRightRadius={0} w={"100%"} alignItems={"center"} borderBottom={"none"}>
+        <Select placeholder="Sort" size={"xs"} borderRadius={10} bgColor={"buttonBg"} color={"btnFontColor"} cursor={"pointer"} maxW={"100px"} flex={1} variant={"filled"} ml={"auto"} mr={2} mt={2} onChange={(e) => sortTasks(e.target.value)}>
           <option value="Newest">Newest</option>
           <option value="Oldest">Oldest</option>
           <option value="Due">Due Date</option>
           <option value="Priority">Priority</option>
           {column.column_id === "column-1" ? <option value={"Date Completed"}>Date Completed</option> : null}
         </Select>
-        <Editable defaultValue={column.title} cursor={"pointer"} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"} onSubmit={changeTitle}>
+        <Editable defaultValue={column.title} cursor={"pointer"} color={"white"} textAlign={"center"} fontSize={20} fontWeight={"bold"} w={"100%"} onSubmit={changeTitle}>
           <EditablePreview />
           <EditableInput />
         </Editable>
@@ -436,32 +396,59 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
       <Droppable droppableId={column.column_id}>
         {(provided, snapshot) => (
           <Flex
+            pos={"relative"}
             ref={provided.innerRef}
             {...provided.droppableProps}
-            bg={snapshot.isDraggingOver ? "gray.200" : "white"}
+            bg={snapshot.isDraggingOver ? "rgba(255, 255, 255, 0.02)" : "rgba(255, 255, 255, 0.05)"}
             flexDir={"column"}
             minH={"500px"}
             h={"100%"}
             minW={"100%"}
             flex={1}
-            border={"3px solid black"}
+            border={"3px solid"}
+            borderColor={"borderColor"}
             borderRadius={10}
             borderTopLeftRadius={0}
             borderTopRightRadius={0}
             p={4}
-            overflow={"auto"}
+            overflowY={"auto"}
             maxH={"900px"}
+            sx={{
+              /* Custom scrollbar styles */
+              '::-webkit-scrollbar': {
+                width: '8px',
+              },
+              '::-webkit-scrollbar-track': {
+                background: 'rgba(255, 255, 255, 0.05)',
+              },
+              '::-webkit-scrollbar-thumb': {
+                backgroundColor: '#888',
+                borderRadius: '10px',
+              },
+              '::-webkit-scrollbar-thumb:hover': {
+                backgroundColor: '#555',
+              },
+            }}
             >
+            <Box pos={"absolute"} top={0} left={0} right={0} bottom={0} bg={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"} borderRadius={10}></Box>
             {column.title !== "Completed"
-              ? <Button w={"100%"} minH={10} mb={4} onClick={() => setAddTodo(true)}>
-                  <FaPlus />
+              ? <Button
+                  w={"100%"}
+                  minH={10}
+                  mb={4}
+                  bgColor={"buttonBg"}
+                  _hover={{ bgColor: "hoverColor" }}
+                  aria-label="Add a new todo item"
+                  onClick={() => setAddTodo(true)}
+                  >
+                  <FaPlus color="white" />
                 </Button>
               : null}
             {addTodo
               ? <Flex w={"100%"} flexDir={"column"} mb={4}>
                   <Flex mb={2} alignItems={"center"}>
                     <Flex flexDir={"column"} zIndex={100}>
-                      <Text fontSize={"sm"}>Due Date:</Text>
+                      <Text fontSize={"sm"} color={"todoFontColor"}>Due Date:</Text>
                       <DatePicker
                         openToDate={new Date()}
                         onChange={(date: Date) => setDueDate(date)}
@@ -473,8 +460,8 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                     </Flex>
                     <Spacer />
                     <Flex flexDir={"column"} ml={2}>
-                      <Text fontSize={"sm"}>Priority:</Text>
-                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"}>
+                      <Text fontSize={"sm"} color={"todoFontColor"} zIndex={100}>Priority:</Text>
+                      <Select onChange={(e) => setPriority(e.target.value)} size={"xs"} color={"btnFontColor"}>
                         <option value="Normal">Normal</option>
                         <option value="High">High</option>
                         <option value="Highest">Highest</option>
@@ -483,6 +470,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                   </Flex>
                   <Textarea
                     w={"100%"}
+                    color={"white"}
                     resize={"none" }
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
@@ -493,12 +481,21 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                     onChange={(e) => setNewTodo(e.target.value)}
                     h={150}
                     mb={4}
+                    borderColor={"borderColor"}
                     value={newTodo}
                     />
                   <Flex w={"100%"}>
-                    <Button size={"xs"} onClick={addNewTodo} bgColor={"green"} _hover={{ bg: "green.500" }} color={"white"}>Add</Button>
+                    <Button
+                      size={"xs"}
+                      onClick={addNewTodo}
+                      bgColor={"green"}
+                      _hover={{ bg: "green.500" }}
+                      color={"white"}
+                      >
+                        Add
+                      </Button>
                     <Spacer />
-                    <Button size={"xs"} onClick={() => setAddTodo(false)}>Cancel</Button>
+                    <Button size={"xs"} aria-label="Cancel" onClick={() => setAddTodo(false)}>Cancel</Button>
                   </Flex>
                 </Flex>
               : null
@@ -513,7 +510,7 @@ export const Column = ({ column, tasks, setTodosData, todosData, setSelectedTodo
                 setTodosData={setTodosData}
                 setSelectedTodos={setSelectedTodos}
                 />
-            )) : <Text my={2} textAlign={"center"}>Empty</Text>}
+            )) : <Text my={2} textAlign={"center"} color={"white"}>Empty</Text>}
             {provided.placeholder}
           </Flex>
         )}

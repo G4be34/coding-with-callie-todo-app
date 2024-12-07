@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Select, Spacer, Text, Textarea, useToast } from "@chakra-ui/react"
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Select, Spacer, Text, Textarea, useToast, useToken } from "@chakra-ui/react"
 import { Draggable } from "@hello-pangea/dnd"
 import axios from "axios"
 import { useState } from "react"
@@ -8,41 +8,28 @@ import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md"
 import { RxHamburgerMenu } from "react-icons/rx"
 import { TiDelete } from "react-icons/ti"
 import { useLoaderData } from "react-router-dom"
+import { InitialDataType, LoadedTodosDataType, TaskType } from "../types"
 
 
-type LoadedTodosDataType = {
-  fetchedTodosData: InitialDataType
-  access_token: string
-  userId: string
-};
+// type Task = {
+//   todo_id: string;
+//   id: string | number | undefined;
+//   description: string;
+//   date_added: number;
+//   date_completed: string | null;
+//   priority: string;
+//   due_date: string;
+//   groupId: string;
+// };
 
-type InitialDataType = {
-  tasks: {
-    [key: string]: Task
-  };
-  columns: {
-    [key: string]: ColumnData
-  };
-  columnOrder: string[];
-};
-
-type Task = {
-  todo_id: string;
-  id: string | number | undefined;
-  description: string;
-  date_added: number;
-  date_completed: number | null;
-  priority: string;
-  due_date: number;
-  groupId: string;
-};
-
-type ColumnData = {
-  id: string;
-  column_id: string;
-  title: string;
-  taskIds: string[];
-};
+type TaskItemPropsType = {
+  task: TaskType;
+  index: number;
+  deleteTodo: (todo_id: string) => void;
+  completeTodo: (todo_id: string) => void;
+  setTodosData: React.Dispatch<React.SetStateAction<InitialDataType>>;
+  setSelectedTodos: React.Dispatch<React.SetStateAction<string[]>>
+}
 
 const options: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -51,8 +38,9 @@ const options: Intl.DateTimeFormatOptions = {
   day: 'numeric'
 }
 
-export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, setSelectedTodos }) => {
+export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, setSelectedTodos }: TaskItemPropsType) => {
   const fetchedTodosData = useLoaderData() as LoadedTodosDataType;
+  const [iconColor] = useToken("colors", ["taskItemHeaderIcons"]);
   const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [editDueDate, setEditDueDate] = useState(false);
@@ -90,7 +78,6 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         position: "top",
       });
     } catch (error) {
-      console.error("Error editing task description:", error);
       toast({
         title: "Error editing task description",
         description: "Please try again",
@@ -98,7 +85,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
@@ -138,7 +125,6 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         position: "top",
       });
     } catch (error) {
-      console.error("Error changing priority:", error);
       toast({
         title: "Error changing priority",
         description: "Please try again",
@@ -146,7 +132,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
@@ -166,7 +152,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
           ...prevState.tasks,
           [task.todo_id]: {
             ...prevState.tasks[task.todo_id],
-            due_date: date.getTime(),
+            due_date: date.getTime().toString(),
           },
         },
       }));
@@ -181,7 +167,6 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         position: "top",
       });
     } catch (error) {
-      console.error("Error changing due date:", error);
       toast({
         title: "Error changing due date",
         description: "Please try again",
@@ -189,7 +174,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
@@ -197,11 +182,9 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
     if (!checked) {
       setChecked(true);
       setSelectedTodos(prevState => [...prevState, task.todo_id]);
-      console.log("Selected todo")
     } else {
       setChecked(false);
       setSelectedTodos(prevState => prevState.filter(id => id !== task.todo_id));
-      console.log("Unselected todo")
     }
   };
 
@@ -245,7 +228,7 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          bg={snapshot.isDragging ? "green.200" : "white"}
+          bg={snapshot.isDragging ? "dragBg" : "todoBody"}
           border={"1px solid black"}
           w={["250px", "250px", "300px"]}
           size={"sm"}
@@ -254,11 +237,11 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
           pos={"relative"}
           borderRadius={10}
           >
-          <Box borderBottom={"1px solid black"} p={1} display={"flex"} flexDir={"row"} justifyContent={"space-between"} alignItems={"center"}>
+          <Box borderBottom={"1px solid black"} borderTopRadius={9} bgColor={"todoHeader"} p={1} display={"flex"} flexDir={"row"} justifyContent={"space-between"} alignItems={"center"}>
             {checked
-              ? <MdCheckBox onClick={selectTodo} size={20} cursor={"pointer"} color={"green"} />
-              : <MdCheckBoxOutlineBlank onClick={selectTodo} size={20} cursor={"pointer"} />}
-            <RxHamburgerMenu size={20} />
+              ? <MdCheckBox onClick={selectTodo} size={20} cursor={"pointer"} color={iconColor} />
+              : <MdCheckBoxOutlineBlank onClick={selectTodo} size={20} cursor={"pointer"} color={iconColor} />}
+            <RxHamburgerMenu size={20} color={iconColor} />
             {isDeleting
               ? <Button
                   autoFocus
@@ -266,25 +249,26 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                   bg={"red"} color={"white"} size={"xs"}
                   onClick={() => deleteTodo(task.todo_id)}
                   marginY={1}
+                  aria-label="Confirm task deletion"
                   >
                     Delete Task?
                   </Button>
-              : <TiDelete size={30} cursor={"pointer"} onClick={() => setIsDeleting(true)} />
+              : <TiDelete size={30} cursor={"pointer"} onClick={() => setIsDeleting(true)} color={iconColor} aria-label="Delete Task" />
               }
           </Box>
           <CardHeader flexDir={"column"} cursor={"pointer"}>
             {editDueDate
               ? <DatePicker
                   onBlur={() => setEditDueDate(false)}
-                  selected={new Date(parseInt(task.due_date))}
-                  openToDate={new Date(parseInt(task.due_date))}
+                  selected={new Date(Number(task.due_date))}
+                  openToDate={new Date(Number(task.due_date))}
                   onChange={(date: Date) => changeDueDate(date)}
                   fixedHeight
                   showIcon
                   />
               : <>
-                  <Text fontWeight={"bold"} fontSize={"sm"}>Due</Text>
-                  <Text onClick={openDatePicker} fontSize={"sm"}>{new Date(parseInt(dueDate)).toLocaleDateString('en-US', options)}</Text>
+                  <Text fontWeight={"bold"} fontSize={"sm"} color={"todoFontColor"}>Due</Text>
+                  <Text color={"todoFontColor"} onClick={openDatePicker} fontSize={"sm"}>{new Date(Number(dueDate)).toLocaleDateString('en-US', options)}</Text>
                 </>
               }
           </CardHeader>
@@ -298,10 +282,12 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                   autoFocus
                   resize={"none"}
                   width={"100%"}
+                  color={"todoFontColor"}
                   />
               : <Text
                   onClick={openDescriptionEditor}
                   _hover={{ cursor: "pointer" }}
+                  color={"todoFontColor"}
                   >
                     {task.description}
                   </Text>
@@ -310,11 +296,20 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
           <CardFooter>
             {task.date_completed
               ? <Flex flexDir={"column"}>
-                  <Text fontWeight={"bold"} fontSize={"sm"}>Completed </Text>
-                  <Text fontSize={"sm"}>{new Date(parseInt(task.date_completed)).toLocaleDateString('en-US', options)}</Text>
+                  <Text fontWeight={"bold"} fontSize={"sm"} color={"todoFontColor"}>Completed </Text>
+                  <Text fontSize={"sm"} color={"todoFontColor"}>{new Date(Number(task.date_completed)).toLocaleDateString('en-US', options)}</Text>
                 </Flex>
               : <Flex w={"100%"} alignItems={"center"}>
-                  <Button size={"xs"} onClick={() => completeTodo(task.todo_id)} bg={"green"} _hover={{ bg: "green.500" }} color={"white"} p={3}>Complete</Button>
+                  <Button
+                    size={"xs"}
+                    onClick={() => completeTodo(task.todo_id)}
+                    bg={"green"} _hover={{ bg: "green.500" }}
+                    color={"white"}
+                    aria-label="Mark task as complete"
+                    p={3}
+                    >
+                      Complete
+                    </Button>
                   <Spacer />
                   <Select
                     defaultValue={priority}
@@ -334,7 +329,6 @@ export const TaskItem = ({ task, index, deleteTodo, completeTodo, setTodosData, 
                     <option value={"Highest"}>Highest</option>
                   </Select>
                 </Flex>
-
               }
           </CardFooter>
         </Card>

@@ -12,3 +12,42 @@
   background-color: gray !important;
   color: white !important;
 }
+
+/* Change the month name color */
+.fc-toolbar-title {
+  color: white !important;
+  font-weight: bold !important;
+}
+
+/* Change the day numbers color */
+.fc-daygrid-day-number {
+  color: white !important;
+}
+
+/* Change the days of the week labels (e.g., Sun, Mon, Tue) */
+.fc-col-header-cell {
+  color: white !important;
+}
+
+/* Change the color of navigation arrows */
+.fc-prev-button, .fc-next-button {
+  color: white !important; /* Change the arrow color */
+  background-color: transparent !important; /* Make the background transparent */
+  border: 1px solid white !important; /* Remove the border */
+}
+
+/* Change the hover effect for navigation arrows */
+.fc-prev-button:hover, .fc-next-button:hover {
+  color: gray !important; /* Change the arrow color on hover */
+  cursor: pointer;
+  border-color: gray !important;
+}
+
+.fc-toolbar {
+  backdrop-filter: none !important;
+  background-color: transparent !important;
+}
+
+.fc-daygrid {
+  backdrop-filter: blur(10px) !important; /* Apply blur only to the calendar grid */
+}

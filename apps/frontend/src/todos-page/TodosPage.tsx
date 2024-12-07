@@ -3,48 +3,15 @@ import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import axios from "axios";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useOutletContext } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { Column } from "../components/Column";
+import { LoadedTodosDataType } from "../types";
 
-
-type TaskType = {
-  todo_id: string
-  id: string | number | undefined
-  description: string
-  date_added: number | string
-  date_completed: number | string | null
-  priority: string
-  due_date: number | string
-  groupId: string
-  position: number
-};
-
-type ColumnType = {
-  column_id: string
-  id: string
-  title: string
-  taskIds: string[]
-};
-
-type InitialDataType = {
-  tasks: {
-    [key: string]: TaskType
-  };
-  columns: {
-    [key: string]: ColumnType
-  };
-  columnOrder: string[];
-};
-
-type LoadedTodosDataType = {
-  fetchedTodosData: InitialDataType
-  access_token: string
-  userId: string
-};
 
 export const TodosPage = () => {
   const loadedTodosData = useLoaderData() as LoadedTodosDataType;
+  const { user } = useOutletContext() as { user: { background: string }};
   const toast = useToast();
   const [todosData, setTodosData] = useState(loadedTodosData.fetchedTodosData);
   const [selectedTodos, setSelectedTodos] = useState<string[]>([]);
@@ -64,17 +31,23 @@ export const TodosPage = () => {
       return;
     }
 
+    // Initialize columns the task starts in and ends in
     const start = todosData.columns[source.droppableId];
     const finish = todosData.columns[destination.droppableId];
+    // Create an array of task ids from the start column
     const newTaskIds = Array.from(start.taskIds);
 
+    // Reordering within the same column
     if (start === finish) {
-      // Reordering within the same column
+      // Remove the task from its original place within the column
       newTaskIds.splice(source.index, 1);
+      // Add the task to its new place within the column
       newTaskIds.splice(destination.index, 0, draggableId);
 
+      // Initialize array of tasks whose positions need to be updated
       let tasksToUpdate: {todo_id: string, position: number}[] = [];
 
+      // Update the position of each task while creating an array of task objects
       const updatedTasks = newTaskIds.map((taskId, index) => {
         tasksToUpdate = [...tasksToUpdate, {
           todo_id: taskId,
@@ -87,13 +60,16 @@ export const TodosPage = () => {
         };
       });
 
+      // Create a new column with the updated task ids
       const newColumn = {
         ...start,
         taskIds: newTaskIds,
       };
 
+      // Create a new object with the updated task objects
       const newTasks = Object.fromEntries(updatedTasks.map(task => [task.todo_id, task]));
 
+      // Update the state with the new column and task order
       setTodosData(prevState => ({
         ...prevState,
         columns: {
@@ -107,6 +83,7 @@ export const TodosPage = () => {
       }));
 
       try {
+        // Update the position of each task in the database
         await axios.patch('/api/todos/update-positions', {
           tasksToUpdate
         }, {
@@ -115,7 +92,6 @@ export const TodosPage = () => {
           }
         });
       } catch (error) {
-        console.error("Error updating todo: ", error);
         toast({
           title: "Error updating todo",
           description: "Please try again",
@@ -130,15 +106,22 @@ export const TodosPage = () => {
     }
 
     // Moving from one list to another
+
+    // Create an array of task ids from the start column
     const startTaskIds = Array.from(start.taskIds);
+    // Remove the task from its original place within the column
     startTaskIds.splice(source.index, 1);
 
+    // Create an array of task ids from the finish column
     const finishTaskIds = Array.from(finish.taskIds);
+    // Add the task to its new place within the new column
     finishTaskIds.splice(destination.index, 0, draggableId);
 
+    // Initialize array of tasks whose positions need to be updated
     let startTasksToUpdate: {todo_id: string, position: number}[] = [];
     let finishTasksToUpdate: {todo_id: string, position: number}[] = [];
 
+    // Update the position of each task while creating an array of task objects
     const updatedStartTasks = startTaskIds.map((taskId, index) => {
       startTasksToUpdate = [...startTasksToUpdate, {
         todo_id: taskId,
@@ -151,6 +134,7 @@ export const TodosPage = () => {
       }
     });
 
+    // Update the position of each task while creating an array of task objects
     const updatedFinishTasks = finishTaskIds.map((taskId, index) => {
       finishTasksToUpdate = [...finishTasksToUpdate, {
         todo_id: taskId,
@@ -163,16 +147,19 @@ export const TodosPage = () => {
       }
     });
 
+    // Create a new start column with the updated task ids
     const newStart = {
       ...start,
       taskIds: startTaskIds,
     };
 
+    // Create a new finish column with the updated task ids
     const newFinish = {
       ...finish,
       taskIds: finishTaskIds,
     };
 
+    // Create a new object with the updated task objects
     const newTasks = {
       ...Object.fromEntries(updatedStartTasks.map(task => [task.todo_id, task])),
       ...Object.fromEntries(updatedFinishTasks.map(task => [task.todo_id, task])),
@@ -184,6 +171,7 @@ export const TodosPage = () => {
       },
     };
 
+    // Update the state with the new column and task order
     setTodosData(prevState => ({
       ...prevState,
       columns: {
@@ -198,6 +186,7 @@ export const TodosPage = () => {
     }));
 
     try {
+      // Update the position of each task in the database
       await axios.patch('/api/todos/update-positions', {
         tasksToUpdate: [...startTasksToUpdate, ...finishTasksToUpdate]
       }, {
@@ -206,6 +195,7 @@ export const TodosPage = () => {
         }
       });
 
+      // Update the group id of the task that was moved
       await axios.patch(`/api/todos/${draggableId}`, {
         groupId: finish.column_id,
         date_completed: finish.column_id === 'column-1' ? new Date().getTime().toString() : null,
@@ -215,7 +205,6 @@ export const TodosPage = () => {
         }
       });
     } catch (error) {
-      console.error("Error updating todo: ", error);
       toast({
         title: "Error updating todo",
         description: "Please try again",
@@ -265,7 +254,6 @@ export const TodosPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error('Error adding new column: ', error);
       toast({
         title: "Failed to add new column",
         status: "error",
@@ -318,9 +306,8 @@ export const TodosPage = () => {
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     } catch (error) {
-      console.error("Error deleting todos: ", error);
       toast({
         title: "Error deleting todos",
         description: "Please try again",
@@ -328,7 +315,7 @@ export const TodosPage = () => {
         duration: 3000,
         isClosable: true,
         position: "top",
-      })
+      });
     }
   };
 
@@ -415,7 +402,6 @@ export const TodosPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error("Error completing todos: ", error);
       toast({
         title: "Error completing todos",
         description: "Please try again",
@@ -429,7 +415,7 @@ export const TodosPage = () => {
 
 
   return (
-    <Flex flex={1} px={5} overflowX={"auto"} direction="column">
+    <Flex flex={1} px={5} overflowX={"auto"} direction="column" bgImg={`url(/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
       {showConfirmModal
         ? <Modal isOpen={showConfirmModal} onClose={() => setShowConfirmModal(false)} isCentered size={"sm"}>
             <ModalOverlay />
@@ -438,16 +424,16 @@ export const TodosPage = () => {
                 Are you sure you want to delete ({selectedTodos.length}) selected tasks?
               </ModalHeader>
               <ModalBody display={"flex"} justifyContent={"space-evenly"} marginBottom={4}>
-                <Button onClick={deleteTodos} colorScheme="red">Yes</Button>
-                <Button onClick={() => setShowConfirmModal(false)} colorScheme="blue">Cancel</Button>
+                <Button onClick={deleteTodos} aria-label="Confirm deletion" colorScheme="red">Yes</Button>
+                <Button onClick={() => setShowConfirmModal(false)} aria-label="Cancel deletion" colorScheme="blue">Cancel</Button>
               </ModalBody>
             </ModalContent>
           </Modal>
         : null}
       {selectedTodos.length > 0
         ? <Box display={"flex"} justifyContent={"center"} alignItems={"center"} p={4}>
-            <Button bg={"green"} color={"white"} onClick={completeTodos} mr={4}>Complete selected Tasks</Button>
-            <Button bg={"red"} color={"white"} onClick={() => setShowConfirmModal(true)}>Delete selected Tasks</Button>
+            <Button bg={"green"} color={"white"} aria-label="Complete selected tasks" onClick={completeTodos} mr={4}>Complete selected Tasks</Button>
+            <Button bg={"red"} color={"white"} aria-label="Delete selected tasks" onClick={() => setShowConfirmModal(true)}>Delete selected Tasks</Button>
           </Box>
         : null}
       <Flex flexDirection="row" alignItems="flex-start">
@@ -472,7 +458,17 @@ export const TodosPage = () => {
             })}
           </Flex>
         </DragDropContext>
-        <Button mt={10} ml={8} leftIcon={<FaPlus size={20} />} minW={"auto"} onClick={addNewColumn} >
+        <Button
+          mt={10}
+          ml={8}
+          leftIcon={<FaPlus size={20} />}
+          minW={"auto"}
+          _hover={{ bgColor: "hoverColor" }}
+          bgColor={"buttonBg"}
+          color={"btnFontColor"}
+          aria-label="Add a new column"
+          onClick={addNewColumn}
+          >
           Add a new column
         </Button>
       </Flex>

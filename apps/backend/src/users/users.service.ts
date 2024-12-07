@@ -6,15 +6,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
-type UserWithInitialData = {
-  user: User;
-  initialData: {
-    tasks: object;
-    columns: object;
-    columnOrder: any[];
-  };
-};
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -48,22 +39,6 @@ export class UsersService {
     }
 
     user.groups.sort((a, b) => a.position - b.position);
-
-    // const initialData = {
-    //   tasks: {},
-    //   columns: {},
-    //   columnOrder: [],
-    // };
-
-    // user.groups.forEach((group) => {
-    //   initialData.columns[group.id] = {
-    //     id: group.id,
-    //     title: group.title,
-    //     taskIds: group.todos.map((todo) => todo.id),
-    //   };
-
-    //   initialData.columnOrder.push(group.id);
-    // });
 
     return user;
   }

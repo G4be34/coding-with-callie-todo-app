@@ -15,14 +15,14 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
-  photo: string;
-
-  @Column()
+  @Column({ default: 'default' })
   theme: string;
 
-  @Column()
+  @Column({ default: 'playfair' })
   font: string;
+
+  @Column({ default: '1-GlassMorphismBg.jpg' })
+  background: string;
 
   @OneToMany(() => Group, (group) => group.user, { eager: true, cascade: true })
   groups: Group[];

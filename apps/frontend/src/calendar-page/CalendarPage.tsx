@@ -1,4 +1,4 @@
-import { Button, Editable, EditablePreview, EditableTextarea, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Select, Text, useToast } from '@chakra-ui/react';
+import { Button, Editable, EditablePreview, EditableTextarea, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Select, Text, useToast, useToken } from '@chakra-ui/react';
 import { EventClickArg, EventDropArg } from '@fullcalendar/core/index.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -6,7 +6,8 @@ import FullCalendar from '@fullcalendar/react';
 import axios from 'axios';
 import { useRef, useState } from 'react';
 import { TiDelete } from 'react-icons/ti';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useOutletContext } from 'react-router-dom';
+import { TaskType } from '../types';
 import './calendarpage.css';
 
 
@@ -14,18 +15,7 @@ type CalendarDataType = {
   title: string;
   priority: string;
   id: string;
-};
-
-type TaskType = {
-  todo_id: string;
-  id: string | number | undefined;
-  description: string;
-  date_added: number | string;
-  date_completed: number | string | null;
-  priority: string;
-  due_date: number | string;
-  position: number;
-  groupId: string;
+  date?: string;
 };
 
 type LoaderDataType = {
@@ -36,6 +26,8 @@ type LoaderDataType = {
 
 export const CalendarPage = () => {
   const { calendarData, access_token, completedTodos } = useLoaderData() as LoaderDataType;
+  const { user } = useOutletContext() as { user: { background: string }};
+  const [iconColor] = useToken("colors", ["taskItemHeaderIcons"]);
   const calendarRef = useRef<FullCalendar | null>(null);
   const toast = useToast();
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -89,7 +81,6 @@ export const CalendarPage = () => {
         position: 'top',
       });
     } catch (error) {
-      console.error("Error updating due date:", error);
       toast({
         title: 'Error updating due date',
         status: 'error',
@@ -137,7 +128,6 @@ export const CalendarPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error("Error changing description:", error);
       toast({
         title: "Error changing description",
         description: "Please try again",
@@ -181,7 +171,6 @@ export const CalendarPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error("Error changing priority:", error);
       toast({
         title: "Error changing priority",
         description: "Please try again",
@@ -227,7 +216,6 @@ export const CalendarPage = () => {
         position: "top",
       });
     } catch (error) {
-      console.error("Error completing task:", error);
       toast({
         title: "Error completing task",
         description: "Please try again",
@@ -241,19 +229,20 @@ export const CalendarPage = () => {
 
 
   return (
-    <Flex p={5} flexDir={"column"} w={"100%"}>
+    <Flex p={5} flexDir={"column"} w={"100%"} bgImg={`url(/${user.background})`} bgPos="center" bgSize="cover" bgRepeat="no-repeat">
       {showTaskModal
         ? <Modal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} isCentered size={"lg"}>
             <ModalOverlay />
-            <ModalContent>
-              <ModalBody pos={"relative"}>
+            <ModalContent bgColor={"todoHeader"}>
+              <ModalBody pos={"relative"} >
                 <TiDelete
                   style={{ position: "absolute", top: 2, right: 2, cursor: "pointer" }}
                   size={30}
                   onClick={() => setShowTaskModal(false)}
+                  color={iconColor}
                   />
                 <Flex m={5}>
-                  <Text pt={1} fontWeight={"bold"}>Description: </Text>
+                  <Text pt={1} fontWeight={"bold"} color={"todoFontColor"}>Description: </Text>
                   <Editable
                     textAlign="left"
                     h={120}
@@ -264,12 +253,12 @@ export const CalendarPage = () => {
                     defaultValue={selectedEvent?.title}
                     pl={4}
                   >
-                    <EditablePreview />
-                    <EditableTextarea />
+                    <EditablePreview color={"todoFontColor"} />
+                    <EditableTextarea color={"todoFontColor"} />
                   </Editable>
                 </Flex>
                 <Flex w={"100%"} m={5}>
-                  <Text fontWeight={"bold"}>Priority: </Text>
+                  <Text fontWeight={"bold"} color={"todoFontColor"}>Priority: </Text>
                   <Select
                     cursor={"pointer"}
                     w={120}
@@ -296,6 +285,7 @@ export const CalendarPage = () => {
                     bg={"green"}
                     _hover={{ bg: "green.500" }}
                     color={"white"}
+                    aria-label='Complete Task'
                     p={3}
                   >
                     Complete Task
@@ -307,7 +297,7 @@ export const CalendarPage = () => {
         : null
       }
       <Flex justifyContent={"flex-end"} w={"100%"} mb={5} alignItems={"center"}>
-        <Text fontWeight={"bold"} fontSize={"lg"} mr={4}>Filter by priority:</Text>
+        <Text fontWeight={"bold"} fontSize={"lg"} mr={4} color={"#FFFFFF"}>Filter by priority:</Text>
         <Select
           cursor={"pointer"}
           w={120}
@@ -327,27 +317,28 @@ export const CalendarPage = () => {
           <option value="Normal">Normal</option>
         </Select>
       </Flex>
-      <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        handleWindowResize
-        height={"100%"}
-        events={stateCalendarData}
-        editable
-        ref={calendarRef}
-        eventDrop={updateDueDate}
-        eventClick={handleEventClick}
-        eventClassNames={(arg) => {
-          if (arg.event.extendedProps.priority === 'Highest') {
-            return 'highest-priority';
-          } else if (arg.event.extendedProps.priority === 'High') {
-            return 'high-priority';
-          } else if (arg.event.extendedProps.priority === 'Normal') {
-            return 'normal-priority';
-          }
-          return '';
-        }}
-      />
+
+        <FullCalendar
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          handleWindowResize
+          height={"100%"}
+          events={stateCalendarData}
+          editable
+          ref={calendarRef}
+          eventDrop={updateDueDate}
+          eventClick={handleEventClick}
+          eventClassNames={(arg) => {
+            if (arg.event.extendedProps.priority === 'Highest') {
+              return 'highest-priority';
+            } else if (arg.event.extendedProps.priority === 'High') {
+              return 'high-priority';
+            } else if (arg.event.extendedProps.priority === 'Normal') {
+              return 'normal-priority';
+            }
+            return '';
+          }}
+        />
     </Flex>
   )
 }

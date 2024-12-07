@@ -9,9 +9,12 @@ import { SignUpPage } from './auth/signup-page/SignUpPage';
 import { CalendarPage } from './calendar-page/CalendarPage';
 import { Header } from './components/Header';
 import { ProfileModal } from './components/ProfileModal';
+import { ThemeProvider } from './context/ThemeContext';
 import { GraphsPage } from './graphs-page/GraphsPage';
-import { authenticateUser, getCalendarData, getGraphsData, getTodosData } from './loaderFunctions';
+import { getCalendarData, getGraphsData, getTodosData } from './loaderFunctions';
 import { TodosPage } from './todos-page/TodosPage';
+import { FontType, ThemeType, UserType } from './types';
+
 
 
 function App() {
@@ -20,7 +23,6 @@ function App() {
     {
       path: "/",
       element: <Layout />,
-      loader: authenticateUser,
       children: [
         {
           index: true,
@@ -56,15 +58,33 @@ function Layout() {
   const token = localStorage.getItem('token');
   const stringId = localStorage.getItem('user_id');
   const userId = parseInt(stringId!, 10);
-  const { access_token } = JSON.parse(token!);
+  const { access_token } = token !== null ? JSON.parse(token) : {};
   const [showModal, setShowModal] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<UserType>({
+    username: '',
+    photo: '',
+    email: '',
+    _id: 0,
+    theme: 'default',
+    font: 'playfair',
+    background: '',
+  });
+  const [userTheme, setUserTheme] = useState<ThemeType | null>(null);
+  const [userFont, setUserFont] = useState<FontType | null>(null);
+
 
   const logoutUser = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user_id');
-    setUser({});
+    setUser({
+      username: '',
+      photo: '',
+      email: '',
+      _id: 0,
+      theme: 'default',
+      font: 'playfair',
+      background: '',
+    });
     toast({
       title: 'Logged out',
       description: "Successfully logged out",
@@ -72,7 +92,7 @@ function Layout() {
       duration: 3000,
       isClosable: true,
       position: 'top'
-    })
+    });
     navigate('/login');
   };
 
@@ -94,6 +114,8 @@ function Layout() {
         const photoBase64 = `data:image/png;base64,${photo}`;
 
         setUser({_id: userId, ...userResponse.data, photo: photoBase64});
+        setUserTheme(userResponse.data.theme);
+        setUserFont(userResponse.data.font);
 
         toast({
           title: `Welcome ${userResponse.data.username}!`,
@@ -103,7 +125,6 @@ function Layout() {
           position: 'top'
         });
       } catch (error) {
-        console.error("Error fetching user data in header: ", error);
         toast({
           title: 'Error',
           description: "Please try again",
@@ -111,27 +132,36 @@ function Layout() {
           duration: 3000,
           isClosable: true,
           position: 'top'
-        })
+        });
       }
-    }
+    };
 
-    getUserData();
-  }, [token]);
+    if (token) {
+      getUserData();
+    }
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+
+
+  if (!userTheme || !userFont) {
+    return <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"}/>;
+  }
 
 
   return (
-    <Flex flexDirection={"column"} minH={"100vh"} maxH={"100vh"} justifyContent={"space-between"}>
-      {showModal && <ProfileModal setShowModal={setShowModal} showModal={showModal} user={user} setUser={setUser} token={access_token} logoutUser={logoutUser} />}
-      <Header setShowModal={setShowModal} setShowOptions={setShowOptions} showOptions={showOptions} logoutUser={logoutUser} user={user} />
-      <Flex flex={1} overflow={"hidden"}>
-        {navigation.state === "loading"
-          ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} />
-          : <Outlet />}
+    <ThemeProvider initialTheme={userTheme} initialFontStyle={userFont}>
+      <Flex flexDirection={"column"} minH={"100vh"} maxH={"100vh"} justifyContent={"space-between"}>
+        {showModal && <ProfileModal setShowModal={setShowModal} showModal={showModal} user={user} setUser={setUser} token={access_token} logoutUser={logoutUser} />}
+        <Header setShowModal={setShowModal} logoutUser={logoutUser} user={user} />
+        <Flex flex={1} overflow={"hidden"}>
+          {navigation.state === "loading"
+            ? <Spinner color="blue.500" size="xl" position={"fixed"} top={"50%"} left={"50%"} bottom={"50%"} right={"50%"} />
+            : <Outlet context={{ user }} />}
+        </Flex>
+        <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={2} borderTop={"1px solid black"} bgColor={"footerBg"} color={"footerFont"}>
+          © 2024 CWC Todo App. All rights reserved.
+        </Flex>
       </Flex>
-      <Flex as="footer" justifyContent={"center"} alignItems={"center"} p={4} borderTop={"1px solid black"}>
-        © 2024 CWC Todo App. All rights reserved.
-      </Flex>
-    </Flex>
+    </ThemeProvider>
   );
 }
 

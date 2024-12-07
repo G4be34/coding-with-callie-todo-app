@@ -1,4 +1,4 @@
-import { Avatar, Button, Flex, Image, Link, Spacer } from "@chakra-ui/react";
+import { Avatar, Button, Flex, Image, Link, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Spacer } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 const links = [
@@ -9,47 +9,76 @@ const links = [
 
 type HeaderPropTypes = {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
-  showOptions: boolean,
-  setShowOptions: React.Dispatch<React.SetStateAction<boolean>>,
-  user: any,
+  user: { username: string, photo: string },
   logoutUser: () => void
 }
 
-export const Header = ({ setShowModal, showOptions, setShowOptions, user, logoutUser }: HeaderPropTypes) => {
-
-  const openModal = () => {
-    setShowModal(true);
-    setShowOptions(false);
-  }
+export const Header = ({ setShowModal, user, logoutUser }: HeaderPropTypes) => {
 
   const handleLogout = () => {
     logoutUser();
-    setShowOptions(false);
   }
 
   return (
-    <Flex as={"header"} borderBottom={"1px solid black"} p={4} px={[4, 8, 14]} alignItems={"center"}>
+    <Flex as={"header"} borderBottom={"1px solid black"} p={4} px={[4, 8, 14]} alignItems={"center"} bgColor={"headerBg"}>
       <Image src="/logo.jpeg" alt="logo" boxSize="50px" objectFit={"contain"} borderRadius={10}/>
       <Spacer/>
       {links.map((link, idx) => (
-        <Link as={ReactRouterLink} to={link.path} key={idx}>
-          <Button ml={[2, 4, 6]} size={["sm", "md", "md"]}>{link.label}</Button>
+        <Link as={ReactRouterLink} to={link.path} key={idx} ml={[2, 4, 6]} tabIndex={-1}>
+          <Button
+            size={["sm", "md", "md"]}
+            bgColor={"buttonBg"}
+            _hover={{ bgColor: "hoverColor" }}
+            color={"btnFontColor"}
+            aria-label={`Go to ${link.label} page`}
+            >
+              {link.label}
+            </Button>
         </Link>
       ))}
-      <Avatar
-        name={user?.username}
-        src={user?.photo}
-        cursor={"pointer"}
-        onClick={() => setShowOptions(!showOptions)}
-        ml={[2, 4, 10]} pos={"relative"} zIndex={200}
-        />
-      {showOptions ?
-        <Flex flexDir={"column"} pos={"absolute"} right={5} top={20} border={"1px solid black"} borderRadius={10} bgColor={"white"} p={4} gap={2} zIndex={100}>
-          <Button onClick={openModal}>Settings</Button>
-          <Button onClick={handleLogout}>Logout</Button>
-        </Flex>
-        : null
-      }
+      <Popover arrowSize={10}>
+        <PopoverTrigger>
+          <Flex
+            borderRadius={"full"}
+            border={"2px solid"}
+            borderColor={"avatarBorderColor"}
+            ml={[2, 4, 10]}
+            pos={"relative"}
+            zIndex={200}
+          >
+            <Avatar
+              name={user?.username}
+              src={user?.photo}
+              cursor={"pointer"}
+              />
+          </Flex>
+        </PopoverTrigger>
+        <PopoverContent w={"200px"} bgColor={"headerBg"}>
+          <PopoverArrow bgColor={"headerBg"}/>
+          <PopoverBody display={"flex"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} gap={4} py={4}>
+            <Button
+              onClick={() => setShowModal(true)}
+              w={"70%"}
+              bgColor={"buttonBg"}
+              color={"btnFontColor"}
+              _hover={{ bgColor: "hoverColor"}}
+              aria-label="Open settings"
+              >
+                Settings
+              </Button>
+            <Button
+              onClick={handleLogout}
+              w={"70%"}
+              bgColor={"buttonBg"}
+              color={"btnFontColor"}
+              _hover={{ bgColor: "hoverColor"}}
+              aria-label="Logout"
+              >
+                Logout
+              </Button>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
     </Flex>
   )
 }

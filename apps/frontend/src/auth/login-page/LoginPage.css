@@ -1,0 +1,33 @@
+.floating-label {
+  position: absolute;
+  pointer-events: none;
+  top: 50%;
+  margin: 0;
+  padding: 0;
+  transform: translateY(-50%);
+  left: 15px;
+  font-size: 16px;
+  padding: 0;
+  z-index: 3;
+  transition: 0.5s !important;
+}
+
+.floating-input {
+  box-shadow: none !important;
+  border: 2px solid #555 !important;
+}
+
+.floating-input:focus,
+.floating-input:valid {
+  border: 2px solid #555 !important; /* Consistent border color on focus */
+}
+
+.floating-input:focus~.floating-label,
+.floating-input:valid~.floating-label,
+.filled ~ .floating-label {
+  top: 0;
+  left: 10px;
+  color: white;
+  z-index: 3;
+  font-size: 12px;
+}

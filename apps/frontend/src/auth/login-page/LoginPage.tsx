@@ -1,17 +1,20 @@
-import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Text, chakra, useToast } from "@chakra-ui/react";
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Icon, Input, InputGroup, InputRightElement, Link, Text, chakra } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import "./LoginPage.css";
 
 const ChakraRouterLink = chakra(ReactRouterLink);
 
 export const LoginPage = () => {
-  const bgImageNum = Math.floor(Math.random() * 3) + 1;
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [badLogin, setBadLogin] = useState(false);
+  const [showPw, setShowPw] = useState(false);
+  const [bgImageNum] = useState(Math.floor(Math.random() * 3) + 1);
   const emailError = email === '';
   const passwordError = password === '' || password.length < 6;
 
@@ -25,7 +28,6 @@ export const LoginPage = () => {
         if (loading) {
           setLoading(false);
         }
-        console.log(error);
       }
     }
   };
@@ -59,7 +61,6 @@ export const LoginPage = () => {
       sessionStorage.removeItem('redirect_after_login');
       navigate(redirectUrl, { replace: true });
     } catch (error) {
-      console.log("Problem logging in: ", error);
       setBadLogin(true);
     }
   };
@@ -73,7 +74,6 @@ export const LoginPage = () => {
       if (loading) {
         setLoading(false);
       }
-      console.log(error);
     }
   };
 
@@ -89,26 +89,46 @@ export const LoginPage = () => {
       <Flex flexDir={"column"} as="form" borderRadius={20} border={"2px solid #d6d6c2"} p={6} w={{ sm: "300px", md: "375px", lg: "450px" }} mb={4} rowGap={8} bgColor={"rgba(255, 255, 255, 0.05)"} backdropFilter={"blur(10px)"}>
         <Heading color={"#ffffff"}>Login</Heading>
 
-        <FormControl isRequired isInvalid={emailError}>
-          <FormLabel color={"#ffffff"}>Email</FormLabel>
-          <Input
-            placeholder="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            />
+        <FormControl isRequired isInvalid={emailError} pos={"relative"}>
+          <InputGroup>
+            <Input
+              type="email"
+              value={email}
+              color={"#ffffff"}
+              borderColor="#555"
+              focusBorderColor="#555"
+              errorBorderColor="#555"
+              _hover={{ border: "2px solid #555" }}
+              className={`floating-input ${email ? 'filled' : ''}`}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyUp={handleKeyPress}
+              />
+            <FormLabel color={"#d9d9d9"} className="floating-label" requiredIndicator={false}>Email</FormLabel>
+          </InputGroup>
           {emailError ? <FormErrorMessage>Email is required</FormErrorMessage> : null}
         </FormControl>
 
-        <FormControl isRequired isInvalid={passwordError}>
-          <FormLabel color={"#ffffff"}>Password</FormLabel>
-          <Input
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyUp={handleKeyPress}
-            />
+        <FormControl isRequired isInvalid={passwordError} pos={"relative"}>
+          <InputGroup>
+            <Input
+              type={showPw ? "text" : "password"}
+              value={password}
+              color={"#ffffff"}
+              borderColor="#555"
+              focusBorderColor="#555"
+              errorBorderColor="#555"
+              _hover={{ border: "2px solid #555" }}
+              className="floating-input"
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyUp={handleKeyPress}
+              />
+            <FormLabel color={"#d9d9d9"} className="floating-label" requiredIndicator={false}>Password</FormLabel>
+            <InputRightElement>
+              <Button onClick={() => setShowPw(!showPw)} variant={"link"}>
+                <Icon as={showPw ? FaEyeSlash : FaEye} />
+              </Button>
+            </InputRightElement>
+          </InputGroup>
           {passwordError ? <FormErrorMessage>Password is required</FormErrorMessage> : null}
         </FormControl>
 
@@ -119,6 +139,7 @@ export const LoginPage = () => {
           isDisabled={emailError || passwordError}
           isLoading={loading}
           color={"#ffffff"}
+          aria-label="Login to your account"
           _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
           bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
         >
@@ -127,12 +148,13 @@ export const LoginPage = () => {
 
         <Text w={"100%"} textAlign={"center"} marginY={-4} color={"#ffffff"}>-or-</Text>
 
-        <Button 
-          as={ChakraRouterLink} 
-          to="/sign-up" 
-          color={"#ffffff"} 
+        <Button
+          as={ChakraRouterLink}
+          to="/sign-up"
+          color={"#ffffff"}
           _hover={ bgImageNum == 1 ? { backgroundColor: "#fcae4f" } : bgImageNum === 2 ? { backgroundColor: "#c98bda" } : { backgroundColor: "#b6afb0" }}
           bgColor={bgImageNum === 1 ? "rgb(253, 150, 20, 1)" : bgImageNum === 2 ? "rgb(123, 45, 144, 1)" : "rgb(82, 76, 77, 1)"}
+          aria-label="Sign up for an account"
         >
           Sign Up
         </Button>
